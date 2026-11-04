@@ -172,6 +172,7 @@ fun HomeScreen(nav: Nav) {
                         }
                     }
                 }
+                item { HomeAppsRow(nav) }
                 if (continueWatching.isNotEmpty()) item {
                     SectionTitle(stringResource(R.string.continue_watching), icon = Icons.Default.PlayCircle)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 6.dp)) {

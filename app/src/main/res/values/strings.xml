@@ -12,9 +12,12 @@
     <string name="added_favorite">Added to favorites</string>
     <string name="added_my_list">Added to My list</string>
     <string name="all">All</string>
+    <string name="all_apps">All apps</string>
     <string name="all_channels">All channels</string>
     <string name="app_name">Zenith TV</string>
     <string name="appearance">Appearance</string>
+    <string name="apps">Apps</string>
+    <string name="apps_hint">Tap to open (or install). Long-press, or MENU on the remote, to add or remove an app from the home screen.</string>
     <string name="aspect_fill">Stretch</string>
     <string name="aspect_fit">Fit</string>
     <string name="aspect_ratio">Aspect ratio</string>
@@ -69,6 +72,8 @@
     <string name="image_link">Image link (https://…jpg)</string>
     <string name="image_link_hint">Use a direct image link: open the picture, long-press it and choose \"Copy image address\". Google search page links won\'t work.</string>
     <string name="in_my_list">In My list</string>
+    <string name="install">Install</string>
+    <string name="installed_apps">Other apps on this device</string>
     <string name="kids_profile">Kids profile (hides locked content)</string>
     <string name="lang_system">System default</string>
     <string name="language">Language</string>
@@ -93,6 +98,7 @@
     <string name="minutes_n">%d minutes</string>
     <string name="movies">Movies</string>
     <string name="multiview">Multi-view</string>
+    <string name="my_apps">My apps</string>
     <string name="my_list">My list</string>
     <string name="my_picture">Picture</string>
     <string name="my_pictures">Themes from my pictures</string>
@@ -109,6 +115,7 @@
     <string name="no_playlist">No playlist yet</string>
     <string name="no_recordings">No recordings yet. Record from the player menu or the TV guide.</string>
     <string name="no_results">No results</string>
+    <string name="no_store">No app store found on this device</string>
     <string name="nothing_here">Nothing here yet</string>
     <string name="now">Now</string>
     <string name="off">Off</string>
@@ -119,12 +126,14 @@
     <string name="pick_file">Choose file on device</string>
     <string name="pin_changed">PIN changed</string>
     <string name="pin_too_short">PIN must have at least 4 digits</string>
+    <string name="pinned_home">Added to home screen</string>
     <string name="play">Play</string>
     <string name="play_catchup">Play (catch-up)</string>
     <string name="playback_error">Playback error</string>
     <string name="player">Player</string>
     <string name="playlist_name">Playlist name</string>
     <string name="playlists">Playlists</string>
+    <string name="popular_apps">Popular apps</string>
     <string name="portal_url">Portal URL</string>
     <string name="preview_hint">Select a channel to preview it here. Select again for full screen.</string>
     <string name="profile">Profile</string>
@@ -191,6 +200,7 @@
     <string name="two_screens">2 screens</string>
     <string name="ui_size">Interface size</string>
     <string name="unlock_category">Remove PIN lock</string>
+    <string name="unpinned_home">Removed from home screen</string>
     <string name="user_agent">User-Agent</string>
     <string name="username">Username</string>
     <string name="wallpaper_added">Theme created from your picture</string>

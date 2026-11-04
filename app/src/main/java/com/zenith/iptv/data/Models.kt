@@ -178,6 +178,8 @@ data class Settings(
     val layoutMode: String = "auto",
     val uiScale: Float = 1f,
     val wallpapers: List<Wallpaper> = emptyList(),
+    /** Apps pinned to the home screen; null = all installed popular apps. */
+    val pinnedApps: List<String>? = null,
 )
 
 /** A theme made from a picture the user chose. Theme id is "wp:<id>". */

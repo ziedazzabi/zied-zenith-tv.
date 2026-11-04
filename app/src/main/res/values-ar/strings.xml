@@ -12,9 +12,12 @@
     <string name="added_favorite">أضيفت إلى المفضلة</string>
     <string name="added_my_list">أضيف إلى قائمتي</string>
     <string name="all">الكل</string>
+    <string name="all_apps">كل التطبيقات</string>
     <string name="all_channels">كل القنوات</string>
     <string name="app_name">زينيث تي في</string>
     <string name="appearance">المظهر</string>
+    <string name="apps">التطبيقات</string>
+    <string name="apps_hint">اضغط للفتح (أو للتثبيت). اضغط مطولًا أو زر القائمة في الريموت لإضافة التطبيق إلى الرئيسية أو إزالته.</string>
     <string name="aspect_fill">تمديد</string>
     <string name="aspect_fit">ملاءمة</string>
     <string name="aspect_ratio">نسبة العرض</string>
@@ -69,6 +72,8 @@
     <string name="image_link">رابط الصورة (https://…jpg)</string>
     <string name="image_link_hint">استخدم رابطًا مباشرًا للصورة: افتح الصورة، اضغط عليها مطولًا واختر \"نسخ عنوان الصورة\". روابط صفحات بحث Google لن تعمل.</string>
     <string name="in_my_list">في قائمتي</string>
+    <string name="install">تثبيت</string>
+    <string name="installed_apps">تطبيقات أخرى على الجهاز</string>
     <string name="kids_profile">ملف أطفال (يخفي المحتوى المقفل)</string>
     <string name="lang_system">لغة النظام</string>
     <string name="language">اللغة</string>
@@ -93,6 +98,7 @@
     <string name="minutes_n">%d دقيقة</string>
     <string name="movies">الأفلام</string>
     <string name="multiview">عرض متعدد</string>
+    <string name="my_apps">تطبيقاتي</string>
     <string name="my_list">قائمتي</string>
     <string name="my_picture">صورة</string>
     <string name="my_pictures">سمات من صوري</string>
@@ -109,6 +115,7 @@
     <string name="no_playlist">لا توجد قائمة تشغيل بعد</string>
     <string name="no_recordings">لا توجد تسجيلات بعد. سجّل من قائمة المشغل أو من دليل البرامج.</string>
     <string name="no_results">لا توجد نتائج</string>
+    <string name="no_store">لا يوجد متجر تطبيقات على هذا الجهاز</string>
     <string name="nothing_here">لا يوجد شيء هنا بعد</string>
     <string name="now">الآن</string>
     <string name="off">إيقاف</string>
@@ -119,12 +126,14 @@
     <string name="pick_file">اختيار ملف من الجهاز</string>
     <string name="pin_changed">تم تغيير الرمز</string>
     <string name="pin_too_short">يجب أن يتكون الرمز من 4 أرقام على الأقل</string>
+    <string name="pinned_home">أضيف إلى الرئيسية</string>
     <string name="play">تشغيل</string>
     <string name="play_catchup">تشغيل (إعادة)</string>
     <string name="playback_error">خطأ في التشغيل</string>
     <string name="player">المشغل</string>
     <string name="playlist_name">اسم القائمة</string>
     <string name="playlists">قوائم التشغيل</string>
+    <string name="popular_apps">تطبيقات مشهورة</string>
     <string name="portal_url">رابط البوابة</string>
     <string name="preview_hint">اختر قناة لمعاينتها هنا، ثم اخترها مرة أخرى لملء الشاشة.</string>
     <string name="profile">الملف الشخصي</string>
@@ -191,6 +200,7 @@
     <string name="two_screens">شاشتان</string>
     <string name="ui_size">حجم الواجهة</string>
     <string name="unlock_category">إزالة القفل</string>
+    <string name="unpinned_home">أزيل من الرئيسية</string>
     <string name="user_agent">معرّف المتصفح (User-Agent)</string>
     <string name="username">اسم المستخدم</string>
     <string name="wallpaper_added">تم إنشاء السمة من صورتك</string>

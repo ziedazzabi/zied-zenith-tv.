@@ -19,6 +19,7 @@ import com.zenith.iptv.player.PlayRequest
 import com.zenith.iptv.player.Playback
 import com.zenith.iptv.player.PlayerScreen
 import com.zenith.iptv.ui.screens.AddPlaylistScreen
+import com.zenith.iptv.ui.screens.AppsScreen
 import com.zenith.iptv.ui.screens.DetailsScreen
 import com.zenith.iptv.ui.screens.GuideScreen
 import com.zenith.iptv.ui.screens.HomeScreen
@@ -46,6 +47,7 @@ object Routes {
     const val DETAILS = "details/{key}"
     const val PLAYER = "player"
     const val MULTIVIEW = "multiview"
+    const val APPS = "apps"
 
     fun addPlaylist(id: String = "") = "add_playlist?id=${Uri.encode(id)}"
     fun profiles(pick: Boolean = false) = "profiles?pick=$pick"
@@ -125,6 +127,7 @@ fun AppNav(activity: MainActivity) {
         composable(Routes.PLAYLISTS) { PlaylistsScreen(nav) }
         composable(Routes.RECORDINGS) { RecordingsScreen(nav) }
         composable(Routes.PLAYER) { PlayerScreen(onBack = { nav.back() }) }
+        composable(Routes.APPS) { AppsScreen(nav) }
         composable(Routes.MULTIVIEW) { MultiViewScreen(onBack = { nav.back() }) }
         composable(
             Routes.ADD_PLAYLIST,

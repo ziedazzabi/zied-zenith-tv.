@@ -12,9 +12,12 @@
     <string name="added_favorite">Ajoutée aux favoris</string>
     <string name="added_my_list">Ajouté à Ma liste</string>
     <string name="all">Tout</string>
+    <string name="all_apps">Toutes les apps</string>
     <string name="all_channels">Toutes les chaînes</string>
     <string name="app_name">Zenith TV</string>
     <string name="appearance">Apparence</string>
+    <string name="apps">Applications</string>
+    <string name="apps_hint">Appuyez pour ouvrir (ou installer). Appui long, ou MENU sur la télécommande, pour ajouter ou retirer une app de l\'accueil.</string>
     <string name="aspect_fill">Étirer</string>
     <string name="aspect_fit">Ajuster</string>
     <string name="aspect_ratio">Format d\'image</string>
@@ -69,6 +72,8 @@
     <string name="image_link">Lien de l\'image (https://…jpg)</string>
     <string name="image_link_hint">Utilisez un lien direct vers l\'image : ouvrez l\'image, appui long puis « Copier l\'adresse de l\'image ». Les liens de recherche Google ne fonctionnent pas.</string>
     <string name="in_my_list">Dans Ma liste</string>
+    <string name="install">Installer</string>
+    <string name="installed_apps">Autres applications de l\'appareil</string>
     <string name="kids_profile">Profil enfant (masque le contenu verrouillé)</string>
     <string name="lang_system">Langue du système</string>
     <string name="language">Langue</string>
@@ -93,6 +98,7 @@
     <string name="minutes_n">%d minutes</string>
     <string name="movies">Films</string>
     <string name="multiview">Multi-écran</string>
+    <string name="my_apps">Mes applications</string>
     <string name="my_list">Ma liste</string>
     <string name="my_picture">Image</string>
     <string name="my_pictures">Thèmes à partir de mes images</string>
@@ -109,6 +115,7 @@
     <string name="no_playlist">Aucune playlist</string>
     <string name="no_recordings">Aucun enregistrement. Enregistrez depuis le lecteur ou le guide TV.</string>
     <string name="no_results">Aucun résultat</string>
+    <string name="no_store">Aucune boutique d\'applications sur cet appareil</string>
     <string name="nothing_here">Rien ici pour l\'instant</string>
     <string name="now">Maintenant</string>
     <string name="off">Désactivé</string>
@@ -119,12 +126,14 @@
     <string name="pick_file">Choisir un fichier</string>
     <string name="pin_changed">PIN modifié</string>
     <string name="pin_too_short">Le PIN doit avoir au moins 4 chiffres</string>
+    <string name="pinned_home">Ajoutée à l\'accueil</string>
     <string name="play">Lire</string>
     <string name="play_catchup">Lire (replay)</string>
     <string name="playback_error">Erreur de lecture</string>
     <string name="player">Lecteur</string>
     <string name="playlist_name">Nom de la playlist</string>
     <string name="playlists">Playlists</string>
+    <string name="popular_apps">Applications populaires</string>
     <string name="portal_url">URL du portail</string>
     <string name="preview_hint">Sélectionnez une chaîne pour l\'aperçu, puis à nouveau pour le plein écran.</string>
     <string name="profile">Profil</string>
@@ -191,6 +200,7 @@
     <string name="two_screens">2 écrans</string>
     <string name="ui_size">Taille de l\'interface</string>
     <string name="unlock_category">Retirer le verrouillage</string>
+    <string name="unpinned_home">Retirée de l\'accueil</string>
     <string name="user_agent">User-Agent</string>
     <string name="username">Identifiant</string>
     <string name="wallpaper_added">Thème créé à partir de votre image</string>
