@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp" android:height="180dp"
+    android:viewportWidth="320" android:viewportHeight="180">
+    <path android:fillColor="#0B0F17" android:pathData="M0,0h320v180h-320z" />
+    <path android:fillColor="#00000000" android:strokeColor="#22D3EE" android:strokeWidth="5"
+        android:pathData="M40,55 h70 a8,8 0 0 1 8,8 v40 a8,8 0 0 1 -8,8 h-70 a8,8 0 0 1 -8,-8 v-40 a8,8 0 0 1 8,-8 z" />
+    <path android:fillColor="#F472B6" android:pathData="M66,70 L90,83 L66,96 Z" />
+    <!-- "ZENITH" wordmark as simple bars -->
+    <path android:fillColor="#E6EDF7" android:pathData="M140,68h30v6h-21l21,26v6h-30v-6h21l-21,-26z" />
+    <path android:fillColor="#E6EDF7" android:pathData="M178,68h24v6h-18v8h15v6h-15v12h18v6h-24z" />
+    <path android:fillColor="#E6EDF7" android:pathData="M210,68h6l16,25v-25h6v38h-6l-16,-25v25h-6z" />
+    <path android:fillColor="#22D3EE" android:pathData="M246,68h6v38h-6z" />
+    <path android:fillColor="#E6EDF7" android:pathData="M258,68h26v6h-10v32h-6v-32h-10z" />
+    <path android:fillColor="#E6EDF7" android:pathData="M140,118h144v3h-144z" />
+</vector>
