@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
@@ -21,6 +22,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Brush
 import androidx.core.view.WindowCompat
 import androidx.core.content.ContextCompat
@@ -67,7 +69,13 @@ class MainActivity : AppCompatActivity() {
                 Box(Modifier.fillMaxSize().background(Z.bg)) {
                     if (wallpaper != null && !inPip.value) WallpaperBackground(wallpaper)
                     else Box(Modifier.fillMaxSize().background(Brush.verticalGradient(0f to Z.bgGlow, 0.45f to Z.bg, 1f to Z.bg)))
-                    Box(Modifier.fillMaxSize().then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())) {
+                    val cfg = androidx.compose.ui.platform.LocalConfiguration.current
+                    val m = if (inPip.value) 0 else s.screenMargin
+                    Box(
+                        Modifier.fillMaxSize()
+                            .then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())
+                            .padding(horizontal = (cfg.screenWidthDp * m / 100f).dp, vertical = (cfg.screenHeightDp * m / 100f).dp)
+                    ) {
                         AppNav(activity = this@MainActivity)
                     }
                     CrashReportDialog()

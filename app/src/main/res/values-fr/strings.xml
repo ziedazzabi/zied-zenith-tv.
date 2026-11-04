@@ -35,6 +35,7 @@
     <string name="catchup">Replay</string>
     <string name="change_pin">Changer le code PIN</string>
     <string name="channel_not_found">Chaîne %d introuvable</string>
+    <string name="clear_all">Tout effacer</string>
     <string name="clock_24h">Format 24 h</string>
     <string name="close">Fermer</string>
     <string name="color_themes">Thèmes de couleurs</string>
@@ -60,6 +61,7 @@
     <string name="donate_text">Z-Vision est gratuit et sans publicité. S\'il vous plaît, vous pouvez soutenir son développement avec un don du montant de votre choix.</string>
     <string name="earlier">Plus tôt</string>
     <string name="edit">Modifier</string>
+    <string name="edit_list">Modifier</string>
     <string name="edit_playlist">Modifier la playlist</string>
     <string name="email_copied">E-mail copié</string>
     <string name="engine_auto_vlc">Automatique (ExoPlayer + VLC si besoin)</string>
@@ -171,6 +173,8 @@
     <string name="reminder_starting">Commence maintenant sur %s</string>
     <string name="reminders">Rappels</string>
     <string name="remove_favorite">Retirer des favoris</string>
+    <string name="remove_from_list">Retirer</string>
+    <string name="remove_hint">Retirez cet élément, ou videz toute la liste.</string>
     <string name="remove_reminder">Supprimer le rappel</string>
     <string name="removed_favorite">Retirée des favoris</string>
     <string name="removed_my_list">Retiré de Ma liste</string>
@@ -180,6 +184,7 @@
     <string name="save_and_load">Enregistrer et charger</string>
     <string name="scan_hint">Scannez avec l\'appareil photo de votre téléphone</string>
     <string name="schedule_recording">Enregistrer ce programme</string>
+    <string name="screen_margin">Marges de l\'écran (si les bords sont coupés)</string>
     <string name="search">Rechercher</string>
     <string name="search_channels">Rechercher une chaîne</string>
     <string name="search_hint">Chaînes, films, séries…</string>

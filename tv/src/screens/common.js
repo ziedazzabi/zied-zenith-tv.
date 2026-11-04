@@ -64,14 +64,14 @@ export function posterCard(m, o) {
   return card;
 }
 
-export function channelCard(m, onClick) {
+export function channelCard(m, onClick, onLong) {
   const now = repo.nowNext(m)[0];
   repo.requestShortEpg(m);
   return fz(h('div', { class: 'ccard' },
     h('div', { class: 'ccard-logo' }, logo(m.logo, m.name)),
     h('div', { class: 'ccard-name', text: m.name }),
     h('div', { class: 'ccard-now', text: now ? now.title : ' ' }),
-    now ? progressBar((Date.now() - now.start) / (now.stop - now.start)) : null), { click: onClick });
+    now ? progressBar((Date.now() - now.start) / (now.stop - now.start)) : null), { click: onClick, long: onLong });
 }
 
 /** One row in a channel list: number, logo, name, current programme. */

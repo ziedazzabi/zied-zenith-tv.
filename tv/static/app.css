@@ -507,3 +507,5 @@ html.avplay .vl-full { background: transparent; }
 .pay-actions { margin-top: 1rem; }
 .thanks { text-align: center; color: var(--accent); font-size: 1.6rem; font-weight: 700; margin: 1rem 0; }
 [dir=rtl] .pay-email { text-align: right; }
+.chip.small { padding: 0.4rem 1rem; font-size: 1.1rem; font-weight: 500; }
+.section .chip .ic { color: var(--muted); }

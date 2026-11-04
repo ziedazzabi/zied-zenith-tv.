@@ -235,7 +235,12 @@
 "crash_title": "Z-Vision closed unexpectedly",
 "crash_text": "Sorry! Please send this report to {0} so the problem can be fixed.",
 "send_report": "Send report",
-"out_of_memory": "This playlist is too large for this device's memory. Try the M3U link for live TV only, or ask your provider for a lighter list."
+"out_of_memory": "This playlist is too large for this device's memory. Try the M3U link for live TV only, or ask your provider for a lighter list.",
+"screen_margin": "Screen margins (if edges are cut off)",
+"edit_list": "Edit",
+"remove_hint": "Remove this item, or clear the whole list.",
+"remove_from_list": "Remove",
+"clear_all": "Clear all"
 },
 "ar": {
 "app_name": "Z-Vision",
@@ -473,7 +478,12 @@
 "crash_title": "تم إغلاق Z-Vision بشكل غير متوقع",
 "crash_text": "نعتذر! أرسل هذا التقرير إلى {0} ليتم إصلاح المشكلة.",
 "send_report": "إرسال التقرير",
-"out_of_memory": "هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف."
+"out_of_memory": "هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف.",
+"screen_margin": "هوامش الشاشة (إذا كانت الأطراف مقصوصة)",
+"edit_list": "تعديل",
+"remove_hint": "احذف هذا العنصر، أو امسح القائمة كاملة.",
+"remove_from_list": "حذف",
+"clear_all": "مسح الكل"
 },
 "fr": {
 "app_name": "Z-Vision",
@@ -711,6 +721,11 @@
 "crash_title": "Z-Vision s'est fermé de façon inattendue",
 "crash_text": "Désolé ! Envoyez ce rapport à {0} pour que le problème soit corrigé.",
 "send_report": "Envoyer le rapport",
-"out_of_memory": "Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère."
+"out_of_memory": "Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère.",
+"screen_margin": "Marges de l'écran (si les bords sont coupés)",
+"edit_list": "Modifier",
+"remove_hint": "Retirez cet élément, ou videz toute la liste.",
+"remove_from_list": "Retirer",
+"clear_all": "Tout effacer"
 }
 }

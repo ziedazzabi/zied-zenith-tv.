@@ -12,3 +12,6 @@
 # LibVLC (JNI)
 -keep class org.videolan.libvlc.** { *; }
 -dontwarn org.videolan.**
+
+# FFmpeg audio renderer is loaded by reflection
+-keep class androidx.media3.decoder.ffmpeg.** { *; }

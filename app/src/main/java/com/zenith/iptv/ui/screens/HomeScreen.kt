@@ -41,6 +41,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.DeleteSweep
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -94,6 +96,8 @@ fun HomeScreen(nav: Nav) {
 
     val profile = profiles.firstOrNull { it.id == store.activeProfileId() } ?: profiles.first()
     val playlist = repo.activePlaylist()
+    var removeAsk by remember { mutableStateOf<RemoveAsk?>(null) }
+    removeAsk?.let { ask -> RemoveDialog(ask) { removeAsk = null } }
 
     Column(Modifier.fillMaxSize()) {
         // Header
@@ -183,16 +187,23 @@ fun HomeScreen(nav: Nav) {
                 }
                 item { HomeAppsRow(nav) }
                 if (continueWatching.isNotEmpty()) item {
-                    SectionTitle(stringResource(R.string.continue_watching), icon = Icons.Default.PlayCircle)
+                    SectionWithClear(stringResource(R.string.continue_watching), Icons.Default.PlayCircle) {
+                        removeAsk = RemoveAsk(null, false)
+                    }
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 6.dp)) {
                         items(continueWatching, key = { it.first.key }) { (m, p) ->
-                            PosterCard(m, onClick = { nav.open(m) }, progress = if (p.durationMs > 0) p.positionMs.toFloat() / p.durationMs else 0f)
+                            PosterCard(
+                                m, onClick = { nav.open(m) }, progress = if (p.durationMs > 0) p.positionMs.toFloat() / p.durationMs else 0f,
+                                onLongClick = { removeAsk = RemoveAsk(m, false) },
+                            )
                         }
                     }
                 }
                 if (recents.isNotEmpty()) item {
-                    SectionTitle(stringResource(R.string.recent_channels), icon = Icons.Default.LiveTv)
-                    ChannelStrip(recents) { m -> nav.open(m, recents) }
+                    SectionWithClear(stringResource(R.string.recent_channels), Icons.Default.LiveTv) {
+                        removeAsk = RemoveAsk(null, true)
+                    }
+                    ChannelStrip(recents, onLongClick = { m -> removeAsk = RemoveAsk(m, true) }) { m -> nav.open(m, recents) }
                 }
                 if (favChannels.isNotEmpty()) item {
                     SectionTitle(stringResource(R.string.favorite_channels))
@@ -258,7 +269,7 @@ private fun SmallTile(t: Tile, modifier: Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-private fun ChannelStrip(list: List<Media>, onClick: (Media) -> Unit) {
+private fun ChannelStrip(list: List<Media>, onLongClick: ((Media) -> Unit)? = null, onClick: (Media) -> Unit) {
     val repo = Graph.repo
     val tick by repo.tick.collectAsState()
     val cardW = when (LocalDevice.current) { DeviceClass.PHONE -> 150.dp; DeviceClass.TABLET -> 180.dp; DeviceClass.TV -> 200.dp }
@@ -266,7 +277,7 @@ private fun ChannelStrip(list: List<Media>, onClick: (Media) -> Unit) {
         items(list, key = { it.key }) { m ->
             @Suppress("UNUSED_EXPRESSION") tick
             val now = repo.nowNext(m).first
-            Focusable(onClick = { onClick(m) }, modifier = Modifier.width(cardW), focusScale = 1.06f) {
+            Focusable(onClick = { onClick(m) }, onLongClick = onLongClick?.let { f -> { f(m) } }, modifier = Modifier.width(cardW), focusScale = 1.06f) {
                 Column {
                     Box(Modifier.fillMaxWidth().height(90.dp).background(Z.surface2), contentAlignment = Alignment.Center) {
                         Logo(m.logo, m.name, Modifier.fillMaxSize().padding(14.dp))
@@ -286,3 +297,43 @@ private fun ChannelStrip(list: List<Media>, onClick: (Media) -> Unit) {
     }
 }
 
+
+
+/** item == null means "clear the whole list". */
+private data class RemoveAsk(val item: Media?, val recents: Boolean)
+
+@Composable
+private fun SectionWithClear(title: String, icon: ImageVector, onClear: () -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        SectionTitle(title, icon = icon, modifier = Modifier.weight(1f))
+        Focusable(onClick = onClear, shape = RoundedCornerShape(50)) {
+            Row(Modifier.padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Default.DeleteSweep, null, tint = Z.muted, modifier = Modifier.size(16.dp))
+                Spacer(Modifier.width(6.dp))
+                Text(stringResource(R.string.edit_list), color = Z.muted, fontSize = 12.sp)
+            }
+        }
+    }
+}
+
+@Composable
+private fun RemoveDialog(ask: RemoveAsk, onDone: () -> Unit) {
+    val store = Graph.store
+    val item = ask.item
+    androidx.compose.material3.AlertDialog(
+        onDismissRequest = onDone, containerColor = Z.surface,
+        title = { Text(item?.name ?: stringResource(if (ask.recents) R.string.recent_channels else R.string.continue_watching)) },
+        text = { Text(stringResource(R.string.remove_hint), color = Z.muted) },
+        confirmButton = {
+            Row {
+                if (item != null) androidx.compose.material3.TextButton(onClick = {
+                    if (ask.recents) store.removeRecent(item.key) else store.removeProgress(item.key); onDone()
+                }) { Text(stringResource(R.string.remove_from_list)) }
+                androidx.compose.material3.TextButton(onClick = {
+                    if (ask.recents) store.clearRecents() else store.clearProgress(); onDone()
+                }) { Text(stringResource(R.string.clear_all), color = Z.red) }
+            }
+        },
+        dismissButton = { androidx.compose.material3.TextButton(onClick = onDone) { Text(stringResource(R.string.cancel)) } },
+    )
+}

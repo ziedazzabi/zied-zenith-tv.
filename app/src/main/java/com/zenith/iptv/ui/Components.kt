@@ -193,21 +193,22 @@ fun ChannelRow(
     locked: Boolean = false,
     onLongClick: (() -> Unit)? = null,
     onFocus: (() -> Unit)? = null,
+    compact: Boolean = false,
 ) {
     Focusable(
         onClick = onClick, onLongClick = onLongClick, onFocus = onFocus, selected = selected,
         modifier = modifier.fillMaxWidth(), focusScale = 1.01f, shape = RoundedCornerShape(10.dp),
     ) { focused ->
-        Row(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(horizontal = if (compact) 6.dp else 10.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
-                item.number.toString(), color = Z.muted, fontSize = 13.sp, textAlign = TextAlign.End,
-                modifier = Modifier.width(40.dp)
+                item.number.toString(), color = Z.muted, fontSize = if (compact) 12.sp else 13.sp, textAlign = TextAlign.End,
+                maxLines = 1, modifier = Modifier.width(if (compact) 30.dp else 40.dp)
             )
-            Spacer(Modifier.width(10.dp))
-            Box(Modifier.size(width = 56.dp, height = 36.dp).clip(RoundedCornerShape(6.dp)).background(Z.surface2)) {
+            Spacer(Modifier.width(if (compact) 6.dp else 10.dp))
+            Box(Modifier.size(width = if (compact) 44.dp else 56.dp, height = if (compact) 30.dp else 36.dp).clip(RoundedCornerShape(6.dp)).background(Z.surface2)) {
                 Logo(item.logo, item.name, Modifier.fillMaxSize().padding(3.dp))
             }
-            Spacer(Modifier.width(12.dp))
+            Spacer(Modifier.width(if (compact) 8.dp else 12.dp))
             Column(Modifier.weight(1f)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(

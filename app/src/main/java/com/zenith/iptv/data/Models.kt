@@ -183,6 +183,8 @@ data class Settings(
     val miniPlayer: Boolean = true,
     /** auto = ExoPlayer with automatic VLC fallback, exo, vlc */
     val playerEngine: String = "auto",
+    /** Extra margin (percent of the screen) for TVs that cut off the picture edges. */
+    val screenMargin: Int = 0,
 )
 
 /** A theme made from a picture the user chose. Theme id is "wp:<id>". */

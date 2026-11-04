@@ -104,6 +104,18 @@ class Store {
       return Object.assign({}, d, { recentChannels: r });
     });
   }
+  removeRecent(key) { this.profileData.update((d) => Object.assign({}, d, { recentChannels: d.recentChannels.filter((k) => k !== key) })); }
+  clearRecents() { this.profileData.update((d) => Object.assign({}, d, { recentChannels: [] })); }
+  /** Removes a movie / series and all its episodes from "Continue watching". */
+  removeProgress(key) {
+    this.profileData.update((d) => {
+      const p = {};
+      Object.keys(d.progress).forEach((k) => { if (k !== key && k.indexOf(key + '#') !== 0) p[k] = d.progress[k]; });
+      return Object.assign({}, d, { progress: p });
+    });
+  }
+  clearProgress() { this.profileData.update((d) => Object.assign({}, d, { progress: {} })); }
+
   saveProgress(key, positionMs, durationMs) {
     if (!key || !(durationMs > 0)) return;
     this.profileData.update((d) => {

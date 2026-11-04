@@ -3,7 +3,7 @@ import { icon } from '../icons.js';
 import { t } from '../i18n.js';
 import { repo } from '../repo.js';
 import { store } from '../store.js';
-import { fz, toast } from '../ui.js';
+import { fz, toast, dialog } from '../ui.js';
 import { catalogGate, posterCard, channelCard, hrow } from './common.js';
 import { homeAppsRow } from './apps.js';
 import { Focus } from '../focus.js';
@@ -43,15 +43,28 @@ export function HomeScreen(params, nav) {
 
     const d = store.profileData.get();
     const cont = Object.keys(d.progress).map((k) => d.progress[k]).sort((a, b) => b.updatedAt - a.updatedAt)
-      .map((p) => { const base = p.key.split('#')[0]; const m = repo.get(base); return m ? [m, p] : null; }).filter(Boolean).slice(0, 20);
+      .map((p) => { const base = p.key.split('#')[0]; const m = repo.get(base); return m ? [m, p] : null; })
+      .filter((x, i, a) => x && a.findIndex((y) => y && y[0] === x[0]) === i).slice(0, 20);
+    // "Edit" chip next to a section title + remove dialog (hold OK on an item, or MENU)
+    const editable = (label, ic, recentsList) => h('div', { class: 'section' }, icon(ic), h('span', { class: 'grow', text: label }),
+      fz(h('div', { class: 'chip small' }, icon('trash'), h('span', { text: t('edit_list') })), { click: () => askRemove(null, recentsList) }));
+    const askRemove = (m, recentsList) => dialog({
+      title: m ? m.name : t(recentsList ? 'recent_channels' : 'continue_watching'),
+      body: h('div', { class: 'muted', text: t('remove_hint') }),
+      buttons: [
+        m ? [t('remove_from_list'), () => { if (recentsList) store.removeRecent(m.key); else store.removeProgress(m.key); render(); }, { icon: 'trash' }] : null,
+        [t('clear_all'), () => { if (recentsList) store.clearRecents(); else store.clearProgress(); render(); }, { danger: true }],
+        [t('cancel'), null],
+      ].filter(Boolean),
+    });
     if (cont.length) {
-      body.appendChild(h('div', { class: 'section' }, icon('play'), h('span', { text: t('continue_watching') })));
-      body.appendChild(hrow(cont.map(([m, p]) => posterCard(m, { progress: p.positionMs / p.durationMs, click: () => nav.open(m) }))));
+      body.appendChild(editable(t('continue_watching'), 'play', false));
+      body.appendChild(hrow(cont.map(([m, p]) => posterCard(m, { progress: p.positionMs / p.durationMs, click: () => nav.open(m), long: () => askRemove(m, false) }))));
     }
     const recents = d.recentChannels.map((k) => repo.get(k)).filter(Boolean).slice(0, 20);
     if (recents.length) {
-      body.appendChild(h('div', { class: 'section' }, icon('live'), h('span', { text: t('recent_channels') })));
-      body.appendChild(hrow(recents.map((m) => channelCard(m, () => nav.open(m, recents)))));
+      body.appendChild(editable(t('recent_channels'), 'live', true));
+      body.appendChild(hrow(recents.map((m) => channelCard(m, () => nav.open(m, recents), () => askRemove(m, true)))));
     }
     const favs = d.favorites.map((k) => repo.get(k)).filter(Boolean);
     const favCh = favs.filter((m) => m.kind === 'live');

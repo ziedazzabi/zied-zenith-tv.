@@ -236,6 +236,11 @@ S = {
 "crash_text": ("Sorry! Please send this report to %s so the problem can be fixed.", "نعتذر! أرسل هذا التقرير إلى %s ليتم إصلاح المشكلة.", "Désolé ! Envoyez ce rapport à %s pour que le problème soit corrigé."),
 "send_report": ("Send report", "إرسال التقرير", "Envoyer le rapport"),
 "out_of_memory": ("This playlist is too large for this device's memory. Try the M3U link for live TV only, or ask your provider for a lighter list.", "هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف.", "Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère."),
+"screen_margin": ("Screen margins (if edges are cut off)", "هوامش الشاشة (إذا كانت الأطراف مقصوصة)", "Marges de l'écran (si les bords sont coupés)"),
+"edit_list": ("Edit", "تعديل", "Modifier"),
+"remove_hint": ("Remove this item, or clear the whole list.", "احذف هذا العنصر، أو امسح القائمة كاملة.", "Retirez cet élément, ou videz toute la liste."),
+"remove_from_list": ("Remove", "حذف", "Retirer"),
+"clear_all": ("Clear all", "مسح الكل", "Tout effacer"),
 }
 import sys, os
 used = set(open('/tmp/claude-0/strings_used.txt').read().split()) | {"app_name"}

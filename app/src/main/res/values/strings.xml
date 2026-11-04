@@ -35,6 +35,7 @@
     <string name="catchup">Catch-up</string>
     <string name="change_pin">Change PIN</string>
     <string name="channel_not_found">Channel %d not found</string>
+    <string name="clear_all">Clear all</string>
     <string name="clock_24h">24-hour clock</string>
     <string name="close">Close</string>
     <string name="color_themes">Colour themes</string>
@@ -60,6 +61,7 @@
     <string name="donate_text">Z-Vision is free and has no ads. If you enjoy it, you can support its development with a donation of any amount.</string>
     <string name="earlier">Earlier</string>
     <string name="edit">Edit</string>
+    <string name="edit_list">Edit</string>
     <string name="edit_playlist">Edit playlist</string>
     <string name="email_copied">Email copied</string>
     <string name="engine_auto_vlc">Automatic (ExoPlayer + VLC when needed)</string>
@@ -171,6 +173,8 @@
     <string name="reminder_starting">Starting now on %s</string>
     <string name="reminders">Reminders</string>
     <string name="remove_favorite">Remove from favorites</string>
+    <string name="remove_from_list">Remove</string>
+    <string name="remove_hint">Remove this item, or clear the whole list.</string>
     <string name="remove_reminder">Remove reminder</string>
     <string name="removed_favorite">Removed from favorites</string>
     <string name="removed_my_list">Removed from My list</string>
@@ -180,6 +184,7 @@
     <string name="save_and_load">Save &amp; load</string>
     <string name="scan_hint">Scan with your phone camera</string>
     <string name="schedule_recording">Record this programme</string>
+    <string name="screen_margin">Screen margins (if edges are cut off)</string>
     <string name="search">Search</string>
     <string name="search_channels">Search channels</string>
     <string name="search_hint">Channels, movies, series…</string>

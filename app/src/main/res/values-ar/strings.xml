@@ -35,6 +35,7 @@
     <string name="catchup">إعادة المشاهدة</string>
     <string name="change_pin">تغيير الرمز السري</string>
     <string name="channel_not_found">القناة %d غير موجودة</string>
+    <string name="clear_all">مسح الكل</string>
     <string name="clock_24h">ساعة 24 ساعة</string>
     <string name="close">إغلاق</string>
     <string name="color_themes">سمات الألوان</string>
@@ -60,6 +61,7 @@
     <string name="donate_text">تطبيق Z-Vision مجاني وبدون إعلانات. إن أعجبك يمكنك دعم تطويره بتبرّع بأي مبلغ.</string>
     <string name="earlier">أبكر</string>
     <string name="edit">تعديل</string>
+    <string name="edit_list">تعديل</string>
     <string name="edit_playlist">تعديل قائمة التشغيل</string>
     <string name="email_copied">تم نسخ البريد</string>
     <string name="engine_auto_vlc">تلقائي (ExoPlayer وVLC عند الحاجة)</string>
@@ -171,6 +173,8 @@
     <string name="reminder_starting">يبدأ الآن على %s</string>
     <string name="reminders">التذكيرات</string>
     <string name="remove_favorite">إزالة من المفضلة</string>
+    <string name="remove_from_list">حذف</string>
+    <string name="remove_hint">احذف هذا العنصر، أو امسح القائمة كاملة.</string>
     <string name="remove_reminder">حذف التذكير</string>
     <string name="removed_favorite">أزيلت من المفضلة</string>
     <string name="removed_my_list">أزيل من قائمتي</string>
@@ -180,6 +184,7 @@
     <string name="save_and_load">حفظ وتحميل</string>
     <string name="scan_hint">امسح الرمز بكاميرا هاتفك</string>
     <string name="schedule_recording">تسجيل هذا البرنامج</string>
+    <string name="screen_margin">هوامش الشاشة (إذا كانت الأطراف مقصوصة)</string>
     <string name="search">بحث</string>
     <string name="search_channels">ابحث في القنوات</string>
     <string name="search_hint">قنوات، أفلام، مسلسلات…</string>

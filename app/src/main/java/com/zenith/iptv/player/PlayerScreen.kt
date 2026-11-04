@@ -271,6 +271,13 @@ fun PlayerScreen(onBack: () -> Unit) {
                 if (video.isNotEmpty() && video.none { it.isSupported }) {
                     val mime = video.first().getTrackFormat(0).sampleMimeType ?: video.first().getTrackFormat(0).codecs ?: "?"
                     switchToVlc(mime.substringAfter('/').uppercase())
+                    return
+                }
+                // sound missing: the device can't decode this audio (AC-3 / E-AC-3 / DTS / MP2…)
+                val audio = tracks.groups.filter { it.type == androidx.media3.common.C.TRACK_TYPE_AUDIO }
+                if (audio.isNotEmpty() && audio.none { it.isSupported }) {
+                    val mime = audio.first().getTrackFormat(0).sampleMimeType ?: "?"
+                    switchToVlc(mime.substringAfter('/').uppercase())
                 }
             }
 
@@ -595,7 +602,7 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
     val fr = remember { FocusRequester() }
     LaunchedEffect(Unit) { delay(80); runCatching { fr.requestFocus() } }
     Box(
-        Modifier.fillMaxHeight().widthIn(max = 460.dp).fillMaxWidth(0.45f)
+        Modifier.fillMaxHeight().widthIn(min = 360.dp, max = 560.dp).fillMaxWidth(0.42f)
             .background(Brush.horizontalGradient(listOf(Z.bg.copy(alpha = .97f), Z.bg.copy(alpha = .85f))))
             .padding(10.dp)
     ) {
@@ -603,7 +610,7 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
         LazyColumn(state = state, verticalArrangement = Arrangement.spacedBy(4.dp)) {
             itemsIndexed(items, key = { _, m -> m.key }) { i, m ->
                 ChannelRow(
-                    item = m, now = repo.nowNext(m).first, selected = i == current, favorite = m.key in favorites,
+                    item = m, now = repo.nowNext(m).first, selected = i == current, favorite = m.key in favorites, compact = true,
                     onClick = { onPick(i) },
                     modifier = if (i == current) Modifier.focusRequester(fr) else Modifier,
                 )

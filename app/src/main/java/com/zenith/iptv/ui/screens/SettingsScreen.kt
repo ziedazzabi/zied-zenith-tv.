@@ -149,6 +149,13 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
                 }
             }
             item {
+                val t = stringResource(R.string.screen_margin)
+                val opts = listOf("0" to stringResource(R.string.off), "2" to "2%", "4" to "4%", "6" to "6%")
+                SettingRow(Icons.Default.AspectRatio, t, opts.firstOrNull { it.first == "${s.screenMargin}" }?.second ?: "${s.screenMargin}%") {
+                    choice = Choice(t, opts, "${s.screenMargin}") { v -> store.updateSettings { it.copy(screenMargin = v.toInt()) } }
+                }
+            }
+            item {
                 val t = stringResource(R.string.ui_size)
                 val opts = listOf(
                     "0.85" to stringResource(R.string.size_small), "1.0" to stringResource(R.string.size_normal),

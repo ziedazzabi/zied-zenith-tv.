@@ -108,6 +108,15 @@ class Store(context: Context) {
         d.copy(recentChannels = (listOf(key) + d.recentChannels.filterNot { it == key }).take(30))
     }
 
+    fun removeRecent(key: String) = updateProfileData { d -> d.copy(recentChannels = d.recentChannels.filterNot { it == key }) }
+    fun clearRecents() = updateProfileData { d -> d.copy(recentChannels = emptyList()) }
+
+    /** Removes a movie / series (and all its episodes) from "Continue watching". */
+    fun removeProgress(key: String) = updateProfileData { d ->
+        d.copy(progress = d.progress.filterKeys { it != key && !it.startsWith("$key#") })
+    }
+    fun clearProgress() = updateProfileData { d -> d.copy(progress = emptyMap()) }
+
     fun saveProgress(p: WatchProgress) = updateProfileData { d ->
         val finished = p.durationMs > 0 && p.positionMs > p.durationMs * 0.95
         val map = if (finished) d.progress - p.key else d.progress + (p.key to p)

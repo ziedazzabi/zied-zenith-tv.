@@ -31,10 +31,9 @@ object PlayerFactory {
         val dataSource = DefaultDataSource.Factory(context, http)
 
         val extractors = DefaultExtractorsFactory()
-            .setTsExtractorFlags(
-                DefaultTsPayloadReaderFactory.FLAG_ALLOW_NON_IDR_KEYFRAMES or
-                    DefaultTsPayloadReaderFactory.FLAG_DETECT_ACCESS_UNITS
-            )
+            // Note: FLAG_ALLOW_NON_IDR_KEYFRAMES is deliberately NOT used: it starts drawing before the first full
+            // frame and shows blocky/"eaten" pictures for a few seconds after every channel change.
+            .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_DETECT_ACCESS_UNITS)
             .setTsExtractorTimestampSearchBytes(600 * 188 * 3) // 3x TsExtractor default (600 packets of 188 bytes)
             .setConstantBitrateSeekingEnabled(true)
 
