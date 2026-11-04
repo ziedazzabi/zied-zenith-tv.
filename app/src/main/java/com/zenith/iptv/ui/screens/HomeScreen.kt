@@ -45,7 +45,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -56,7 +55,10 @@ import com.zenith.iptv.R
 import com.zenith.iptv.data.Kind
 import com.zenith.iptv.data.LoadState
 import com.zenith.iptv.data.Media
+import com.zenith.iptv.ui.Adaptive
 import com.zenith.iptv.ui.CatalogGate
+import com.zenith.iptv.ui.DeviceClass
+import com.zenith.iptv.ui.LocalDevice
 import com.zenith.iptv.ui.Focusable
 import com.zenith.iptv.ui.LocalIsTv
 import com.zenith.iptv.ui.Logo
@@ -80,7 +82,10 @@ fun HomeScreen(nav: Nav) {
     val data by store.profileData.collectAsState()
     val profiles by store.profiles.collectAsState()
     val isTv = LocalIsTv.current
-    val wide = LocalConfiguration.current.screenWidthDp >= 600
+    val wide = Adaptive.wide()
+    val device = LocalDevice.current
+    val gutter = Adaptive.gutter()
+    val tc = Z.palette.tiles
     var clock by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) { while (true) { delay(20_000); clock = System.currentTimeMillis() } }
 
@@ -90,7 +95,7 @@ fun HomeScreen(nav: Nav) {
     Column(Modifier.fillMaxSize()) {
         // Header
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = if (isTv) 40.dp else 12.dp, vertical = if (isTv) 20.dp else 8.dp),
+            Modifier.fillMaxWidth().padding(horizontal = gutter, vertical = if (isTv) 20.dp else 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text("ZENITH", color = Z.text, fontWeight = FontWeight.Black, fontSize = if (isTv) 26.sp else 20.sp, letterSpacing = 3.sp)
@@ -121,13 +126,13 @@ fun HomeScreen(nav: Nav) {
             val c = catalog!!
             val counts = remember(c) { c.items.groupingBy { it.kind }.eachCount() }
             val tiles = listOf(
-                Tile(stringResource(R.string.live_tv), Icons.Default.LiveTv, Routes.LIVE, Color(0xFF0EA5E9), counts[Kind.LIVE] ?: 0),
-                Tile(stringResource(R.string.movies), Icons.Default.Movie, Routes.MOVIES, Color(0xFFDB2777), counts[Kind.MOVIE] ?: 0),
-                Tile(stringResource(R.string.series), Icons.Default.Theaters, Routes.SERIES, Color(0xFF7C3AED), counts[Kind.SERIES] ?: 0),
-                Tile(stringResource(R.string.tv_guide), Icons.Default.CalendarMonth, Routes.GUIDE, Color(0xFF059669)),
-                Tile(stringResource(R.string.multiview), Icons.Default.GridView, Routes.MULTIVIEW, Color(0xFFD97706)),
-                Tile(stringResource(R.string.recordings), Icons.Default.FiberManualRecord, Routes.RECORDINGS, Color(0xFFDC2626)),
-                Tile(stringResource(R.string.settings), Icons.Default.Settings, Routes.SETTINGS, Color(0xFF475569)),
+                Tile(stringResource(R.string.live_tv), Icons.Default.LiveTv, Routes.LIVE, tc[0], counts[Kind.LIVE] ?: 0),
+                Tile(stringResource(R.string.movies), Icons.Default.Movie, Routes.MOVIES, tc[1], counts[Kind.MOVIE] ?: 0),
+                Tile(stringResource(R.string.series), Icons.Default.Theaters, Routes.SERIES, tc[2], counts[Kind.SERIES] ?: 0),
+                Tile(stringResource(R.string.tv_guide), Icons.Default.CalendarMonth, Routes.GUIDE, tc[3]),
+                Tile(stringResource(R.string.multiview), Icons.Default.GridView, Routes.MULTIVIEW, tc[4]),
+                Tile(stringResource(R.string.recordings), Icons.Default.FiberManualRecord, Routes.RECORDINGS, tc[5]),
+                Tile(stringResource(R.string.settings), Icons.Default.Settings, Routes.SETTINGS, tc[6]),
             )
 
             val recents = remember(data.recentChannels, c) { data.recentChannels.mapNotNull { repo.byKey(it) }.take(20) }
@@ -142,12 +147,29 @@ fun HomeScreen(nav: Nav) {
             }
 
             LazyColumn(
-                contentPadding = PaddingValues(horizontal = if (isTv) 40.dp else 12.dp, vertical = 8.dp),
+                contentPadding = PaddingValues(horizontal = gutter, vertical = 8.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 item {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(if (isTv) 18.dp else 10.dp), contentPadding = PaddingValues(vertical = 8.dp)) {
-                        items(tiles) { t -> BigTile(t, isTv) { nav.go(t.route) } }
+                    if (device == DeviceClass.PHONE && !wide) {
+                        // Phone portrait: 3 big tiles + 4 compact tiles, all visible without scrolling
+                        Column(verticalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.padding(vertical = 6.dp)) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                tiles.take(3).forEach { t -> BigTile(t, Modifier.weight(1f).height(104.dp), large = false) { nav.go(t.route) } }
+                            }
+                            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                                tiles.drop(3).forEach { t -> SmallTile(t, Modifier.weight(1f)) { nav.go(t.route) } }
+                            }
+                        }
+                    } else {
+                        val (w, h) = when (device) {
+                            DeviceClass.TV -> 200.dp to 130.dp
+                            DeviceClass.TABLET -> 176.dp to 116.dp
+                            DeviceClass.PHONE -> 140.dp to 96.dp
+                        }
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(if (isTv) 18.dp else 12.dp), contentPadding = PaddingValues(vertical = 8.dp)) {
+                            items(tiles) { t -> BigTile(t, Modifier.width(w).height(h), large = device == DeviceClass.TV) { nav.go(t.route) } }
+                        }
                     }
                 }
                 if (continueWatching.isNotEmpty()) item {
@@ -187,20 +209,40 @@ fun HomeScreen(nav: Nav) {
 }
 
 @Composable
-private fun BigTile(t: Tile, isTv: Boolean, onClick: () -> Unit) {
-    val w = if (isTv) 200.dp else 128.dp
-    val h = if (isTv) 130.dp else 92.dp
-    Focusable(onClick = onClick, modifier = Modifier.width(w).height(h), shape = RoundedCornerShape(16.dp), focusScale = 1.08f) { focused ->
+private fun BigTile(t: Tile, modifier: Modifier, large: Boolean, onClick: () -> Unit) {
+    val strong = Z.palette.light
+    Focusable(onClick = onClick, modifier = modifier, shape = RoundedCornerShape(16.dp), focusScale = 1.08f) { focused ->
         Box(
             Modifier.fillMaxSize().background(
-                Brush.linearGradient(listOf(t.color.copy(alpha = if (focused) .95f else .7f), t.color.copy(alpha = .25f)))
+                Brush.linearGradient(
+                    listOf(
+                        t.color.copy(alpha = if (focused || strong) 1f else .75f),
+                        t.color.copy(alpha = if (strong) .78f else .28f),
+                    )
+                )
             ).padding(14.dp)
         ) {
-            Icon(t.icon, null, tint = Color.White, modifier = Modifier.size(if (isTv) 38.dp else 28.dp))
+            Icon(t.icon, null, tint = Color.White, modifier = Modifier.size(if (large) 38.dp else 28.dp))
             Column(Modifier.align(Alignment.BottomStart)) {
-                Text(t.label, color = Color.White, fontWeight = FontWeight.Bold, fontSize = if (isTv) 18.sp else 14.sp, maxLines = 1)
-                if (t.count >= 0) Text("${t.count}", color = Color.White.copy(alpha = .8f), fontSize = 12.sp)
+                Text(t.label, color = Color.White, fontWeight = FontWeight.Bold, fontSize = if (large) 18.sp else 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                if (t.count >= 0) Text("${t.count}", color = Color.White.copy(alpha = .85f), fontSize = 12.sp)
             }
+        }
+    }
+}
+
+@Composable
+private fun SmallTile(t: Tile, modifier: Modifier, onClick: () -> Unit) {
+    Focusable(onClick = onClick, modifier = modifier.height(76.dp), shape = RoundedCornerShape(14.dp)) {
+        Column(
+            Modifier.fillMaxSize().padding(6.dp),
+            horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center
+        ) {
+            Box(Modifier.size(32.dp).clip(CircleShape).background(t.color), contentAlignment = Alignment.Center) {
+                Icon(t.icon, null, tint = Color.White, modifier = Modifier.size(18.dp))
+            }
+            Spacer(Modifier.height(5.dp))
+            Text(t.label, color = Z.text, fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
     }
 }
@@ -209,11 +251,12 @@ private fun BigTile(t: Tile, isTv: Boolean, onClick: () -> Unit) {
 private fun ChannelStrip(list: List<Media>, onClick: (Media) -> Unit) {
     val repo = Graph.repo
     val tick by repo.tick.collectAsState()
+    val cardW = when (LocalDevice.current) { DeviceClass.PHONE -> 150.dp; DeviceClass.TABLET -> 180.dp; DeviceClass.TV -> 200.dp }
     LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(vertical = 4.dp)) {
         items(list, key = { it.key }) { m ->
             @Suppress("UNUSED_EXPRESSION") tick
             val now = repo.nowNext(m).first
-            Focusable(onClick = { onClick(m) }, modifier = Modifier.width(180.dp), focusScale = 1.06f) {
+            Focusable(onClick = { onClick(m) }, modifier = Modifier.width(cardW), focusScale = 1.06f) {
                 Column {
                     Box(Modifier.fillMaxWidth().height(90.dp).background(Z.surface2), contentAlignment = Alignment.Center) {
                         Logo(m.logo, m.name, Modifier.fillMaxSize().padding(14.dp))

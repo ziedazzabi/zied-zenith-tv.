@@ -80,7 +80,7 @@ fun DetailsScreen(nav: Nav, key: String) {
     val ctx = LocalContext.current
     val data by store.profileData.collectAsState()
     val isTv = LocalIsTv.current
-    val wide = LocalConfiguration.current.screenWidthDp >= 720
+    val wide = com.zenith.iptv.ui.Adaptive.wide()
     val item = remember(key) { repo.byKey(key) }
     if (item == null) { ScreenScaffold("", nav) { EmptyState(stringResource(R.string.nothing_here)) }; return }
 
@@ -231,12 +231,12 @@ private fun PlotBlock(d: MediaDetails?, fallback: String) {
 fun ActionButton(label: String, icon: ImageVector, primary: Boolean = false, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Focusable(
         onClick = onClick, modifier = modifier, shape = RoundedCornerShape(50),
-        background = if (primary) Z.accent else Z.surface2, focusedBackground = if (primary) Color(0xFF67E8F9) else Z.surface3,
+        background = if (primary) Z.accent else Z.surface2, focusedBackground = if (primary) Z.accentFocus else Z.surface3,
     ) {
         Row(Modifier.padding(horizontal = 18.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = if (primary) Color.Black else Z.text, modifier = Modifier.size(20.dp))
+            Icon(icon, null, tint = if (primary) Z.onAccent else Z.text, modifier = Modifier.size(20.dp))
             Spacer(Modifier.width(6.dp))
-            Text(label, color = if (primary) Color.Black else Z.text, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+            Text(label, color = if (primary) Z.onAccent else Z.text, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
         }
     }
 }

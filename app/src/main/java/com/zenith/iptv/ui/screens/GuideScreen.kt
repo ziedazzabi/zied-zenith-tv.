@@ -87,7 +87,7 @@ fun GuideScreen(nav: Nav) {
     val tick by repo.tick.collectAsState()
     val settings by store.settings.collectAsState()
     val data by store.profileData.collectAsState()
-    val wide = LocalConfiguration.current.screenWidthDp >= 720
+    val wide = com.zenith.iptv.ui.Adaptive.wide()
     val hours = if (wide) 3 else 2
     val windowMs = hours * 3_600_000L
 

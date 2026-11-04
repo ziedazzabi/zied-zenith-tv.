@@ -60,7 +60,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
     val settings by store.settings.collectAsState()
     val tick by repo.tick.collectAsState()
     val isTv = LocalIsTv.current
-    val wide = LocalConfiguration.current.screenWidthDp >= 720
+    val wide = com.zenith.iptv.ui.Adaptive.wide()
 
     var selectedCat by rememberSaveable(kind) { mutableStateOf(CAT_ALL) }
     var sort by rememberSaveable { mutableStateOf("default") }
@@ -113,7 +113,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
                         loadingLazy -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = Z.accent) }
                         vodItems.isEmpty() -> EmptyState(stringResource(R.string.nothing_here))
                         else -> LazyVerticalGrid(
-                            columns = GridCells.Adaptive(if (isTv) 150.dp else 110.dp),
+                            columns = GridCells.Adaptive(com.zenith.iptv.ui.Adaptive.poster()),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
                             contentPadding = PaddingValues(6.dp, 6.dp, 6.dp, 32.dp),
@@ -121,7 +121,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
                             items(vodItems, key = { it.key }) { m ->
                                 val p = data.progress[m.key]
                                 PosterCard(
-                                    m, width = if (isTv) 150.dp else 110.dp,
+                                    m, width = com.zenith.iptv.ui.Adaptive.poster(),
                                     onClick = { nav.open(m) },
                                     favorite = m.key in data.favorites,
                                     progress = if (p != null && p.durationMs > 0) p.positionMs.toFloat() / p.durationMs else 0f,
@@ -138,7 +138,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
 
             if (wide) {
                 Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    LazyColumn(Modifier.width(240.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+                    LazyColumn(Modifier.width(com.zenith.iptv.ui.Adaptive.sidePane()).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
                         items(special + cats, key = { it.id }) { c ->
                             CategoryItem(
                                 c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),

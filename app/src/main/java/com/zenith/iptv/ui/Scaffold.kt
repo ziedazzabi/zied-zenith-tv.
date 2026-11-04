@@ -46,7 +46,7 @@ fun ScreenScaffold(
     val isTv = LocalIsTv.current
     Column(Modifier.fillMaxSize()) {
         Row(
-            Modifier.fillMaxWidth().padding(horizontal = if (isTv) 32.dp else 8.dp, vertical = if (isTv) 16.dp else 6.dp),
+            Modifier.fillMaxWidth().padding(horizontal = if (isTv) 32.dp else Adaptive.gutter() - 4.dp, vertical = if (isTv) 16.dp else 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (showBack && !isTv) {
@@ -61,7 +61,7 @@ fun ScreenScaffold(
             )
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically, content = actions)
         }
-        Box(Modifier.fillMaxSize().padding(horizontal = if (isTv) 24.dp else 8.dp)) { content() }
+        Box(Modifier.fillMaxSize().padding(horizontal = if (isTv) 24.dp else Adaptive.gutter() - 4.dp)) { content() }
     }
 }
 

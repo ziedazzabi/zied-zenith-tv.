@@ -146,7 +146,7 @@ fun PosterCard(
     item: Media,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
-    width: Dp = 130.dp,
+    width: Dp = Adaptive.poster(),
     favorite: Boolean = false,
     progress: Float = 0f,
     onLongClick: (() -> Unit)? = null,
@@ -242,7 +242,7 @@ fun Chip(text: String, selected: Boolean, onClick: () -> Unit, modifier: Modifie
     ) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
             if (icon != null) { Icon(icon, null, tint = if (selected) Z.accent else Z.muted, modifier = Modifier.size(16.dp)); Spacer(Modifier.width(6.dp)) }
-            Text(text, color = if (selected) Z.accent else Z.text, fontSize = 13.sp, maxLines = 1)
+            Text(text, color = if (selected) (if (Z.palette.light) Z.text else Z.accent) else Z.text, fontSize = 13.sp, maxLines = 1, fontWeight = if (selected) FontWeight.SemiBold else FontWeight.Normal)
         }
     }
 }

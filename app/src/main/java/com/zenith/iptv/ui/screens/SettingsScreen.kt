@@ -2,6 +2,19 @@ package com.zenith.iptv.ui.screens
 
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.filled.Devices
+import androidx.compose.material.icons.filled.FormatSize
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import com.zenith.iptv.ui.Palette as ThemePalette
+import com.zenith.iptv.ui.Themes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -75,6 +88,7 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
     val catalog by repo.catalog.collectAsState()
     var choice by remember { mutableStateOf<Choice?>(null) }
     var pinStep by remember { mutableStateOf(0) } // 1 = verify old, 2 = enter new
+    var themePicker by remember { mutableStateOf(false) }
 
     val langs = listOf("" to stringResource(R.string.lang_system), "en" to "English", "ar" to "العربية", "fr" to "Français")
     val off = stringResource(R.string.off)
@@ -84,6 +98,32 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
             Modifier.widthIn(max = 760.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(6.dp), contentPadding = PaddingValues(bottom = 40.dp)
         ) {
+            item { SectionTitle(stringResource(R.string.appearance)) }
+            item {
+                SettingRow(Icons.Default.Palette, stringResource(R.string.theme), themeName(s.theme)) { themePicker = true }
+            }
+            item {
+                val t = stringResource(R.string.layout_mode)
+                val opts = listOf(
+                    "auto" to stringResource(R.string.layout_auto), "phone" to stringResource(R.string.layout_phone),
+                    "tablet" to stringResource(R.string.layout_tablet), "tv" to stringResource(R.string.layout_tv),
+                )
+                SettingRow(Icons.Default.Devices, t, opts.firstOrNull { it.first == s.layoutMode }?.second ?: "") {
+                    choice = Choice(t, opts, s.layoutMode) { v -> store.updateSettings { it.copy(layoutMode = v) } }
+                }
+            }
+            item {
+                val t = stringResource(R.string.ui_size)
+                val opts = listOf(
+                    "0.85" to stringResource(R.string.size_small), "1.0" to stringResource(R.string.size_normal),
+                    "1.15" to stringResource(R.string.size_large), "1.3" to stringResource(R.string.size_xlarge),
+                )
+                val cur = "%.2f".format(java.util.Locale.US, s.uiScale).trimEnd('0').let { if (it.endsWith('.')) it + "0" else it }
+                SettingRow(Icons.Default.FormatSize, t, opts.firstOrNull { it.first == cur }?.second ?: "${(s.uiScale * 100).toInt()}%") {
+                    choice = Choice(t, opts, cur) { v -> store.updateSettings { it.copy(uiScale = v.toFloat()) } }
+                }
+            }
+
             item { SectionTitle(stringResource(R.string.general)) }
             item {
                 val langTitle = stringResource(R.string.language)
@@ -192,6 +232,10 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
         )
     }
 
+    if (themePicker) ThemePicker(s.theme, onDismiss = { themePicker = false }) { id ->
+        store.updateSettings { it.copy(theme = id) }
+    }
+
     when (pinStep) {
         1 -> PinDialog(title = stringResource(R.string.current_pin), onDismiss = { pinStep = 0 }) { pin ->
             if (pin == s.parentalPin) pinStep = 2 else Toast.makeText(ctx, R.string.wrong_pin, Toast.LENGTH_SHORT).show()
@@ -226,6 +270,79 @@ private fun ToggleRow(icon: ImageVector, title: String, value: Boolean, onChange
             Spacer(Modifier.width(14.dp))
             Text(title, color = Z.text, fontWeight = FontWeight.Medium, modifier = Modifier.weight(1f))
             Switch(checked = value, onCheckedChange = null, colors = SwitchDefaults.colors(checkedTrackColor = Z.accent))
+        }
+    }
+}
+
+@Composable
+fun themeName(id: String): String = stringResource(
+    when (id) {
+        "royal" -> R.string.theme_royal
+        "royal_night" -> R.string.theme_royal_night
+        "cinema" -> R.string.theme_cinema
+        "stadium" -> R.string.theme_stadium
+        "sunset" -> R.string.theme_sunset
+        "amoled" -> R.string.theme_amoled
+        else -> R.string.theme_midnight
+    }
+)
+
+@Composable
+private fun ThemePicker(current: String, onDismiss: () -> Unit, onPick: (String) -> Unit) {
+    AlertDialog(
+        onDismissRequest = onDismiss, containerColor = Z.surface,
+        title = { Text(stringResource(R.string.theme)) },
+        text = {
+            Column(Modifier.verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+              Themes.all.chunked(2).forEach { pair ->
+               Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                pair.forEach { p ->
+                    Focusable(
+                        onClick = { onPick(p.id) }, selected = p.id == current, focusScale = 1.05f,
+                        shape = RoundedCornerShape(14.dp), modifier = Modifier.weight(1f),
+                    ) {
+                        Column(Modifier.padding(8.dp)) {
+                            ThemePreview(p, Modifier.fillMaxWidth().height(78.dp))
+                            Spacer(Modifier.height(6.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(themeName(p.id), color = Z.text, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, modifier = Modifier.weight(1f))
+                                if (p.id == current) Icon(Icons.Default.Check, null, tint = Z.accent, modifier = Modifier.size(18.dp))
+                            }
+                        }
+                    }
+                }
+                if (pair.size == 1) Spacer(Modifier.weight(1f))
+               }
+              }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
+    )
+}
+
+/** Miniature drawing of the home screen in a given theme. */
+@Composable
+private fun ThemePreview(p: ThemePalette, modifier: Modifier) {
+    Box(
+        modifier.clip(RoundedCornerShape(10.dp))
+            .background(Brush.verticalGradient(listOf(p.bgGlow, p.bg)))
+            .border(1.dp, p.line, RoundedCornerShape(10.dp))
+            .padding(8.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(Modifier.width(30.dp).height(6.dp).clip(RoundedCornerShape(3.dp)).background(p.text))
+                Spacer(Modifier.width(3.dp))
+                Box(Modifier.width(10.dp).height(6.dp).clip(RoundedCornerShape(3.dp)).background(p.accent))
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                p.tiles.take(3).forEach { c -> Box(Modifier.weight(1f).height(24.dp).clip(RoundedCornerShape(5.dp)).background(c)) }
+            }
+            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                Box(Modifier.weight(1f).height(10.dp).clip(RoundedCornerShape(3.dp)).background(p.surface2))
+                Box(Modifier.weight(1f).height(10.dp).clip(RoundedCornerShape(3.dp)).background(p.surface2))
+                Box(Modifier.width(18.dp).height(10.dp).clip(RoundedCornerShape(3.dp)).background(p.accent))
+            }
         }
     }
 }

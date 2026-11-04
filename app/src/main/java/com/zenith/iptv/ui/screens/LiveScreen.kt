@@ -93,7 +93,8 @@ fun LiveScreen(nav: Nav) {
     val data by store.profileData.collectAsState()
     val settings by store.settings.collectAsState()
     val tick by repo.tick.collectAsState()
-    val wide = LocalConfiguration.current.screenWidthDp >= 720
+    val wide = com.zenith.iptv.ui.Adaptive.wide()
+    val threePane = wide && (com.zenith.iptv.ui.LocalDevice.current == com.zenith.iptv.ui.DeviceClass.TV || com.zenith.iptv.ui.Adaptive.widthDp() >= 840)
     val isTv = LocalIsTv.current
 
     var selectedCat by rememberSaveable { mutableStateOf(CAT_ALL) }
@@ -139,7 +140,7 @@ fun LiveScreen(nav: Nav) {
             }
 
             fun onChannelClick(m: Media) {
-                if (wide && previewing?.key != m.key) previewing = m else openFull(m)
+                if (threePane && previewing?.key != m.key) previewing = m else openFull(m)
             }
 
             fun onChannelLong(m: Media) {
@@ -151,7 +152,7 @@ fun LiveScreen(nav: Nav) {
             if (wide) {
                 Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     // Categories
-                    LazyColumn(Modifier.width(240.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+                    LazyColumn(Modifier.width(if (threePane) com.zenith.iptv.ui.Adaptive.sidePane() else 200.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
                         items(special + cats, key = { it.id + it.kind }) { c ->
                             CategoryItem(
                                 c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
@@ -165,8 +166,8 @@ fun LiveScreen(nav: Nav) {
                         channels, Modifier.weight(1f).fillMaxHeight(), data.favorites.toSet(), previewing?.key, tick,
                         onClick = ::onChannelClick, onLong = ::onChannelLong, onFocus = { focused = it },
                     )
-                    // Preview + EPG
-                    Column(Modifier.weight(0.9f).fillMaxHeight()) {
+                    // Preview + EPG (only when there's room for a third pane)
+                    if (threePane) Column(Modifier.weight(0.9f).fillMaxHeight()) {
                         PreviewPane(previewing, onOpen = { previewing?.let { openFull(it) } })
                         Spacer(Modifier.height(10.dp))
                         EpgPanel(focused ?: previewing, settings.use24h, tick)

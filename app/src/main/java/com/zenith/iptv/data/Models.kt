@@ -174,4 +174,7 @@ data class Settings(
     val hiddenCategories: List<String> = emptyList(),
     val catalogMaxAgeHours: Int = 12,
     val decoderMode: String = "auto",
+    val theme: String = "midnight",
+    val layoutMode: String = "auto",
+    val uiScale: Float = 1f,
 )

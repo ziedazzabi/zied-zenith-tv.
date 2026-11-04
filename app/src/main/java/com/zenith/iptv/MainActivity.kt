@@ -15,13 +15,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.core.view.WindowCompat
 import androidx.core.content.ContextCompat
 import com.zenith.iptv.player.Playback
 import com.zenith.iptv.ui.AppNav
-import com.zenith.iptv.ui.LocalIsTv
+import com.zenith.iptv.ui.Themes
 import com.zenith.iptv.ui.Z
 import com.zenith.iptv.ui.ZenithTheme
 import com.zenith.iptv.ui.isTvDevice
@@ -44,15 +49,25 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
 
+        Z.palette = Themes.byId(Graph.store.settings.value.theme)
         setContent {
-            ZenithTheme {
-                CompositionLocalProvider(LocalIsTv provides tv) {
-                    Box(
-                        Modifier.fillMaxSize().background(Z.bg)
-                            .then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())
-                    ) {
-                        AppNav(activity = this@MainActivity)
-                    }
+            val s by Graph.store.settings.collectAsState()
+            LaunchedEffect(s.theme) { Z.palette = Themes.byId(s.theme) }
+            val light = Z.palette.light
+            SideEffect {
+                WindowCompat.getInsetsController(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = light
+                    isAppearanceLightNavigationBars = light
+                }
+            }
+            ZenithTheme(layoutMode = s.layoutMode, uiScale = s.uiScale, realTv = tv) {
+                Box(
+                    Modifier.fillMaxSize()
+                        .background(Z.bg)
+                        .background(Brush.verticalGradient(0f to Z.bgGlow, 0.45f to Z.bg, 1f to Z.bg))
+                        .then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())
+                ) {
+                    AppNav(activity = this@MainActivity)
                 }
             }
         }
