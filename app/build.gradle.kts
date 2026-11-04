@@ -16,8 +16,8 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         vectorDrawables { useSupportLibrary = true }
-        // TV boxes and phones are ARM; x86_64 for emulators / a few boxes
-        ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64") }
+        // TV boxes and phones are ARM
+        ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a") }
     }
 
     signingConfigs {
@@ -48,7 +48,11 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true }
-    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+    packaging {
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+        // compress native libraries (VLC) so the APK stays small to download
+        jniLibs { useLegacyPackaging = true }
+    }
     lint {
         abortOnError = false
         checkReleaseBuilds = false
