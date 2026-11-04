@@ -42,6 +42,8 @@
     <string name="contact_hint">Need help or have a suggestion? Write to:</string>
     <string name="continue_watching">Continue watching</string>
     <string name="copy_email">Copy email</string>
+    <string name="crash_text">Sorry! Please send this report to %s so the problem can be fixed.</string>
+    <string name="crash_title">Z-Vision closed unexpectedly</string>
     <string name="current_pin">Current PIN</string>
     <string name="decoder">Video decoder</string>
     <string name="decoder_auto">Hardware (recommended)</string>
@@ -60,6 +62,7 @@
     <string name="edit">Edit</string>
     <string name="edit_playlist">Edit playlist</string>
     <string name="email_copied">Email copied</string>
+    <string name="engine_auto_vlc">Automatic (ExoPlayer + VLC when needed)</string>
     <string name="enter_pin">Enter parental PIN</string>
     <string name="epg_offset">Guide time offset</string>
     <string name="epg_url">EPG (XMLTV) URL</string>
@@ -132,6 +135,7 @@
     <string name="ok">OK</string>
     <string name="open_paypal">Open PayPal</string>
     <string name="optional">Optional</string>
+    <string name="out_of_memory">This playlist is too large for this device\'s memory. Try the M3U link for live TV only, or ask your provider for a lighter list.</string>
     <string name="parental_control">Parental control</string>
     <string name="password">Password</string>
     <string name="paypal_hint">Scan the code or open PayPal and send your donation to:</string>
@@ -143,6 +147,7 @@
     <string name="play_catchup">Play (catch-up)</string>
     <string name="playback_error">Playback error</string>
     <string name="player">Player</string>
+    <string name="player_engine">Player engine</string>
     <string name="playlist_name">Playlist name</string>
     <string name="playlists">Playlists</string>
     <string name="popular_apps">Popular apps</string>
@@ -180,6 +185,7 @@
     <string name="search_hint">Channels, movies, series…</string>
     <string name="season_n">Season %d</string>
     <string name="send_email">Send email</string>
+    <string name="send_report">Send report</string>
     <string name="series">Series</string>
     <string name="server_url">Server URL</string>
     <string name="set_reminder">Remind me</string>
@@ -202,6 +208,8 @@
     <string name="stop">Stop</string>
     <string name="subtitles">Subtitles</string>
     <string name="support_app">Support Z-Vision</string>
+    <string name="switch_player">Switch player</string>
+    <string name="switched_to_vlc">This channel\'s video (%s) isn\'t supported by this device — switched to VLC</string>
     <string name="thanks_support">Thank you for your support ❤</string>
     <string name="theme">Theme</string>
     <string name="theme_amoled">Pure Black</string>

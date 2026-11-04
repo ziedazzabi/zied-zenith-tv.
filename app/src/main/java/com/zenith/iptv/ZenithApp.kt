@@ -10,6 +10,7 @@ import com.zenith.iptv.data.Store
 class ZenithApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        CrashReporter.install(this)
         Graph.init(this)
         val nm = getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(NotificationChannel(CH_REMINDERS, getString(R.string.reminders), NotificationManager.IMPORTANCE_HIGH))

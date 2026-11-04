@@ -1,3 +1,5 @@
+@file:OptIn(kotlinx.serialization.ExperimentalSerializationApi::class)
+
 package com.zenith.iptv.data
 
 import android.content.Context
@@ -9,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.json.decodeFromStream
+import kotlinx.serialization.json.encodeToStream
 import kotlinx.serialization.builtins.ListSerializer
 import java.io.File
 import java.util.UUID
@@ -129,12 +133,17 @@ class Store(context: Context) {
 
     // ---- catalog cache ----
     suspend fun saveCatalog(c: Catalog) = withContext(Dispatchers.IO) {
-        runCatching { File(catalogDir, "${c.playlistId}.json").writeText(json.encodeToString(Catalog.serializer(), c)) }
+        runCatching {
+            val f = File(catalogDir, "${c.playlistId}.json")
+            val tmp = File(catalogDir, "${c.playlistId}.json.tmp")
+            tmp.outputStream().buffered(64 * 1024).use { json.encodeToStream(Catalog.serializer(), c, it) }
+            tmp.renameTo(f)
+        }
     }
 
     suspend fun loadCatalog(id: String): Catalog? = withContext(Dispatchers.IO) {
         val f = File(catalogDir, "$id.json")
-        if (!f.exists()) null else runCatching { json.decodeFromString(Catalog.serializer(), f.readText()) }.getOrNull()
+        if (!f.exists()) null else runCatching { f.inputStream().buffered(64 * 1024).use { json.decodeFromStream(Catalog.serializer(), it) } }.getOrNull()
     }
 
     // ---- io helpers ----

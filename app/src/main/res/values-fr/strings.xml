@@ -42,6 +42,8 @@
     <string name="contact_hint">Besoin d\'aide ou une suggestion ? Écrivez à :</string>
     <string name="continue_watching">Reprendre</string>
     <string name="copy_email">Copier l\'e-mail</string>
+    <string name="crash_text">Désolé ! Envoyez ce rapport à %s pour que le problème soit corrigé.</string>
+    <string name="crash_title">Z-Vision s\'est fermé de façon inattendue</string>
     <string name="current_pin">Code PIN actuel</string>
     <string name="decoder">Décodeur vidéo</string>
     <string name="decoder_auto">Matériel (recommandé)</string>
@@ -60,6 +62,7 @@
     <string name="edit">Modifier</string>
     <string name="edit_playlist">Modifier la playlist</string>
     <string name="email_copied">E-mail copié</string>
+    <string name="engine_auto_vlc">Automatique (ExoPlayer + VLC si besoin)</string>
     <string name="enter_pin">Entrez le code parental</string>
     <string name="epg_offset">Décalage horaire du guide</string>
     <string name="epg_url">URL EPG (XMLTV)</string>
@@ -132,6 +135,7 @@
     <string name="ok">OK</string>
     <string name="open_paypal">Ouvrir PayPal</string>
     <string name="optional">Facultatif</string>
+    <string name="out_of_memory">Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère.</string>
     <string name="parental_control">Contrôle parental</string>
     <string name="password">Mot de passe</string>
     <string name="paypal_hint">Scannez le code ou ouvrez PayPal et envoyez votre don à :</string>
@@ -143,6 +147,7 @@
     <string name="play_catchup">Lire (replay)</string>
     <string name="playback_error">Erreur de lecture</string>
     <string name="player">Lecteur</string>
+    <string name="player_engine">Moteur de lecture</string>
     <string name="playlist_name">Nom de la playlist</string>
     <string name="playlists">Playlists</string>
     <string name="popular_apps">Applications populaires</string>
@@ -180,6 +185,7 @@
     <string name="search_hint">Chaînes, films, séries…</string>
     <string name="season_n">Saison %d</string>
     <string name="send_email">Envoyer un e-mail</string>
+    <string name="send_report">Envoyer le rapport</string>
     <string name="series">Séries</string>
     <string name="server_url">URL du serveur</string>
     <string name="set_reminder">Me le rappeler</string>
@@ -202,6 +208,8 @@
     <string name="stop">Arrêter</string>
     <string name="subtitles">Sous-titres</string>
     <string name="support_app">Soutenir Z-Vision</string>
+    <string name="switch_player">Changer de lecteur</string>
+    <string name="switched_to_vlc">La vidéo de cette chaîne (%s) n\'est pas prise en charge par cet appareil — passage à VLC</string>
     <string name="thanks_support">Merci pour votre soutien ❤</string>
     <string name="theme">Thème</string>
     <string name="theme_amoled">Noir pur</string>

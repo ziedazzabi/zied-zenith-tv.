@@ -56,9 +56,6 @@ class XtreamSource(override val playlist: Playlist, private val settings: Settin
         val liveCats = async { get(api("get_live_categories")) }
         val vodCats = async { get(api("get_vod_categories")) }
         val serCats = async { get(api("get_series_categories")) }
-        val live = async { get(api("get_live_streams")) }
-        val vod = async { get(api("get_vod_streams")) }
-        val series = async { get(api("get_series")) }
 
         val categories = ArrayList<Category>()
         fun addCats(e: JsonElement, kind: Kind) {
@@ -71,46 +68,50 @@ class XtreamSource(override val playlist: Playlist, private val settings: Settin
         addCats(vodCats.await(), Kind.MOVIE)
         addCats(serCats.await(), Kind.SERIES)
 
-        val items = ArrayList<Media>(4096)
+        // The big lists are read item by item so low-memory TV boxes don't run out of memory.
+        val items = ArrayList<Media>(8192)
         val ext = if (settings.liveFormat == "m3u8") "m3u8" else "ts"
-        live.await().arr()?.forEachIndexed { i, el ->
-            val o = el.obj() ?: return@forEachIndexed
-            val id = o.str("stream_id")
+        fun f(m: Map<String, String>, k: String) = m[k].orEmpty()
+        fun n(m: Map<String, String>, k: String) = m[k]?.toDoubleOrNull()?.toLong() ?: 0L
+        var i = 0
+        Net.forEachObject(api("get_live_streams"), ua) { o ->
+            i++
+            val id = f(o, "stream_id")
             items += Media(
                 id = id, playlistId = playlist.id, kind = Kind.LIVE,
-                name = o.str("name").trim(),
-                categoryId = o.str("category_id"),
-                number = o.int("num").takeIf { it > 0 } ?: (i + 1),
-                logo = o.str("stream_icon"),
-                url = "$base/live/$user/$pass/$id.$ext",
-                epgId = o.str("epg_channel_id"),
-                catchupDays = if (o.str("tv_archive") == "1") o.int("tv_archive_duration").coerceAtLeast(1) else 0,
-                catchupType = "xtream",
-                added = o.long("added"),
+                name = f(o, "name").trim(), categoryId = f(o, "category_id"),
+                number = n(o, "num").toInt().takeIf { it > 0 } ?: i,
+                logo = f(o, "stream_icon"), url = "$base/live/$user/$pass/$id.$ext",
+                epgId = f(o, "epg_channel_id"),
+                catchupDays = if (f(o, "tv_archive") == "1") n(o, "tv_archive_duration").toInt().coerceAtLeast(1) else 0,
+                catchupType = "xtream", added = n(o, "added"),
             )
         }
-        vod.await().arr()?.forEach { el ->
-            val o = el.obj() ?: return@forEach
-            val id = o.str("stream_id")
-            val cext = o.str("container_extension").ifBlank { "mp4" }
-            items += Media(
-                id = id, playlistId = playlist.id, kind = Kind.MOVIE,
-                name = o.str("name").trim(), categoryId = o.str("category_id"),
-                logo = o.str("stream_icon"), url = "$base/movie/$user/$pass/$id.$cext",
-                rating = o.str("rating"), year = o.str("year"), plot = o.str("plot"),
-                ext = cext, added = o.long("added"),
-            )
+        runCatching {
+            Net.forEachObject(api("get_vod_streams"), ua) { o ->
+                val id = f(o, "stream_id")
+                val cext = f(o, "container_extension").ifBlank { "mp4" }
+                items += Media(
+                    id = id, playlistId = playlist.id, kind = Kind.MOVIE,
+                    name = f(o, "name").trim(), categoryId = f(o, "category_id"),
+                    logo = f(o, "stream_icon"), url = "$base/movie/$user/$pass/$id.$cext",
+                    rating = f(o, "rating"), year = f(o, "year"), plot = f(o, "plot").take(300),
+                    ext = cext, added = n(o, "added"),
+                )
+            }
         }
-        series.await().arr()?.forEach { el ->
-            val o = el.obj() ?: return@forEach
-            items += Media(
-                id = o.str("series_id"), playlistId = playlist.id, kind = Kind.SERIES,
-                name = o.str("name").trim(), categoryId = o.str("category_id"),
-                logo = o.str("cover"), rating = o.str("rating"), plot = o.str("plot"),
-                year = o.str("releaseDate").ifBlank { o.str("release_date") }.take(4),
-                added = o.long("last_modified"),
-            )
+        runCatching {
+            Net.forEachObject(api("get_series"), ua) { o ->
+                items += Media(
+                    id = f(o, "series_id"), playlistId = playlist.id, kind = Kind.SERIES,
+                    name = f(o, "name").trim(), categoryId = f(o, "category_id"),
+                    logo = f(o, "cover"), rating = f(o, "rating"), plot = f(o, "plot").take(300),
+                    year = f(o, "releaseDate").ifBlank { f(o, "release_date") }.take(4),
+                    added = n(o, "last_modified"),
+                )
+            }
         }
+        items.trimToSize()
 
         val exp = ui.long("exp_date")
         val expTxt = if (exp > 0) SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date(exp * 1000)) else "∞"

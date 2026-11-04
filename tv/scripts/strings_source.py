@@ -228,6 +228,14 @@ S = {
 "open_paypal": ("Open PayPal", "فتح PayPal", "Ouvrir PayPal"),
 "neteller_hint": ("In the Neteller app choose Money Transfer and send to:", "في تطبيق Neteller اختر تحويل الأموال (Money Transfer) وأرسل إلى:", "Dans l'app Neteller, choisissez Transfert d'argent et envoyez à :"),
 "thanks_support": ("Thank you for your support ❤", "شكرًا لدعمك ❤", "Merci pour votre soutien ❤"),
+"player_engine": ("Player engine", "محرّك التشغيل", "Moteur de lecture"),
+"engine_auto_vlc": ("Automatic (ExoPlayer + VLC when needed)", "تلقائي (ExoPlayer وVLC عند الحاجة)", "Automatique (ExoPlayer + VLC si besoin)"),
+"switch_player": ("Switch player", "تبديل المشغّل", "Changer de lecteur"),
+"switched_to_vlc": ("This channel's video (%s) isn't supported by this device — switched to VLC", "صيغة صورة هذه القناة (%s) غير مدعومة في جهازك — تم التحويل إلى مشغّل VLC", "La vidéo de cette chaîne (%s) n'est pas prise en charge par cet appareil — passage à VLC"),
+"crash_title": ("Z-Vision closed unexpectedly", "تم إغلاق Z-Vision بشكل غير متوقع", "Z-Vision s'est fermé de façon inattendue"),
+"crash_text": ("Sorry! Please send this report to %s so the problem can be fixed.", "نعتذر! أرسل هذا التقرير إلى %s ليتم إصلاح المشكلة.", "Désolé ! Envoyez ce rapport à %s pour que le problème soit corrigé."),
+"send_report": ("Send report", "إرسال التقرير", "Envoyer le rapport"),
+"out_of_memory": ("This playlist is too large for this device's memory. Try the M3U link for live TV only, or ask your provider for a lighter list.", "هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف.", "Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère."),
 }
 import sys, os
 used = set(open('/tmp/claude-0/strings_used.txt').read().split()) | {"app_name"}

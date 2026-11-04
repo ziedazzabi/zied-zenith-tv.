@@ -134,7 +134,56 @@ fun PlayerScreen(onBack: () -> Unit) {
     var videoInfo by remember { mutableStateOf("") }
     val rootFocus = remember { FocusRequester() }
 
+    // VLC fallback for channels whose video the device can't decode (sound but no picture)
+    LaunchedEffect(Unit) { VlcMemory.load(ctx) }
+    var vlc by remember { mutableStateOf<VlcEngine?>(null) }
+    val vlcLayout = remember { org.videolan.libvlc.util.VLCVideoLayout(ctx) }
+    var currentUrl by remember { mutableStateOf("") }
+    val onVlcEnded = remember { arrayOf<() -> Unit>({}) }
+    fun memKey(url: String): String = if (overrideUrl == null) req.items.getOrNull(index)?.key ?: url else url
+
     fun poke() { showInfo = true; infoStamp = System.currentTimeMillis() }
+
+    fun stopVlc() {
+        vlc?.release()
+        vlc = null
+    }
+
+    fun startVlc(url: String, startMs: Long) {
+        player.stop()
+        player.clearMediaItems()
+        val e = vlc ?: VlcEngine(ctx).also { v ->
+            v.onBuffering = { b -> scope.launch { buffering = b } }
+            v.onPlaying = { scope.launch { retries = 0; error = null; videoInfo = "VLC" } }
+            v.onEnded = { scope.launch { onVlcEnded[0]() } }
+            v.onError = {
+                scope.launch {
+                    val isLiveNow = overrideUrl == null && req.items.getOrNull(index)?.kind == Kind.LIVE
+                    if (isLiveNow && retries < 4) {
+                        retries++
+                        delay(1500L * retries)
+                        val u = runCatching { repo.resolve(req.items[index]) }.getOrNull()
+                        if (u != null) vlc?.play(u, repo.userAgent(), repo.headers())
+                    } else error = ctx.getString(R.string.playback_error)
+                }
+            }
+            vlc = v
+        }
+        e.attach(vlcLayout)
+        e.setAspect(aspect)
+        videoInfo = "VLC"
+        buffering = true
+        e.play(url, repo.userAgent(), repo.headers(), startMs)
+    }
+
+    /** ExoPlayer can't show this channel's picture: switch to VLC and remember the choice. */
+    fun switchToVlc(reason: String) {
+        if (vlc != null || currentUrl.isEmpty()) return
+        VlcMemory.remember(ctx, memKey(currentUrl))
+        Toast.makeText(ctx, ctx.getString(R.string.switched_to_vlc, reason), Toast.LENGTH_LONG).show()
+        val liveNow = overrideUrl == null && req.items.getOrNull(index)?.kind == Kind.LIVE
+        startVlc(currentUrl, if (liveNow) 0 else player.currentPosition)
+    }
 
     fun startPlayback(url: String, startMs: Long = 0) {
         if (settings.externalPlayer) {
@@ -144,6 +193,10 @@ fun PlayerScreen(onBack: () -> Unit) {
             onBack(); return
         }
         error = null
+        currentUrl = url
+        val engine = settings.playerEngine
+        if (engine == "vlc" || (engine == "auto" && VlcMemory.needs(memKey(url)))) { startVlc(url, startMs); return }
+        stopVlc()
         player.setMediaItem(PlayerFactory.mediaItem(url, title))
         player.prepare()
         if (startMs > 0) player.seekTo(startMs)
@@ -183,6 +236,8 @@ fun PlayerScreen(onBack: () -> Unit) {
         }
     }
 
+    onVlcEnded[0] = { if (req.series != null && episodeIndex + 1 < req.episodes.size) playEpisode(episodeIndex + 1) }
+
     // initial start
     LaunchedEffect(Unit) {
         Playback.active = true
@@ -210,11 +265,24 @@ fun PlayerScreen(onBack: () -> Unit) {
                 }
             }
 
+            override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
+                if (settings.playerEngine != "auto" || vlc != null) return
+                val video = tracks.groups.filter { it.type == androidx.media3.common.C.TRACK_TYPE_VIDEO }
+                if (video.isNotEmpty() && video.none { it.isSupported }) {
+                    val mime = video.first().getTrackFormat(0).sampleMimeType ?: video.first().getTrackFormat(0).codecs ?: "?"
+                    switchToVlc(mime.substringAfter('/').uppercase())
+                }
+            }
+
             override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
                 videoInfo = if (videoSize.height > 0) "${videoSize.width}×${videoSize.height}" else ""
             }
 
             override fun onPlayerError(e: PlaybackException) {
+                // decoder / unknown container problems: VLC usually plays these
+                if (settings.playerEngine == "auto" && vlc == null &&
+                    (e.errorCode in 4001..4005 || e.errorCode in 3001..3004)
+                ) { switchToVlc(e.errorCodeName.removePrefix("ERROR_CODE_")); return }
                 if (e.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
                     player.seekToDefaultPosition(); player.prepare(); return
                 }
@@ -233,9 +301,11 @@ fun PlayerScreen(onBack: () -> Unit) {
         }
         player.addListener(listener)
         onDispose {
-            saveProgress(req, player, episodeIndex)
+            val v = vlc
+            if (v != null) saveProgress(req, v.time, v.length, episodeIndex) else saveProgress(req, player.currentPosition, player.duration, episodeIndex)
             player.removeListener(listener)
-            if (MiniPlayer.handoff) MiniPlayer.receive(player, req.copy(index = index), title.ifBlank { req.items.getOrNull(index)?.name ?: "" })
+            v?.release()
+            if (MiniPlayer.handoff && v == null) MiniPlayer.receive(player, req.copy(index = index), title.ifBlank { req.items.getOrNull(index)?.name ?: "" })
             else player.release()
             Playback.active = false
         }
@@ -243,7 +313,11 @@ fun PlayerScreen(onBack: () -> Unit) {
 
     // periodic VOD progress save
     LaunchedEffect(overrideUrl, index) {
-        while (true) { delay(10_000); saveProgress(req, player, episodeIndex) }
+        while (true) {
+            delay(10_000)
+            val v = vlc
+            if (v != null) saveProgress(req, v.time, v.length, episodeIndex) else saveProgress(req, player.currentPosition, player.duration, episodeIndex)
+        }
     }
 
     // auto-hide info banner
@@ -265,12 +339,12 @@ fun PlayerScreen(onBack: () -> Unit) {
 
     // sleep timer
     LaunchedEffect(sleepAt) {
-        if (sleepAt > 0) { delay(sleepAt - System.currentTimeMillis()); player.pause(); onBack() }
+        if (sleepAt > 0) { delay(sleepAt - System.currentTimeMillis()); player.pause(); vlc?.pause(); onBack() }
     }
 
     /** Leaving a live channel shrinks it into the floating mini player instead of stopping it. */
     fun exit() {
-        if (live && error == null && settings.miniPlayer && !settings.externalPlayer) MiniPlayer.handoff = true
+        if (live && error == null && vlc == null && settings.miniPlayer && !settings.externalPlayer) MiniPlayer.handoff = true
         onBack()
     }
 
@@ -293,8 +367,20 @@ fun PlayerScreen(onBack: () -> Unit) {
             .background(Color.Black)
             .focusRequester(rootFocus)
             .onPreviewKeyEvent { ev ->
-                if (ev.type != KeyEventType.KeyDown || !live || showList || showMenu) return@onPreviewKeyEvent false
+                if (ev.type != KeyEventType.KeyDown || showList || showMenu) return@onPreviewKeyEvent false
                 val k = ev.key
+                val v = vlc
+                if (!live && v != null) {
+                    // simple VOD controls while VLC is playing
+                    return@onPreviewKeyEvent when (k) {
+                        Key.DirectionCenter, Key.Enter, Key.NumPadEnter, Key.MediaPlayPause, Key.Spacebar -> { if (v.isPlaying) v.pause() else v.resume(); poke(); true }
+                        Key.DirectionLeft, Key.MediaRewind -> { v.seekTo(v.time - 10_000); poke(); true }
+                        Key.DirectionRight, Key.MediaFastForward -> { v.seekTo(v.time + 10_000); poke(); true }
+                        Key.Menu, Key.Info -> { showMenu = true; true }
+                        else -> false
+                    }
+                }
+                if (!live) return@onPreviewKeyEvent false
                 when {
                     k == Key.DirectionUp || k == Key.ChannelDown || k == Key.PageUp -> { zap(-1); true }
                     k == Key.DirectionDown || k == Key.ChannelUp || k == Key.PageDown -> { zap(1); true }
@@ -327,7 +413,13 @@ fun PlayerScreen(onBack: () -> Unit) {
                     else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
                 }
                 if (!live) v.isFocusable = true
+                v.visibility = if (vlc != null) android.view.View.INVISIBLE else android.view.View.VISIBLE
             },
+            modifier = Modifier.fillMaxSize(),
+        )
+        AndroidView(
+            factory = { vlcLayout.also { (it.parent as? ViewGroup)?.removeView(it) } },
+            update = { v -> v.visibility = if (vlc != null) android.view.View.VISIBLE else android.view.View.GONE },
             modifier = Modifier.fillMaxSize(),
         )
 
@@ -411,7 +503,20 @@ fun PlayerScreen(onBack: () -> Unit) {
                 isFavorite = item.key in profileData.favorites,
                 aspect = aspect,
                 sleepAt = sleepAt,
-                onAspect = { a -> aspect = a; store.updateSettings { it.copy(aspect = a) } },
+                onAspect = { a -> aspect = a; vlc?.setAspect(a); store.updateSettings { it.copy(aspect = a) } },
+                usingVlc = vlc != null,
+                onSwitchEngine = {
+                    showMenu = false
+                    val key = memKey(currentUrl)
+                    if (vlc != null) {
+                        VlcMemory.forget(ctx, key)
+                        val pos = vlc?.time ?: 0L
+                        stopVlc(); videoInfo = ""
+                        player.setMediaItem(PlayerFactory.mediaItem(currentUrl, title)); player.prepare()
+                        if (!live && pos > 0) player.seekTo(pos)
+                        player.playWhenReady = true
+                    } else { VlcMemory.remember(ctx, key); startVlc(currentUrl, if (live) 0 else player.currentPosition) }
+                },
                 onFavorite = { store.toggleFavorite(item.key) },
                 onSleep = { minutes -> sleepAt = if (minutes == 0) 0L else System.currentTimeMillis() + minutes * 60_000L },
                 onRecord = {
@@ -507,9 +612,7 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
     }
 }
 
-private fun saveProgress(req: PlayRequest, player: Player, episodeIndex: Int) {
-    val dur = player.duration
-    val pos = player.currentPosition
+private fun saveProgress(req: PlayRequest, pos: Long, dur: Long, episodeIndex: Int) {
     if (dur <= 0 || pos < 5000) return
     val series = req.series
     if (series != null) {

@@ -227,7 +227,15 @@
 "paypal_hint": "Scan the code or open PayPal and send your donation to:",
 "open_paypal": "Open PayPal",
 "neteller_hint": "In the Neteller app choose Money Transfer and send to:",
-"thanks_support": "Thank you for your support ❤"
+"thanks_support": "Thank you for your support ❤",
+"player_engine": "Player engine",
+"engine_auto_vlc": "Automatic (ExoPlayer + VLC when needed)",
+"switch_player": "Switch player",
+"switched_to_vlc": "This channel's video ({0}) isn't supported by this device — switched to VLC",
+"crash_title": "Z-Vision closed unexpectedly",
+"crash_text": "Sorry! Please send this report to {0} so the problem can be fixed.",
+"send_report": "Send report",
+"out_of_memory": "This playlist is too large for this device's memory. Try the M3U link for live TV only, or ask your provider for a lighter list."
 },
 "ar": {
 "app_name": "Z-Vision",
@@ -457,7 +465,15 @@
 "paypal_hint": "امسح الرمز أو افتح PayPal وأرسل تبرعك إلى:",
 "open_paypal": "فتح PayPal",
 "neteller_hint": "في تطبيق Neteller اختر تحويل الأموال (Money Transfer) وأرسل إلى:",
-"thanks_support": "شكرًا لدعمك ❤"
+"thanks_support": "شكرًا لدعمك ❤",
+"player_engine": "محرّك التشغيل",
+"engine_auto_vlc": "تلقائي (ExoPlayer وVLC عند الحاجة)",
+"switch_player": "تبديل المشغّل",
+"switched_to_vlc": "صيغة صورة هذه القناة ({0}) غير مدعومة في جهازك — تم التحويل إلى مشغّل VLC",
+"crash_title": "تم إغلاق Z-Vision بشكل غير متوقع",
+"crash_text": "نعتذر! أرسل هذا التقرير إلى {0} ليتم إصلاح المشكلة.",
+"send_report": "إرسال التقرير",
+"out_of_memory": "هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف."
 },
 "fr": {
 "app_name": "Z-Vision",
@@ -687,6 +703,14 @@
 "paypal_hint": "Scannez le code ou ouvrez PayPal et envoyez votre don à :",
 "open_paypal": "Ouvrir PayPal",
 "neteller_hint": "Dans l'app Neteller, choisissez Transfert d'argent et envoyez à :",
-"thanks_support": "Merci pour votre soutien ❤"
+"thanks_support": "Merci pour votre soutien ❤",
+"player_engine": "Moteur de lecture",
+"engine_auto_vlc": "Automatique (ExoPlayer + VLC si besoin)",
+"switch_player": "Changer de lecteur",
+"switched_to_vlc": "La vidéo de cette chaîne ({0}) n'est pas prise en charge par cet appareil — passage à VLC",
+"crash_title": "Z-Vision s'est fermé de façon inattendue",
+"crash_text": "Désolé ! Envoyez ce rapport à {0} pour que le problème soit corrigé.",
+"send_report": "Envoyer le rapport",
+"out_of_memory": "Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère."
 }
 }

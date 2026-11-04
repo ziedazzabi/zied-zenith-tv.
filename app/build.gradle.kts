@@ -16,6 +16,8 @@ android {
         versionCode = 1
         versionName = "1.0.0"
         vectorDrawables { useSupportLibrary = true }
+        // TV boxes and phones are ARM; x86_64 for emulators / a few boxes
+        ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a", "x86_64") }
     }
 
     signingConfigs {
@@ -72,6 +74,8 @@ dependencies {
 
     val media3 = "1.5.1"
     implementation("androidx.media3:media3-exoplayer:$media3")
+    // VLC: software decoding fallback for channels the hardware can't decode (HEVC, MPEG-2, 10-bit…)
+    implementation("org.videolan.android:libvlc-all:3.6.0")
     implementation("androidx.media3:media3-exoplayer-hls:$media3")
     implementation("androidx.media3:media3-exoplayer-dash:$media3")
     implementation("androidx.media3:media3-exoplayer-rtsp:$media3")

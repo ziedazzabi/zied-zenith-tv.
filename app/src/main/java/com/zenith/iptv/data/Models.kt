@@ -181,6 +181,8 @@ data class Settings(
     /** Apps pinned to the home screen; null = all installed popular apps. */
     val pinnedApps: List<String>? = null,
     val miniPlayer: Boolean = true,
+    /** auto = ExoPlayer with automatic VLC fallback, exo, vlc */
+    val playerEngine: String = "auto",
 )
 
 /** A theme made from a picture the user chose. Theme id is "wp:<id>". */

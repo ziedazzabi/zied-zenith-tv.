@@ -56,6 +56,51 @@ object Net {
         }
     }
 
+    /**
+     * Streams a big JSON list item by item (Xtream live/VOD/series lists can be 50+ MB).
+     * Each object is flattened to string fields; nested values are skipped. Accepts [..] and {"1":{..},..}.
+     */
+    suspend fun forEachObject(url: String, ua: String = "", onItem: (Map<String, String>) -> Unit) = withContext(Dispatchers.IO) {
+        client.newCall(request(url, emptyMap(), ua)).execute().use { r ->
+            checkOk(r)
+            val body = r.body ?: return@use
+            val reader = android.util.JsonReader(java.io.InputStreamReader(body.byteStream(), Charsets.UTF_8))
+            reader.isLenient = true
+            fun readFlat(): Map<String, String> {
+                val m = HashMap<String, String>(24)
+                reader.beginObject()
+                while (reader.hasNext()) {
+                    val k = reader.nextName()
+                    when (reader.peek()) {
+                        android.util.JsonToken.STRING, android.util.JsonToken.NUMBER -> m[k] = reader.nextString()
+                        android.util.JsonToken.BOOLEAN -> m[k] = reader.nextBoolean().toString()
+                        android.util.JsonToken.NULL -> reader.nextNull()
+                        else -> reader.skipValue()
+                    }
+                }
+                reader.endObject()
+                return m
+            }
+            try {
+                when (reader.peek()) {
+                    android.util.JsonToken.BEGIN_ARRAY -> {
+                        reader.beginArray()
+                        while (reader.hasNext()) { if (reader.peek() == android.util.JsonToken.BEGIN_OBJECT) onItem(readFlat()) else reader.skipValue() }
+                        reader.endArray()
+                    }
+                    android.util.JsonToken.BEGIN_OBJECT -> {
+                        reader.beginObject()
+                        while (reader.hasNext()) { reader.nextName(); if (reader.peek() == android.util.JsonToken.BEGIN_OBJECT) onItem(readFlat()) else reader.skipValue() }
+                        reader.endObject()
+                    }
+                    else -> {}
+                }
+            } catch (e: IllegalStateException) {
+                throw IOException("Invalid server response")
+            }
+        }
+    }
+
     private fun checkOk(r: Response) {
         if (!r.isSuccessful) throw IOException("HTTP ${r.code} ${r.message}")
     }

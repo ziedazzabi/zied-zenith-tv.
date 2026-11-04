@@ -30,7 +30,17 @@ export class Html5Engine extends Base {
     this.kind = 'html5';
     const v = this.v;
     v.addEventListener('waiting', () => this.emit('buffering', true));
-    v.addEventListener('playing', () => { this.emit('buffering', false); this.emit('playing'); });
+    v.addEventListener('playing', () => {
+      this.emit('buffering', false); this.emit('playing');
+      // Sound but no picture = the web decoder can't show this video (e.g. MPEG-2 / HEVC): try the next way to play it
+      clearTimeout(this.noVideoTimer);
+      const step = this.step;
+      this.noVideoTimer = setTimeout(() => {
+        if (this.step !== step || v.paused || v.videoWidth > 0) return;
+        if (this.step + 1 < this.plan.length) this.next('No video');
+        else this.emit('audioonly');
+      }, 5000);
+    });
     v.addEventListener('canplay', () => this.emit('buffering', false));
     v.addEventListener('pause', () => this.emit('paused'));
     v.addEventListener('ended', () => this.emit('ended'));
@@ -114,6 +124,7 @@ export class Html5Engine extends Base {
 
   stop() {
     clearTimeout(this.tsTimer);
+    clearTimeout(this.noVideoTimer);
     this.destroyLibs();
     const v = this.v;
     try { v.pause(); } catch (e) { /* ignore */ }

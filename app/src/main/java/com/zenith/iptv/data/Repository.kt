@@ -90,6 +90,9 @@ class Repository(private val context: Context, val store: Store) {
             setCatalog(c)
             store.saveCatalog(c)
             _state.value = LoadState.Ready
+        } catch (e: OutOfMemoryError) {
+            System.gc()
+            if (!silent || _catalog.value == null) _state.value = LoadState.Error(context.getString(com.zenith.iptv.R.string.out_of_memory))
         } catch (e: Exception) {
             if (!silent || _catalog.value == null) _state.value = LoadState.Error(e.message ?: e.javaClass.simpleName)
         }
@@ -118,7 +121,8 @@ class Repository(private val context: Context, val store: Store) {
                 val map = XmltvParser.load(url, ids, from, now + 4 * 86_400_000L, source?.playlist?.userAgent ?: "")
                 _epg.value = map
                 _epgState.value = LoadState.Ready
-            } catch (e: Exception) {
+            } catch (e: Throwable) {
+                if (e is OutOfMemoryError) System.gc()
                 _epgState.value = LoadState.Error(e.message ?: "EPG error")
             }
         }

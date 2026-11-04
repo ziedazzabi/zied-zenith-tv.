@@ -30,6 +30,7 @@ import androidx.compose.material.icons.filled.FiberManualRecord
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.filled.Subtitles
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -82,6 +83,8 @@ fun PlayerMenu(
     onCatchup: (EpgProgram) -> Unit,
     onBackToLive: () -> Unit,
     onDismiss: () -> Unit,
+    usingVlc: Boolean = false,
+    onSwitchEngine: () -> Unit = {},
 ) {
     var page by remember { mutableStateOf(Page.MAIN) }
     val use24h = Graph.store.settings.value.use24h
@@ -110,6 +113,7 @@ fun PlayerMenu(
                     }
                     val sleepLabel = if (sleepAt > 0) timeText(sleepAt, use24h) else stringResource(R.string.off)
                     add(MenuRow(stringResource(R.string.sleep_timer), Icons.Default.Bedtime, sleepLabel) { page = Page.SLEEP })
+                    add(MenuRow(stringResource(R.string.switch_player), Icons.Default.SwapHoriz, if (usingVlc) "VLC → ExoPlayer" else "ExoPlayer → VLC") { onSwitchEngine() })
                 }
                 Page.AUDIO -> trackRows(player, C.TRACK_TYPE_AUDIO, stringResource(R.string.auto)) { onDismiss() }
                 Page.SUBS -> trackRows(player, C.TRACK_TYPE_TEXT, stringResource(R.string.off)) { onDismiss() }

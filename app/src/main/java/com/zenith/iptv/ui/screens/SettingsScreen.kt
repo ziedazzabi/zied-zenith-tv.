@@ -216,6 +216,17 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
                     choice = Choice(t, opts, s.decoderMode) { v -> store.updateSettings { it.copy(decoderMode = v) } }
                 }
             }
+            item {
+                val t = stringResource(R.string.player_engine)
+                val opts = listOf(
+                    "auto" to stringResource(R.string.engine_auto_vlc),
+                    "exo" to "ExoPlayer",
+                    "vlc" to "VLC",
+                )
+                SettingRow(Icons.Default.SettingsInputAntenna, t, opts.firstOrNull { it.first == s.playerEngine }?.second ?: "") {
+                    choice = Choice(t, opts, s.playerEngine) { v -> store.updateSettings { it.copy(playerEngine = v) } }
+                }
+            }
             item { ToggleRow(Icons.Default.PictureInPictureAlt, stringResource(R.string.mini_player), s.miniPlayer) { v -> store.updateSettings { it.copy(miniPlayer = v) } } }
             item { ToggleRow(Icons.Default.OpenInNew, stringResource(R.string.external_player), s.externalPlayer) { v -> store.updateSettings { it.copy(externalPlayer = v) } } }
 

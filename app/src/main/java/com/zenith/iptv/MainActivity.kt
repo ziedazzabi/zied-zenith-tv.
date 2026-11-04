@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
                     Box(Modifier.fillMaxSize().then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())) {
                         AppNav(activity = this@MainActivity)
                     }
+                    CrashReportDialog()
                 }
             }
         }

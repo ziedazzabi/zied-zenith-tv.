@@ -8,3 +8,7 @@
 -dontwarn org.bouncycastle.**
 -dontwarn org.conscrypt.**
 -dontwarn org.openjsse.**
+
+# LibVLC (JNI)
+-keep class org.videolan.libvlc.** { *; }
+-dontwarn org.videolan.**

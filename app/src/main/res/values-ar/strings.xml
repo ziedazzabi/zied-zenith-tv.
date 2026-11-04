@@ -42,6 +42,8 @@
     <string name="contact_hint">تحتاج مساعدة أو لديك اقتراح؟ راسلنا على:</string>
     <string name="continue_watching">متابعة المشاهدة</string>
     <string name="copy_email">نسخ البريد</string>
+    <string name="crash_text">نعتذر! أرسل هذا التقرير إلى %s ليتم إصلاح المشكلة.</string>
+    <string name="crash_title">تم إغلاق Z-Vision بشكل غير متوقع</string>
     <string name="current_pin">الرمز الحالي</string>
     <string name="decoder">مفكك الفيديو</string>
     <string name="decoder_auto">عتادي (موصى به)</string>
@@ -60,6 +62,7 @@
     <string name="edit">تعديل</string>
     <string name="edit_playlist">تعديل قائمة التشغيل</string>
     <string name="email_copied">تم نسخ البريد</string>
+    <string name="engine_auto_vlc">تلقائي (ExoPlayer وVLC عند الحاجة)</string>
     <string name="enter_pin">أدخل الرمز السري</string>
     <string name="epg_offset">فارق توقيت الدليل</string>
     <string name="epg_url">رابط دليل البرامج XMLTV</string>
@@ -132,6 +135,7 @@
     <string name="ok">موافق</string>
     <string name="open_paypal">فتح PayPal</string>
     <string name="optional">اختياري</string>
+    <string name="out_of_memory">هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف.</string>
     <string name="parental_control">الرقابة الأبوية</string>
     <string name="password">كلمة المرور</string>
     <string name="paypal_hint">امسح الرمز أو افتح PayPal وأرسل تبرعك إلى:</string>
@@ -143,6 +147,7 @@
     <string name="play_catchup">تشغيل (إعادة)</string>
     <string name="playback_error">خطأ في التشغيل</string>
     <string name="player">المشغل</string>
+    <string name="player_engine">محرّك التشغيل</string>
     <string name="playlist_name">اسم القائمة</string>
     <string name="playlists">قوائم التشغيل</string>
     <string name="popular_apps">تطبيقات مشهورة</string>
@@ -180,6 +185,7 @@
     <string name="search_hint">قنوات، أفلام، مسلسلات…</string>
     <string name="season_n">الموسم %d</string>
     <string name="send_email">إرسال بريد</string>
+    <string name="send_report">إرسال التقرير</string>
     <string name="series">المسلسلات</string>
     <string name="server_url">رابط الخادم</string>
     <string name="set_reminder">ذكّرني</string>
@@ -202,6 +208,8 @@
     <string name="stop">إيقاف</string>
     <string name="subtitles">الترجمة</string>
     <string name="support_app">ادعم Z-Vision</string>
+    <string name="switch_player">تبديل المشغّل</string>
+    <string name="switched_to_vlc">صيغة صورة هذه القناة (%s) غير مدعومة في جهازك — تم التحويل إلى مشغّل VLC</string>
     <string name="thanks_support">شكرًا لدعمك ❤</string>
     <string name="theme">السمة</string>
     <string name="theme_amoled">أسود نقي</string>

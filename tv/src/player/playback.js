@@ -41,6 +41,13 @@ class PlaybackService {
     engine.on('subtitle', (t) => { if (engine === this.engine) this.emit('subtitle', t); });
     engine.on('ended', () => { if (engine === this.engine) this.onEnded(); });
     engine.on('error', (msg) => { if (engine === this.engine) this.onError(msg); });
+    engine.on('audioonly', () => {
+      // Samsung: its native player decodes far more video formats than the web player
+      if (engine === this.engine && engine === this.html5 && AvplayEngine.available() && this.mode === 'full' && !this.usedAvFallback) {
+        this.usedAvFallback = true;
+        this.pickEngine(true).load(this.url, { live: this.live, startMs: this.live ? 0 : engine.time });
+      }
+    });
   }
 
   setState(p) { this.state = Object.assign({}, this.state, p); this.emit('state', this.state); }
