@@ -4,6 +4,8 @@
     <string name="account">الحساب</string>
     <string name="add_channel">إضافة قناة</string>
     <string name="add_favorite">إضافة إلى المفضلة</string>
+    <string name="add_from_device">من المعرض / USB</string>
+    <string name="add_from_link">من رابط</string>
     <string name="add_my_list">قائمتي</string>
     <string name="add_playlist">إضافة قائمة تشغيل</string>
     <string name="add_profile">إضافة ملف</string>
@@ -31,13 +33,20 @@
     <string name="channel_not_found">القناة %d غير موجودة</string>
     <string name="clock_24h">ساعة 24 ساعة</string>
     <string name="close">إغلاق</string>
+    <string name="color_themes">سمات الألوان</string>
     <string name="continue_watching">متابعة المشاهدة</string>
     <string name="current_pin">الرمز الحالي</string>
     <string name="decoder">مفكك الفيديو</string>
     <string name="decoder_auto">عتادي (موصى به)</string>
     <string name="decoder_software">تفضيل البرمجي</string>
     <string name="delete">حذف</string>
+    <string name="delete_hint">اضغط مطولًا على الصورة (أو زر القائمة في الريموت) لحذفها.</string>
     <string name="delete_playlist_q">حذف قائمة التشغيل هذه؟</string>
+    <string name="dim_light">خفيف</string>
+    <string name="dim_max">أقصى</string>
+    <string name="dim_medium">متوسط</string>
+    <string name="dim_strong">قوي</string>
+    <string name="dimming">تعتيم الصورة</string>
     <string name="director">المخرج</string>
     <string name="earlier">أبكر</string>
     <string name="edit">تعديل</string>
@@ -57,6 +66,8 @@
     <string name="from_start">من البداية</string>
     <string name="general">عام</string>
     <string name="hide_category">إخفاء الفئة</string>
+    <string name="image_link">رابط الصورة (https://…jpg)</string>
+    <string name="image_link_hint">استخدم رابطًا مباشرًا للصورة: افتح الصورة، اضغط عليها مطولًا واختر \"نسخ عنوان الصورة\". روابط صفحات بحث Google لن تعمل.</string>
     <string name="in_my_list">في قائمتي</string>
     <string name="kids_profile">ملف أطفال (يخفي المحتوى المقفل)</string>
     <string name="lang_system">لغة النظام</string>
@@ -83,6 +94,9 @@
     <string name="movies">الأفلام</string>
     <string name="multiview">عرض متعدد</string>
     <string name="my_list">قائمتي</string>
+    <string name="my_picture">صورة</string>
+    <string name="my_pictures">سمات من صوري</string>
+    <string name="my_pictures_hint">اختر أي خلفية (فريقك، فيلم، شخصية...). يستخدمها التطبيق كخلفية ويأخذ ألوان السمة منها.</string>
     <string name="my_playlist">قائمتي</string>
     <string name="name">الاسم</string>
     <string name="new_pin">رمز جديد (4 أرقام أو أكثر)</string>
@@ -91,6 +105,7 @@
     <string name="no_channels">لا توجد قنوات هنا</string>
     <string name="no_epg">لا توجد معلومات عن البرنامج</string>
     <string name="no_external_player">لم يتم العثور على مشغل خارجي</string>
+    <string name="no_file_picker">لا يوجد مدير ملفات على هذا الجهاز. استخدم \"من رابط\".</string>
     <string name="no_playlist">لا توجد قائمة تشغيل بعد</string>
     <string name="no_recordings">لا توجد تسجيلات بعد. سجّل من قائمة المشغل أو من دليل البرامج.</string>
     <string name="no_results">لا توجد نتائج</string>
@@ -178,6 +193,8 @@
     <string name="unlock_category">إزالة القفل</string>
     <string name="user_agent">معرّف المتصفح (User-Agent)</string>
     <string name="username">اسم المستخدم</string>
+    <string name="wallpaper_added">تم إنشاء السمة من صورتك</string>
+    <string name="wallpaper_failed">تعذّر استخدام هذه الصورة</string>
     <string name="watch_from_start">شاهد من البداية</string>
     <string name="watch_live">شاهد مباشرة</string>
     <string name="whos_watching">من يشاهد؟</string>

@@ -4,6 +4,8 @@
     <string name="account">Compte</string>
     <string name="add_channel">Ajouter une chaîne</string>
     <string name="add_favorite">Ajouter aux favoris</string>
+    <string name="add_from_device">Galerie / USB</string>
+    <string name="add_from_link">Depuis un lien</string>
     <string name="add_my_list">Ma liste</string>
     <string name="add_playlist">Ajouter une playlist</string>
     <string name="add_profile">Ajouter un profil</string>
@@ -31,13 +33,20 @@
     <string name="channel_not_found">Chaîne %d introuvable</string>
     <string name="clock_24h">Format 24 h</string>
     <string name="close">Fermer</string>
+    <string name="color_themes">Thèmes de couleurs</string>
     <string name="continue_watching">Reprendre</string>
     <string name="current_pin">Code PIN actuel</string>
     <string name="decoder">Décodeur vidéo</string>
     <string name="decoder_auto">Matériel (recommandé)</string>
     <string name="decoder_software">Préférer logiciel</string>
     <string name="delete">Supprimer</string>
+    <string name="delete_hint">Appui long sur une image (ou MENU sur la télécommande) pour la supprimer.</string>
     <string name="delete_playlist_q">Supprimer cette playlist ?</string>
+    <string name="dim_light">Léger</string>
+    <string name="dim_max">Maximum</string>
+    <string name="dim_medium">Moyen</string>
+    <string name="dim_strong">Fort</string>
+    <string name="dimming">Assombrissement de l\'image</string>
     <string name="director">Réalisateur</string>
     <string name="earlier">Plus tôt</string>
     <string name="edit">Modifier</string>
@@ -57,6 +66,8 @@
     <string name="from_start">Depuis le début</string>
     <string name="general">Général</string>
     <string name="hide_category">Masquer la catégorie</string>
+    <string name="image_link">Lien de l\'image (https://…jpg)</string>
+    <string name="image_link_hint">Utilisez un lien direct vers l\'image : ouvrez l\'image, appui long puis « Copier l\'adresse de l\'image ». Les liens de recherche Google ne fonctionnent pas.</string>
     <string name="in_my_list">Dans Ma liste</string>
     <string name="kids_profile">Profil enfant (masque le contenu verrouillé)</string>
     <string name="lang_system">Langue du système</string>
@@ -83,6 +94,9 @@
     <string name="movies">Films</string>
     <string name="multiview">Multi-écran</string>
     <string name="my_list">Ma liste</string>
+    <string name="my_picture">Image</string>
+    <string name="my_pictures">Thèmes à partir de mes images</string>
+    <string name="my_pictures_hint">Choisissez n\'importe quel fond d\'écran (votre équipe, un film, un personnage...). L\'application l\'utilise en arrière-plan et en tire les couleurs du thème.</string>
     <string name="my_playlist">Ma playlist</string>
     <string name="name">Nom</string>
     <string name="new_pin">Nouveau PIN (4 chiffres min.)</string>
@@ -91,6 +105,7 @@
     <string name="no_channels">Aucune chaîne ici</string>
     <string name="no_epg">Pas d\'informations de programme</string>
     <string name="no_external_player">Aucun lecteur externe trouvé</string>
+    <string name="no_file_picker">Aucun sélecteur de fichiers sur cet appareil. Utilisez « Depuis un lien ».</string>
     <string name="no_playlist">Aucune playlist</string>
     <string name="no_recordings">Aucun enregistrement. Enregistrez depuis le lecteur ou le guide TV.</string>
     <string name="no_results">Aucun résultat</string>
@@ -178,6 +193,8 @@
     <string name="unlock_category">Retirer le verrouillage</string>
     <string name="user_agent">User-Agent</string>
     <string name="username">Identifiant</string>
+    <string name="wallpaper_added">Thème créé à partir de votre image</string>
+    <string name="wallpaper_failed">Impossible d\'utiliser cette image</string>
     <string name="watch_from_start">Regarder depuis le début</string>
     <string name="watch_live">Regarder en direct</string>
     <string name="whos_watching">Qui regarde ?</string>

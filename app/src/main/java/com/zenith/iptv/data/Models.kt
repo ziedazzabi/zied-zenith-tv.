@@ -177,4 +177,18 @@ data class Settings(
     val theme: String = "midnight",
     val layoutMode: String = "auto",
     val uiScale: Float = 1f,
+    val wallpapers: List<Wallpaper> = emptyList(),
+)
+
+/** A theme made from a picture the user chose. Theme id is "wp:<id>". */
+@Serializable
+data class Wallpaper(
+    val id: String,
+    val name: String,
+    val file: String,
+    val base: Long,
+    val accent: Long,
+    val accent2: Long,
+    val tiles: List<Long> = emptyList(),
+    val dim: Float = 0.55f,
 )

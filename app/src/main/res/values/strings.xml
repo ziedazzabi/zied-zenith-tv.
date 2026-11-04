@@ -4,6 +4,8 @@
     <string name="account">Account</string>
     <string name="add_channel">Add channel</string>
     <string name="add_favorite">Add to favorites</string>
+    <string name="add_from_device">From gallery / USB</string>
+    <string name="add_from_link">From a link</string>
     <string name="add_my_list">My list</string>
     <string name="add_playlist">Add playlist</string>
     <string name="add_profile">Add profile</string>
@@ -31,13 +33,20 @@
     <string name="channel_not_found">Channel %d not found</string>
     <string name="clock_24h">24-hour clock</string>
     <string name="close">Close</string>
+    <string name="color_themes">Colour themes</string>
     <string name="continue_watching">Continue watching</string>
     <string name="current_pin">Current PIN</string>
     <string name="decoder">Video decoder</string>
     <string name="decoder_auto">Hardware (recommended)</string>
     <string name="decoder_software">Prefer software</string>
     <string name="delete">Delete</string>
+    <string name="delete_hint">Long-press a picture (or press MENU on the remote) to delete it.</string>
     <string name="delete_playlist_q">Delete this playlist?</string>
+    <string name="dim_light">Light</string>
+    <string name="dim_max">Maximum</string>
+    <string name="dim_medium">Medium</string>
+    <string name="dim_strong">Strong</string>
+    <string name="dimming">Picture dimming</string>
     <string name="director">Director</string>
     <string name="earlier">Earlier</string>
     <string name="edit">Edit</string>
@@ -57,6 +66,8 @@
     <string name="from_start">From start</string>
     <string name="general">General</string>
     <string name="hide_category">Hide category</string>
+    <string name="image_link">Image link (https://…jpg)</string>
+    <string name="image_link_hint">Use a direct image link: open the picture, long-press it and choose \"Copy image address\". Google search page links won\'t work.</string>
     <string name="in_my_list">In My list</string>
     <string name="kids_profile">Kids profile (hides locked content)</string>
     <string name="lang_system">System default</string>
@@ -83,6 +94,9 @@
     <string name="movies">Movies</string>
     <string name="multiview">Multi-view</string>
     <string name="my_list">My list</string>
+    <string name="my_picture">Picture</string>
+    <string name="my_pictures">Themes from my pictures</string>
+    <string name="my_pictures_hint">Pick any wallpaper (your team, a movie, a character...). The app uses it as the background and takes the theme colours from it.</string>
     <string name="my_playlist">My playlist</string>
     <string name="name">Name</string>
     <string name="new_pin">New PIN (4+ digits)</string>
@@ -91,6 +105,7 @@
     <string name="no_channels">No channels here</string>
     <string name="no_epg">No programme information</string>
     <string name="no_external_player">No external video player found</string>
+    <string name="no_file_picker">No file picker on this device. Use \"From a link\" instead.</string>
     <string name="no_playlist">No playlist yet</string>
     <string name="no_recordings">No recordings yet. Record from the player menu or the TV guide.</string>
     <string name="no_results">No results</string>
@@ -178,6 +193,8 @@
     <string name="unlock_category">Remove PIN lock</string>
     <string name="user_agent">User-Agent</string>
     <string name="username">Username</string>
+    <string name="wallpaper_added">Theme created from your picture</string>
+    <string name="wallpaper_failed">Couldn\'t use this picture</string>
     <string name="watch_from_start">Watch from start</string>
     <string name="watch_live">Watch live</string>
     <string name="whos_watching">Who\'s watching?</string>

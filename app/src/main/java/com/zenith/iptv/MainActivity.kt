@@ -26,7 +26,9 @@ import androidx.core.view.WindowCompat
 import androidx.core.content.ContextCompat
 import com.zenith.iptv.player.Playback
 import com.zenith.iptv.ui.AppNav
-import com.zenith.iptv.ui.Themes
+import com.zenith.iptv.ui.ThemeResolver
+import com.zenith.iptv.ui.WallpaperBackground
+import com.zenith.iptv.ui.Wallpapers
 import com.zenith.iptv.ui.Z
 import com.zenith.iptv.ui.ZenithTheme
 import com.zenith.iptv.ui.isTvDevice
@@ -49,10 +51,11 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
         ) requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), 1)
 
-        Z.palette = Themes.byId(Graph.store.settings.value.theme)
+        Z.palette = ThemeResolver.resolve(Graph.store.settings.value)
         setContent {
             val s by Graph.store.settings.collectAsState()
-            LaunchedEffect(s.theme) { Z.palette = Themes.byId(s.theme) }
+            LaunchedEffect(s.theme, s.wallpapers) { Z.palette = ThemeResolver.resolve(s) }
+            val wallpaper = Wallpapers.active(s)
             val light = Z.palette.light
             SideEffect {
                 WindowCompat.getInsetsController(window, window.decorView).apply {
@@ -61,13 +64,12 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             ZenithTheme(layoutMode = s.layoutMode, uiScale = s.uiScale, realTv = tv) {
-                Box(
-                    Modifier.fillMaxSize()
-                        .background(Z.bg)
-                        .background(Brush.verticalGradient(0f to Z.bgGlow, 0.45f to Z.bg, 1f to Z.bg))
-                        .then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())
-                ) {
-                    AppNav(activity = this@MainActivity)
+                Box(Modifier.fillMaxSize().background(Z.bg)) {
+                    if (wallpaper != null && !inPip.value) WallpaperBackground(wallpaper)
+                    else Box(Modifier.fillMaxSize().background(Brush.verticalGradient(0f to Z.bgGlow, 0.45f to Z.bg, 1f to Z.bg)))
+                    Box(Modifier.fillMaxSize().then(if (tv || inPip.value) Modifier else Modifier.safeDrawingPadding())) {
+                        AppNav(activity = this@MainActivity)
+                    }
                 }
             }
         }
