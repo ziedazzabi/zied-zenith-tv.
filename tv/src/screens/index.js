@@ -10,6 +10,7 @@ import { SettingsScreen } from './settings.js';
 import { PlaylistsScreen, AddPlaylistScreen } from './playlists.js';
 import { ProfilesScreen } from './profiles.js';
 import { AppsScreen } from './apps.js';
+import { AboutScreen } from './about.js';
 
 export const screens = {
   home: HomeScreen,
@@ -26,4 +27,5 @@ export const screens = {
   addPlaylist: AddPlaylistScreen,
   profiles: ProfilesScreen,
   apps: AppsScreen,
+  about: AboutScreen,
 };

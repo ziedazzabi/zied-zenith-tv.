@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">حول التطبيق</string>
+    <string name="about_app">حول Z-Vision</string>
     <string name="account">الحساب</string>
     <string name="add_channel">إضافة قناة</string>
     <string name="add_favorite">إضافة إلى المفضلة</string>
@@ -37,7 +38,10 @@
     <string name="clock_24h">ساعة 24 ساعة</string>
     <string name="close">إغلاق</string>
     <string name="color_themes">سمات الألوان</string>
+    <string name="contact">التواصل</string>
+    <string name="contact_hint">تحتاج مساعدة أو لديك اقتراح؟ راسلنا على:</string>
     <string name="continue_watching">متابعة المشاهدة</string>
+    <string name="copy_email">نسخ البريد</string>
     <string name="current_pin">الرمز الحالي</string>
     <string name="decoder">مفكك الفيديو</string>
     <string name="decoder_auto">عتادي (موصى به)</string>
@@ -51,9 +55,11 @@
     <string name="dim_strong">قوي</string>
     <string name="dimming">تعتيم الصورة</string>
     <string name="director">المخرج</string>
+    <string name="donate_text">تطبيق Z-Vision مجاني وبدون إعلانات. إن أعجبك يمكنك دعم تطويره بتبرّع بأي مبلغ.</string>
     <string name="earlier">أبكر</string>
     <string name="edit">تعديل</string>
     <string name="edit_playlist">تعديل قائمة التشغيل</string>
+    <string name="email_copied">تم نسخ البريد</string>
     <string name="enter_pin">أدخل الرمز السري</string>
     <string name="epg_offset">فارق توقيت الدليل</string>
     <string name="epg_url">رابط دليل البرامج XMLTV</string>
@@ -69,6 +75,7 @@
     <string name="from_start">من البداية</string>
     <string name="general">عام</string>
     <string name="hide_category">إخفاء الفئة</string>
+    <string name="idea_dev">فكرة وتطوير</string>
     <string name="image_link">رابط الصورة (https://…jpg)</string>
     <string name="image_link_hint">استخدم رابطًا مباشرًا للصورة: افتح الصورة، اضغط عليها مطولًا واختر \"نسخ عنوان الصورة\". روابط صفحات بحث Google لن تعمل.</string>
     <string name="in_my_list">في قائمتي</string>
@@ -107,6 +114,7 @@
     <string name="my_pictures_hint">اختر أي خلفية (فريقك، فيلم، شخصية...). يستخدمها التطبيق كخلفية ويأخذ ألوان السمة منها.</string>
     <string name="my_playlist">قائمتي</string>
     <string name="name">الاسم</string>
+    <string name="neteller_hint">في تطبيق Neteller اختر تحويل الأموال (Money Transfer) وأرسل إلى:</string>
     <string name="new_pin">رمز جديد (4 أرقام أو أكثر)</string>
     <string name="next">التالي</string>
     <string name="no_catchup">إعادة المشاهدة غير متاحة لهذا البرنامج</string>
@@ -122,9 +130,11 @@
     <string name="now">الآن</string>
     <string name="off">إيقاف</string>
     <string name="ok">موافق</string>
+    <string name="open_paypal">فتح PayPal</string>
     <string name="optional">اختياري</string>
     <string name="parental_control">الرقابة الأبوية</string>
     <string name="password">كلمة المرور</string>
+    <string name="paypal_hint">امسح الرمز أو افتح PayPal وأرسل تبرعك إلى:</string>
     <string name="pick_file">اختيار ملف من الجهاز</string>
     <string name="pin_changed">تم تغيير الرمز</string>
     <string name="pin_too_short">يجب أن يتكون الرمز من 4 أرقام على الأقل</string>
@@ -163,11 +173,13 @@
     <string name="retry">إعادة المحاولة</string>
     <string name="save">حفظ</string>
     <string name="save_and_load">حفظ وتحميل</string>
+    <string name="scan_hint">امسح الرمز بكاميرا هاتفك</string>
     <string name="schedule_recording">تسجيل هذا البرنامج</string>
     <string name="search">بحث</string>
     <string name="search_channels">ابحث في القنوات</string>
     <string name="search_hint">قنوات، أفلام، مسلسلات…</string>
     <string name="season_n">الموسم %d</string>
+    <string name="send_email">إرسال بريد</string>
     <string name="series">المسلسلات</string>
     <string name="server_url">رابط الخادم</string>
     <string name="set_reminder">ذكّرني</string>
@@ -189,6 +201,8 @@
     <string name="state_scheduled">مجدول</string>
     <string name="stop">إيقاف</string>
     <string name="subtitles">الترجمة</string>
+    <string name="support_app">ادعم Z-Vision</string>
+    <string name="thanks_support">شكرًا لدعمك ❤</string>
     <string name="theme">السمة</string>
     <string name="theme_amoled">أسود نقي</string>
     <string name="theme_cinema">سينما</string>
@@ -205,6 +219,7 @@
     <string name="unpinned_home">أزيل من الرئيسية</string>
     <string name="user_agent">معرّف المتصفح (User-Agent)</string>
     <string name="username">اسم المستخدم</string>
+    <string name="version_n">الإصدار %s</string>
     <string name="wallpaper_added">تم إنشاء السمة من صورتك</string>
     <string name="wallpaper_failed">تعذّر استخدام هذه الصورة</string>
     <string name="watch_from_start">شاهد من البداية</string>

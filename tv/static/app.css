@@ -483,3 +483,27 @@ html.avplay .vl-full { background: transparent; }
 .no-grid .mv-grid.n2 > * { width: calc(50% - 0.6rem); height: calc(100% - 0.6rem); margin: 0.3rem; }
 .no-grid .keypad { display: flex; flex-wrap: wrap; width: 23.6rem; margin: 0 auto; }
 .no-grid .key { width: 7rem; margin: 0.4rem; }
+
+/* about / donate */
+.ibtn.heart { color: var(--accent2); }
+.about-page { flex: 1; max-width: 120rem; padding: 0 0.4rem 4rem; }
+.about-head { display: flex; align-items: center; padding: 1rem 0 0.6rem; }
+.about-head img { width: 9rem; height: 9rem; margin: 0 2rem 0 0; }
+[dir=rtl] .about-head img { margin: 0 0 0 2rem; }
+.about-name { font-size: 3.4rem; font-weight: 800; }
+.about-name .z { color: var(--accent); }
+.about-credit { font-size: 1.6rem; font-weight: 700; margin-top: 0.4rem; }
+.donate-text { font-size: 1.45rem; line-height: 1.5; max-width: 90rem; margin: 0 0.4rem 1.2rem; }
+.pay-row { display: flex; flex-wrap: wrap; }
+.pay-row > .pay-card { flex: 1; min-width: 50rem; margin: 0 1.4rem 1.4rem 0; }
+[dir=rtl] .pay-row > .pay-card { margin: 0 0 1.4rem 1.4rem; }
+.pay-card { display: flex; align-items: center; background: var(--s1); border-radius: 1.2rem; padding: 1.6rem; margin-bottom: 1.2rem; }
+.pay-card .qr { width: 15rem; height: 15rem; border-radius: 0.8rem; background: #fff; flex: none; margin: 0 2rem 0 0; }
+[dir=rtl] .pay-card .qr { margin: 0 0 0 2rem; }
+.pay-main { flex: 1; min-width: 0; }
+.pay-title { font-size: 2rem; font-weight: 800; display: flex; align-items: center; margin-bottom: 0.5rem; }
+.pay-dot { width: 1.2rem; height: 1.2rem; border-radius: 0.3rem; margin: 0 0.8rem; }
+.pay-email { font-size: 1.7rem; font-weight: 700; color: var(--accent); margin: 0.3rem 0; direction: ltr; unicode-bidi: embed; }
+.pay-actions { margin-top: 1rem; }
+.thanks { text-align: center; color: var(--accent); font-size: 1.6rem; font-weight: 700; margin: 1rem 0; }
+[dir=rtl] .pay-email { text-align: right; }

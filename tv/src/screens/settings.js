@@ -77,7 +77,11 @@ export function SettingsScreen(params, nav) {
 
     list.appendChild(sectionTitle(t('about'), 'info'));
     if (repo.catalog && repo.catalog.accountInfo) list.appendChild(settingRow('person', t('account'), repo.catalog.accountInfo, () => {}));
-    list.appendChild(settingRow('info', 'Z-Vision', APP_VERSION + ' · ' + platformName, () => helpDialog()));
+    add(list,
+      settingRow('heart', t('support_app'), 'PayPal · Neteller', () => nav.go('about')),
+      settingRow('info', t('about_app'), t('idea_dev') + ': Zied Azzabi · ' + APP_VERSION + ' · ' + platformName, () => nav.go('about')),
+      settingRow('person', t('contact'), 'zied.azzabi@gmail.com', () => nav.go('about')),
+      settingRow('tv', t('remote_help'), '', () => helpDialog()));
 
     const all = list.querySelectorAll('.f');
     if (keepIdx >= 0 && all[keepIdx]) Focus.set(all[keepIdx]);

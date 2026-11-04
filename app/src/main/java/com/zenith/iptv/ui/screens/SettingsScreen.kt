@@ -51,6 +51,8 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.AspectRatio
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Lock
@@ -242,7 +244,9 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
 
             item { SectionTitle(stringResource(R.string.about)) }
             if (!catalog?.accountInfo.isNullOrBlank()) item { SettingRow(Icons.Default.AccountCircle, stringResource(R.string.account), catalog!!.accountInfo) {} }
-            item { SettingRow(Icons.Default.Info, "Z-Vision", BuildConfigInfo.version(ctx)) {} }
+            item { SettingRow(Icons.Default.Favorite, stringResource(R.string.support_app), "PayPal · Neteller") { nav.go(Routes.ABOUT) } }
+            item { SettingRow(Icons.Default.Info, stringResource(R.string.about_app), stringResource(R.string.idea_dev) + ": " + DEVELOPER + " · " + BuildConfigInfo.version(ctx)) { nav.go(Routes.ABOUT) } }
+            item { SettingRow(Icons.Default.Email, stringResource(R.string.contact), CONTACT_EMAIL) { nav.go(Routes.ABOUT) } }
         }
     }
 

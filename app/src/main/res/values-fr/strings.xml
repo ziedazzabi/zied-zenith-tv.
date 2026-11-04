@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">À propos</string>
+    <string name="about_app">À propos de Z-Vision</string>
     <string name="account">Compte</string>
     <string name="add_channel">Ajouter une chaîne</string>
     <string name="add_favorite">Ajouter aux favoris</string>
@@ -37,7 +38,10 @@
     <string name="clock_24h">Format 24 h</string>
     <string name="close">Fermer</string>
     <string name="color_themes">Thèmes de couleurs</string>
+    <string name="contact">Contact</string>
+    <string name="contact_hint">Besoin d\'aide ou une suggestion ? Écrivez à :</string>
     <string name="continue_watching">Reprendre</string>
+    <string name="copy_email">Copier l\'e-mail</string>
     <string name="current_pin">Code PIN actuel</string>
     <string name="decoder">Décodeur vidéo</string>
     <string name="decoder_auto">Matériel (recommandé)</string>
@@ -51,9 +55,11 @@
     <string name="dim_strong">Fort</string>
     <string name="dimming">Assombrissement de l\'image</string>
     <string name="director">Réalisateur</string>
+    <string name="donate_text">Z-Vision est gratuit et sans publicité. S\'il vous plaît, vous pouvez soutenir son développement avec un don du montant de votre choix.</string>
     <string name="earlier">Plus tôt</string>
     <string name="edit">Modifier</string>
     <string name="edit_playlist">Modifier la playlist</string>
+    <string name="email_copied">E-mail copié</string>
     <string name="enter_pin">Entrez le code parental</string>
     <string name="epg_offset">Décalage horaire du guide</string>
     <string name="epg_url">URL EPG (XMLTV)</string>
@@ -69,6 +75,7 @@
     <string name="from_start">Depuis le début</string>
     <string name="general">Général</string>
     <string name="hide_category">Masquer la catégorie</string>
+    <string name="idea_dev">Idée et développement</string>
     <string name="image_link">Lien de l\'image (https://…jpg)</string>
     <string name="image_link_hint">Utilisez un lien direct vers l\'image : ouvrez l\'image, appui long puis « Copier l\'adresse de l\'image ». Les liens de recherche Google ne fonctionnent pas.</string>
     <string name="in_my_list">Dans Ma liste</string>
@@ -107,6 +114,7 @@
     <string name="my_pictures_hint">Choisissez n\'importe quel fond d\'écran (votre équipe, un film, un personnage...). L\'application l\'utilise en arrière-plan et en tire les couleurs du thème.</string>
     <string name="my_playlist">Ma playlist</string>
     <string name="name">Nom</string>
+    <string name="neteller_hint">Dans l\'app Neteller, choisissez Transfert d\'argent et envoyez à :</string>
     <string name="new_pin">Nouveau PIN (4 chiffres min.)</string>
     <string name="next">Ensuite</string>
     <string name="no_catchup">Replay indisponible pour ce programme</string>
@@ -122,9 +130,11 @@
     <string name="now">Maintenant</string>
     <string name="off">Désactivé</string>
     <string name="ok">OK</string>
+    <string name="open_paypal">Ouvrir PayPal</string>
     <string name="optional">Facultatif</string>
     <string name="parental_control">Contrôle parental</string>
     <string name="password">Mot de passe</string>
+    <string name="paypal_hint">Scannez le code ou ouvrez PayPal et envoyez votre don à :</string>
     <string name="pick_file">Choisir un fichier</string>
     <string name="pin_changed">PIN modifié</string>
     <string name="pin_too_short">Le PIN doit avoir au moins 4 chiffres</string>
@@ -163,11 +173,13 @@
     <string name="retry">Réessayer</string>
     <string name="save">Enregistrer</string>
     <string name="save_and_load">Enregistrer et charger</string>
+    <string name="scan_hint">Scannez avec l\'appareil photo de votre téléphone</string>
     <string name="schedule_recording">Enregistrer ce programme</string>
     <string name="search">Rechercher</string>
     <string name="search_channels">Rechercher une chaîne</string>
     <string name="search_hint">Chaînes, films, séries…</string>
     <string name="season_n">Saison %d</string>
+    <string name="send_email">Envoyer un e-mail</string>
     <string name="series">Séries</string>
     <string name="server_url">URL du serveur</string>
     <string name="set_reminder">Me le rappeler</string>
@@ -189,6 +201,8 @@
     <string name="state_scheduled">Programmé</string>
     <string name="stop">Arrêter</string>
     <string name="subtitles">Sous-titres</string>
+    <string name="support_app">Soutenir Z-Vision</string>
+    <string name="thanks_support">Merci pour votre soutien ❤</string>
     <string name="theme">Thème</string>
     <string name="theme_amoled">Noir pur</string>
     <string name="theme_cinema">Cinéma</string>
@@ -205,6 +219,7 @@
     <string name="unpinned_home">Retirée de l\'accueil</string>
     <string name="user_agent">User-Agent</string>
     <string name="username">Identifiant</string>
+    <string name="version_n">Version %s</string>
     <string name="wallpaper_added">Thème créé à partir de votre image</string>
     <string name="wallpaper_failed">Impossible d\'utiliser cette image</string>
     <string name="watch_from_start">Regarder depuis le début</string>

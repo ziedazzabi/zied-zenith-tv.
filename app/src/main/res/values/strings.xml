@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="about">About</string>
+    <string name="about_app">About Z-Vision</string>
     <string name="account">Account</string>
     <string name="add_channel">Add channel</string>
     <string name="add_favorite">Add to favorites</string>
@@ -37,7 +38,10 @@
     <string name="clock_24h">24-hour clock</string>
     <string name="close">Close</string>
     <string name="color_themes">Colour themes</string>
+    <string name="contact">Contact</string>
+    <string name="contact_hint">Need help or have a suggestion? Write to:</string>
     <string name="continue_watching">Continue watching</string>
+    <string name="copy_email">Copy email</string>
     <string name="current_pin">Current PIN</string>
     <string name="decoder">Video decoder</string>
     <string name="decoder_auto">Hardware (recommended)</string>
@@ -51,9 +55,11 @@
     <string name="dim_strong">Strong</string>
     <string name="dimming">Picture dimming</string>
     <string name="director">Director</string>
+    <string name="donate_text">Z-Vision is free and has no ads. If you enjoy it, you can support its development with a donation of any amount.</string>
     <string name="earlier">Earlier</string>
     <string name="edit">Edit</string>
     <string name="edit_playlist">Edit playlist</string>
+    <string name="email_copied">Email copied</string>
     <string name="enter_pin">Enter parental PIN</string>
     <string name="epg_offset">Guide time offset</string>
     <string name="epg_url">EPG (XMLTV) URL</string>
@@ -69,6 +75,7 @@
     <string name="from_start">From start</string>
     <string name="general">General</string>
     <string name="hide_category">Hide category</string>
+    <string name="idea_dev">Idea &amp; development</string>
     <string name="image_link">Image link (https://…jpg)</string>
     <string name="image_link_hint">Use a direct image link: open the picture, long-press it and choose \"Copy image address\". Google search page links won\'t work.</string>
     <string name="in_my_list">In My list</string>
@@ -107,6 +114,7 @@
     <string name="my_pictures_hint">Pick any wallpaper (your team, a movie, a character...). The app uses it as the background and takes the theme colours from it.</string>
     <string name="my_playlist">My playlist</string>
     <string name="name">Name</string>
+    <string name="neteller_hint">In the Neteller app choose Money Transfer and send to:</string>
     <string name="new_pin">New PIN (4+ digits)</string>
     <string name="next">Next</string>
     <string name="no_catchup">Catch-up not available for this programme</string>
@@ -122,9 +130,11 @@
     <string name="now">Now</string>
     <string name="off">Off</string>
     <string name="ok">OK</string>
+    <string name="open_paypal">Open PayPal</string>
     <string name="optional">Optional</string>
     <string name="parental_control">Parental control</string>
     <string name="password">Password</string>
+    <string name="paypal_hint">Scan the code or open PayPal and send your donation to:</string>
     <string name="pick_file">Choose file on device</string>
     <string name="pin_changed">PIN changed</string>
     <string name="pin_too_short">PIN must have at least 4 digits</string>
@@ -163,11 +173,13 @@
     <string name="retry">Retry</string>
     <string name="save">Save</string>
     <string name="save_and_load">Save &amp; load</string>
+    <string name="scan_hint">Scan with your phone camera</string>
     <string name="schedule_recording">Record this programme</string>
     <string name="search">Search</string>
     <string name="search_channels">Search channels</string>
     <string name="search_hint">Channels, movies, series…</string>
     <string name="season_n">Season %d</string>
+    <string name="send_email">Send email</string>
     <string name="series">Series</string>
     <string name="server_url">Server URL</string>
     <string name="set_reminder">Remind me</string>
@@ -189,6 +201,8 @@
     <string name="state_scheduled">Scheduled</string>
     <string name="stop">Stop</string>
     <string name="subtitles">Subtitles</string>
+    <string name="support_app">Support Z-Vision</string>
+    <string name="thanks_support">Thank you for your support ❤</string>
     <string name="theme">Theme</string>
     <string name="theme_amoled">Pure Black</string>
     <string name="theme_cinema">Cinema</string>
@@ -205,6 +219,7 @@
     <string name="unpinned_home">Removed from home screen</string>
     <string name="user_agent">User-Agent</string>
     <string name="username">Username</string>
+    <string name="version_n">Version %s</string>
     <string name="wallpaper_added">Theme created from your picture</string>
     <string name="wallpaper_failed">Couldn\'t use this picture</string>
     <string name="watch_from_start">Watch from start</string>

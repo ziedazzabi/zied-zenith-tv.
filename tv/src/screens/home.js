@@ -19,6 +19,7 @@ export function HomeScreen(params, nav) {
   const header = h('div', { class: 'hdr home-hdr' },
     h('div', { class: 'brand' }, h('img', { src: 'img/mark.png', alt: '' }), h('span', {}, h('span', { class: 'z', text: 'Z-' }), 'Vision')),
     plChip, h('div', { class: 'grow' }), clock,
+    fz(h('div', { class: 'ibtn heart' }, icon('heart')), { click: () => nav.go('about') }),
     fz(h('div', { class: 'ibtn' }, icon('search')), { click: () => nav.go('search') }), avatar);
   const body = h('div', { class: 'body home scroll' });
   const el = h('div', { class: 'screen' }, header, body);

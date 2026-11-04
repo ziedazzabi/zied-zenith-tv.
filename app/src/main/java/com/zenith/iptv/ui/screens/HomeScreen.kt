@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.FiberManualRecord
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.LiveTv
 import androidx.compose.material.icons.filled.Movie
@@ -115,6 +116,10 @@ fun HomeScreen(nav: Nav) {
             }
             Spacer(Modifier.weight(1f))
             if (wide) Text(timeText(clock, settings.use24h), color = Z.text, fontSize = 18.sp, modifier = Modifier.padding(end = 16.dp))
+            Focusable(onClick = { nav.go(Routes.ABOUT) }, shape = CircleShape) {
+                Icon(Icons.Default.Favorite, stringResource(R.string.support_app), tint = Z.pink, modifier = Modifier.padding(10.dp))
+            }
+            Spacer(Modifier.width(8.dp))
             Focusable(onClick = { nav.go(Routes.SEARCH) }, shape = CircleShape) {
                 Icon(Icons.Default.Search, stringResource(R.string.search), tint = Z.text, modifier = Modifier.padding(10.dp))
             }

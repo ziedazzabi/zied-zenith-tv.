@@ -213,6 +213,21 @@ S = {
 "no_store": ("No app store found on this device", "لا يوجد متجر تطبيقات على هذا الجهاز", "Aucune boutique d'applications sur cet appareil"),
 "mini_player": ("Mini player when leaving a channel", "مشغّل مصغّر عند الخروج من القناة", "Mini-lecteur en quittant une chaîne"),
 "minimize": ("Minimize", "تصغير", "Réduire"),
+"about_app": ("About Z-Vision", "حول Z-Vision", "À propos de Z-Vision"),
+"idea_dev": ("Idea & development", "فكرة وتطوير", "Idée et développement"),
+"version_n": ("Version %s", "الإصدار %s", "Version %s"),
+"contact": ("Contact", "التواصل", "Contact"),
+"contact_hint": ("Need help or have a suggestion? Write to:", "تحتاج مساعدة أو لديك اقتراح؟ راسلنا على:", "Besoin d'aide ou une suggestion ? Écrivez à :"),
+"scan_hint": ("Scan with your phone camera", "امسح الرمز بكاميرا هاتفك", "Scannez avec l'appareil photo de votre téléphone"),
+"send_email": ("Send email", "إرسال بريد", "Envoyer un e-mail"),
+"copy_email": ("Copy email", "نسخ البريد", "Copier l'e-mail"),
+"email_copied": ("Email copied", "تم نسخ البريد", "E-mail copié"),
+"support_app": ("Support Z-Vision", "ادعم Z-Vision", "Soutenir Z-Vision"),
+"donate_text": ("Z-Vision is free and has no ads. If you enjoy it, you can support its development with a donation of any amount.", "تطبيق Z-Vision مجاني وبدون إعلانات. إن أعجبك يمكنك دعم تطويره بتبرّع بأي مبلغ.", "Z-Vision est gratuit et sans publicité. S'il vous plaît, vous pouvez soutenir son développement avec un don du montant de votre choix."),
+"paypal_hint": ("Scan the code or open PayPal and send your donation to:", "امسح الرمز أو افتح PayPal وأرسل تبرعك إلى:", "Scannez le code ou ouvrez PayPal et envoyez votre don à :"),
+"open_paypal": ("Open PayPal", "فتح PayPal", "Ouvrir PayPal"),
+"neteller_hint": ("In the Neteller app choose Money Transfer and send to:", "في تطبيق Neteller اختر تحويل الأموال (Money Transfer) وأرسل إلى:", "Dans l'app Neteller, choisissez Transfert d'argent et envoyez à :"),
+"thanks_support": ("Thank you for your support ❤", "شكرًا لدعمك ❤", "Merci pour votre soutien ❤"),
 }
 import sys, os
 used = set(open('/tmp/claude-0/strings_used.txt').read().split()) | {"app_name"}

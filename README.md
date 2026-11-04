@@ -4,6 +4,10 @@
 
 An IPTV player for **Android TV boxes, phones/tablets, Samsung TVs (Tizen) and LG TVs (webOS)**, inspired by the best parts of MyTVOnline, TiviMate, IPTV Smarters and others. Interface in **English, العربية (RTL) and Français**.
 
+**Idea & development: Zied Azzabi** — zied.azzabi@gmail.com
+
+**Support Z-Vision:** PayPal or Neteller to zied.azzabi@yahoo.fr (also in the app: Settings → Support Z-Vision).
+
 > Z-Vision is a player only — it ships with no channels. Add the playlist your provider gave you.
 
 ## Sources

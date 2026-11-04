@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.zenith.iptv.player.MiniPlayer
 import com.zenith.iptv.player.MiniPlayerOverlay
+import com.zenith.iptv.ui.screens.AboutScreen
 import com.zenith.iptv.ui.screens.AddPlaylistScreen
 import com.zenith.iptv.ui.screens.AppsScreen
 import com.zenith.iptv.ui.screens.DetailsScreen
@@ -55,6 +56,7 @@ object Routes {
     const val PLAYER = "player"
     const val MULTIVIEW = "multiview"
     const val APPS = "apps"
+    const val ABOUT = "about"
 
     fun addPlaylist(id: String = "") = "add_playlist?id=${Uri.encode(id)}"
     fun profiles(pick: Boolean = false) = "profiles?pick=$pick"
@@ -140,6 +142,7 @@ fun AppNav(activity: MainActivity) {
         composable(Routes.RECORDINGS) { RecordingsScreen(nav) }
         composable(Routes.PLAYER) { PlayerScreen(onBack = { nav.back() }) }
         composable(Routes.APPS) { AppsScreen(nav) }
+        composable(Routes.ABOUT) { AboutScreen(nav) }
         composable(Routes.MULTIVIEW) { MultiViewScreen(onBack = { nav.back() }) }
         composable(
             Routes.ADD_PLAYLIST,
