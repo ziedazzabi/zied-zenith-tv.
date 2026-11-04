@@ -81,7 +81,7 @@ dependencies {
     // VLC: software decoding fallback for channels the hardware can't decode (HEVC, MPEG-2, 10-bit…)
     implementation("org.videolan.android:libvlc-all:3.6.0")
     // FFmpeg audio decoders for ExoPlayer (AC-3, E-AC-3, DTS, MP2… on boxes without them)
-    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.5.1+1")
+    implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.5.0+1")
     implementation("androidx.media3:media3-exoplayer-hls:$media3")
     implementation("androidx.media3:media3-exoplayer-dash:$media3")
     implementation("androidx.media3:media3-exoplayer-rtsp:$media3")
