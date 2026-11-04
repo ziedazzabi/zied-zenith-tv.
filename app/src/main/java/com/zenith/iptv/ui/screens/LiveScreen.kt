@@ -244,6 +244,7 @@ private fun PreviewPane(item: Media?, onOpen: () -> Unit) {
     DisposableEffect(Unit) { onDispose { player.release() } }
     androidx.compose.runtime.LaunchedEffect(item?.key) {
         if (item == null) { player.stop(); return@LaunchedEffect }
+        com.zenith.iptv.player.MiniPlayer.close() // avoid two channels playing sound at once
         scope.launch {
             val url = runCatching { Graph.repo.resolve(item) }.getOrNull() ?: return@launch
             player.setMediaItem(PlayerFactory.mediaItem(url, item.name)); player.prepare(); player.play()

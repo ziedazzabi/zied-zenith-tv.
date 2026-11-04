@@ -95,6 +95,8 @@
     <string name="m3u_url">رابط M3U</string>
     <string name="mac_address">عنوان MAC</string>
     <string name="mac_portal">بوابة MAC</string>
+    <string name="mini_player">مشغّل مصغّر عند الخروج من القناة</string>
+    <string name="minimize">تصغير</string>
     <string name="minutes_n">%d دقيقة</string>
     <string name="movies">الأفلام</string>
     <string name="multiview">عرض متعدد</string>

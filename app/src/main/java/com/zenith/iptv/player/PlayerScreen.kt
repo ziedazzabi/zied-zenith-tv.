@@ -37,6 +37,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PictureInPictureAlt
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -108,7 +109,9 @@ fun PlayerScreen(onBack: () -> Unit) {
     val isTv = LocalIsTv.current
     val scope = rememberCoroutineScope()
 
-    val player = remember { PlayerFactory.create(ctx, lowLatency = req.isLive) }
+    // If this channel is already playing in the mini window, take over that player (no reload)
+    val adopted = remember { MiniPlayer.takeFor(req) }
+    val player = remember { adopted ?: PlayerFactory.create(ctx, lowLatency = req.isLive) }
     var playerView by remember { mutableStateOf<PlayerView?>(null) }
 
     var index by remember { mutableIntStateOf(req.index) }
@@ -183,6 +186,11 @@ fun PlayerScreen(onBack: () -> Unit) {
     // initial start
     LaunchedEffect(Unit) {
         Playback.active = true
+        if (adopted != null) {
+            buffering = adopted.playbackState == Player.STATE_BUFFERING
+            adopted.playWhenReady = true
+            return@LaunchedEffect
+        }
         if (req.series != null && req.episodeIndex >= 0) playEpisode(req.episodeIndex, req.startPositionMs)
         else if (req.urlOverride != null) startPlayback(req.urlOverride, req.startPositionMs)
         else {
@@ -227,7 +235,8 @@ fun PlayerScreen(onBack: () -> Unit) {
         onDispose {
             saveProgress(req, player, episodeIndex)
             player.removeListener(listener)
-            player.release()
+            if (MiniPlayer.handoff) MiniPlayer.receive(player, req.copy(index = index), title.ifBlank { req.items.getOrNull(index)?.name ?: "" })
+            else player.release()
             Playback.active = false
         }
     }
@@ -259,11 +268,17 @@ fun PlayerScreen(onBack: () -> Unit) {
         if (sleepAt > 0) { delay(sleepAt - System.currentTimeMillis()); player.pause(); onBack() }
     }
 
+    /** Leaving a live channel shrinks it into the floating mini player instead of stopping it. */
+    fun exit() {
+        if (live && error == null && settings.miniPlayer && !settings.externalPlayer) MiniPlayer.handoff = true
+        onBack()
+    }
+
     BackHandler {
         when {
             showMenu -> showMenu = false
             showList -> showList = false
-            else -> onBack()
+            else -> exit()
         }
     }
 
@@ -367,10 +382,13 @@ fun PlayerScreen(onBack: () -> Unit) {
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White) }
+                IconButton(onClick = { exit() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White) }
                 Text(title.ifBlank { item.name }, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f))
                 if (req.series != null && episodeIndex + 1 < req.episodes.size)
                     IconButton(onClick = { playEpisode(episodeIndex + 1) }) { Icon(Icons.Default.SkipNext, null, tint = Color.White) }
+                if (live && settings.miniPlayer) IconButton(onClick = { exit() }) {
+                    Icon(Icons.Default.PictureInPictureAlt, stringResource(R.string.minimize), tint = Color.White)
+                }
                 if (live) IconButton(onClick = { showList = true }) { Icon(Icons.AutoMirrored.Filled.List, null, tint = Color.White) }
                 IconButton(onClick = { showMenu = true }) { Icon(Icons.Default.MoreVert, null, tint = Color.White) }
             }

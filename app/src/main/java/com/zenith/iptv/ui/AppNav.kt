@@ -18,6 +18,13 @@ import com.zenith.iptv.player.MultiViewScreen
 import com.zenith.iptv.player.PlayRequest
 import com.zenith.iptv.player.Playback
 import com.zenith.iptv.player.PlayerScreen
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.zenith.iptv.player.MiniPlayer
+import com.zenith.iptv.player.MiniPlayerOverlay
 import com.zenith.iptv.ui.screens.AddPlaylistScreen
 import com.zenith.iptv.ui.screens.AppsScreen
 import com.zenith.iptv.ui.screens.DetailsScreen
@@ -115,6 +122,11 @@ fun AppNav(activity: MainActivity) {
         if (pendingM3u != null) { PrefillHolder.m3u = pendingM3u; activity.pendingM3u.value = null; nav.go(Routes.addPlaylist()) }
     }
 
+    val backEntry by controller.currentBackStackEntryAsState()
+    val route = backEntry?.destination?.route
+    LaunchedEffect(route) { if (route == Routes.MULTIVIEW) MiniPlayer.close() }
+
+    Box(Modifier.fillMaxSize()) {
     NavHost(controller, startDestination = start) {
         composable(Routes.HOME) { HomeScreen(nav) }
         composable(Routes.PICK_PROFILE) { ProfilesScreen(nav, true) }
@@ -141,6 +153,9 @@ fun AppNav(activity: MainActivity) {
             Routes.DETAILS,
             arguments = listOf(navArgument("key") { type = NavType.StringType })
         ) { e -> DetailsScreen(nav, Uri.decode(e.arguments?.getString("key").orEmpty())) }
+    }
+    // Floating mini player (shown on every screen except the full player and multi-view)
+    MiniPlayerOverlay(visible = route != Routes.PLAYER && route != Routes.MULTIVIEW) { req -> nav.play(req) }
     }
 }
 

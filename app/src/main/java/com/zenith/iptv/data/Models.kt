@@ -180,6 +180,7 @@ data class Settings(
     val wallpapers: List<Wallpaper> = emptyList(),
     /** Apps pinned to the home screen; null = all installed popular apps. */
     val pinnedApps: List<String>? = null,
+    val miniPlayer: Boolean = true,
 )
 
 /** A theme made from a picture the user chose. Theme id is "wp:<id>". */

@@ -29,6 +29,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.FormatSize
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.PictureInPictureAlt
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import com.zenith.iptv.ui.Palette as ThemePalette
@@ -213,6 +214,7 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
                     choice = Choice(t, opts, s.decoderMode) { v -> store.updateSettings { it.copy(decoderMode = v) } }
                 }
             }
+            item { ToggleRow(Icons.Default.PictureInPictureAlt, stringResource(R.string.mini_player), s.miniPlayer) { v -> store.updateSettings { it.copy(miniPlayer = v) } } }
             item { ToggleRow(Icons.Default.OpenInNew, stringResource(R.string.external_player), s.externalPlayer) { v -> store.updateSettings { it.copy(externalPlayer = v) } } }
 
             item { SectionTitle(stringResource(R.string.tv_guide)) }
