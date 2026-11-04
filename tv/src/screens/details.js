@@ -44,12 +44,14 @@ export function DetailsScreen(params, nav) {
       } else actions.appendChild(button(t('play'), 'play', () => playMovie(0), { primary: true, auto: true }));
     } else if (d && d.seasons) {
       const eps = allEpisodes();
-      let last = -1, lastAt = 0;
-      eps.forEach((e, i) => { const p = prog[epKey(e)]; if (p && p.updatedAt > lastAt) { last = i; lastAt = p.updatedAt; } });
+      const last = resumeIndex();
       if (last >= 0) {
         const e = eps[last];
-        actions.appendChild(button(t('resume') + ' S' + e.season + 'E' + e.number, 'play', () => playEpisode(last, prog[epKey(e)].positionMs), { primary: true, auto: true }));
-      } else if (eps.length) actions.appendChild(button(t('play') + ' S' + eps[0].season + 'E' + eps[0].number, 'play', () => playEpisode(0, 0), { primary: true, auto: true }));
+        const pos = (prog[epKey(e)] || {}).positionMs || 0;
+        const label = pos > 0 ? t('resume_episode', e.season, e.number, fmtDuration(pos)) : t('play_episode', e.season, e.number);
+        actions.appendChild(button(label, 'play', () => playEpisode(last, pos), { primary: true, auto: true }));
+        actions.appendChild(button(t('from_start'), 'replay', () => playEpisode(0, 0)));
+      } else if (eps.length) actions.appendChild(button(t('play_episode', eps[0].season, eps[0].number), 'play', () => playEpisode(0, 0), { primary: true, auto: true }));
     }
     const fav = store.isFavorite(item.key);
     actions.appendChild(button(fav ? t('remove_my_list') : t('add_my_list'), fav ? 'check' : 'add', () => {
@@ -58,6 +60,19 @@ export function DetailsScreen(params, nav) {
   }
 
   const epKey = (e) => item.key + '#' + e.season + 'x' + e.number;
+  /** Episode to continue with: the series pointer, else the most recently watched episode. */
+  function resumeIndex() {
+    const prog = store.profileData.get().progress;
+    const eps = allEpisodes();
+    const ptr = prog[item.key];
+    if (ptr && ptr.season != null) {
+      const i = eps.findIndex((e) => e.season === ptr.season && e.number === ptr.number);
+      if (i >= 0) return i;
+    }
+    let last = -1, lastAt = 0;
+    eps.forEach((e, i) => { const p = prog[epKey(e)]; if (p && p.updatedAt > lastAt) { last = i; lastAt = p.updatedAt; } });
+    return last;
+  }
   function allEpisodes() {
     if (!d || !d.seasons) return [];
     return Object.keys(d.seasons).map(Number).sort((a, b) => a - b).reduce((acc, s) => acc.concat(d.seasons[s]), []);
@@ -68,17 +83,26 @@ export function DetailsScreen(params, nav) {
     if (!d || !d.seasons) return;
     const keys = Object.keys(d.seasons).map(Number).sort((a, b) => a - b);
     if (!keys.length) return;
-    if (season == null || keys.indexOf(season) < 0) season = keys[0];
+    if (season == null || keys.indexOf(season) < 0) {
+      const ri = resumeIndex();
+      season = ri >= 0 ? allEpisodes()[ri].season : keys[0];
+    }
     keys.forEach((s) => seasonsRow.appendChild(chip(t('season_n', s), s === season, () => { season = s; drawSeasons(); })));
     const prog = store.profileData.get().progress;
     const all = allEpisodes();
     d.seasons[season].forEach((e) => {
       const p = prog[epKey(e)];
-      episodes.appendChild(fz(h('div', { class: 'ep' },
+      const watched = (store.profileData.get().watched || []).indexOf(epKey(e)) >= 0;
+      const ri = resumeIndex();
+      const isResume = ri >= 0 && all[ri] === e;
+      episodes.appendChild(fz(h('div', { class: 'ep' + (isResume ? ' resume' : '') },
         h('div', { class: 'ep-img' }, logo(e.cover || item.logo, e.title, 'cover'), p ? progressBar(p.positionMs / p.durationMs, 'on-img') : null),
         h('div', { class: 'ep-main' },
           h('div', { class: 'ep-title', text: e.number + '. ' + (e.title || t('episode_n', e.number)) }),
-          e.duration ? h('div', { class: 'muted small', text: e.duration }) : null,
+          h('div', { class: 'ep-status' },
+            watched && !p ? h('span', { class: 'ep-watched' }, icon('check', 'tiny'), t('watched')) : null,
+            p && p.positionMs > 0 ? h('span', { class: 'ep-resume', text: t('resume_at', fmtDuration(p.positionMs)) }) : null,
+            e.duration ? h('span', { class: 'muted', text: e.duration }) : null),
           e.plot ? h('div', { class: 'ep-plot', text: e.plot }) : null)), {
         click: () => playEpisode(all.indexOf(e), p ? p.positionMs : 0),
       }));

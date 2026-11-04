@@ -148,6 +148,7 @@
     <string name="pinned_home">Ajoutée à l\'accueil</string>
     <string name="play">Lire</string>
     <string name="play_catchup">Lire (replay)</string>
+    <string name="play_episode">Lire S%1$dE%2$d</string>
     <string name="playback_error">Erreur de lecture</string>
     <string name="player">Lecteur</string>
     <string name="player_engine">Moteur de lecture</string>
@@ -180,6 +181,7 @@
     <string name="removed_favorite">Retirée des favoris</string>
     <string name="removed_my_list">Retiré de Ma liste</string>
     <string name="resume_at">Reprendre à %s</string>
+    <string name="resume_episode">Reprendre S%1$dE%2$d · %3$s</string>
     <string name="retry">Réessayer</string>
     <string name="save">Enregistrer</string>
     <string name="save_and_load">Enregistrer et charger</string>
@@ -238,6 +240,7 @@
     <string name="wallpaper_failed">Impossible d\'utiliser cette image</string>
     <string name="watch_from_start">Regarder depuis le début</string>
     <string name="watch_live">Regarder en direct</string>
+    <string name="watched">Vu</string>
     <string name="whos_watching">Qui regarde ?</string>
     <string name="wrong_pin">PIN incorrect</string>
     <string name="xtream">Xtream Codes</string>

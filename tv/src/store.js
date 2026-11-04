@@ -115,6 +115,21 @@ class Store {
       return Object.assign({}, d, { progress: p });
     });
   }
+  /** Remembers where to continue a series: episode (season/number) + position. */
+  setSeriesPointer(seriesKey, ep, positionMs, durationMs) {
+    this.profileData.update((d) => {
+      const p = Object.assign({}, d.progress);
+      if (!ep) delete p[seriesKey];
+      else p[seriesKey] = { key: seriesKey, season: ep.season, number: ep.number, positionMs: positionMs || 0, durationMs: durationMs || 1, updatedAt: Date.now() };
+      return Object.assign({}, d, { progress: p });
+    });
+  }
+  markWatched(key) {
+    this.profileData.update((d) => {
+      const w = (d.watched || []).filter((k) => k !== key).concat([key]).slice(-3000);
+      return Object.assign({}, d, { watched: w });
+    });
+  }
   clearProgress() { this.profileData.update((d) => Object.assign({}, d, { progress: {} })); }
 
   saveProgress(key, positionMs, durationMs) {

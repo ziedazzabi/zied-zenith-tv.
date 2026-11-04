@@ -120,13 +120,19 @@ data class Profile(
 )
 
 @Serializable
-data class WatchProgress(val key: String, val positionMs: Long, val durationMs: Long, val updatedAt: Long, val title: String = "", val image: String = "")
+data class WatchProgress(
+    val key: String, val positionMs: Long, val durationMs: Long, val updatedAt: Long, val title: String = "", val image: String = "",
+    /** For a series: the episode to continue with. */
+    val episodeId: String = "",
+)
 
 @Serializable
 data class ProfileData(
     val favorites: List<String> = emptyList(),
     val recentChannels: List<String> = emptyList(),
     val progress: Map<String, WatchProgress> = emptyMap(),
+    /** Episodes watched to the end ("seriesKey#episodeId"). */
+    val watched: List<String> = emptyList(),
 )
 
 @Serializable

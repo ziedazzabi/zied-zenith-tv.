@@ -242,6 +242,9 @@ S = {
 "remove_from_list": ("Remove", "حذف", "Retirer"),
 "clear_all": ("Clear all", "مسح الكل", "Tout effacer"),
 "panel_opacity": ("Channel list & menu opacity", "شفافية قائمة القنوات والخيارات", "Opacité de la liste des chaînes et du menu"),
+"resume_episode": ("Resume S%1$dE%2$d · %3$s", "متابعة م%1$d ح%2$d · %3$s", "Reprendre S%1$dE%2$d · %3$s"),
+"play_episode": ("Play S%1$dE%2$d", "تشغيل م%1$d ح%2$d", "Lire S%1$dE%2$d"),
+"watched": ("Watched", "تمت المشاهدة", "Vu"),
 }
 import sys, os
 used = set(open('/tmp/claude-0/strings_used.txt').read().split()) | {"app_name"}

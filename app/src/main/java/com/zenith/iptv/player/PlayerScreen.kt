@@ -625,8 +625,19 @@ private fun saveProgress(req: PlayRequest, pos: Long, dur: Long, episodeIndex: I
     val series = req.series
     if (series != null) {
         val ep = req.episodes.getOrNull(episodeIndex) ?: return
-        Graph.store.saveProgress(WatchProgress("${series.key}#${ep.id}", pos, dur, System.currentTimeMillis(), "${series.name} S${ep.season}E${ep.number}", series.logo))
-        Graph.store.saveProgress(WatchProgress(series.key, pos, dur, System.currentTimeMillis(), series.name, series.logo))
+        val now = System.currentTimeMillis()
+        val epKey = "${series.key}#${ep.id}"
+        Graph.store.saveProgress(WatchProgress(epKey, pos, dur, now, "${series.name} S${ep.season}E${ep.number}", series.logo))
+        val finished = pos > dur * 0.95
+        if (finished) {
+            Graph.store.markWatched(epKey)
+            val next = req.episodes.getOrNull(episodeIndex + 1)
+            // series entry now points at the next episode, from the beginning
+            if (next != null) Graph.store.saveProgress(WatchProgress(series.key, 0, 1, now, "${series.name} S${next.season}E${next.number}", series.logo, episodeId = next.id))
+            else Graph.store.updateProfileData { it.copy(progress = it.progress - series.key) }
+        } else {
+            Graph.store.saveProgress(WatchProgress(series.key, pos, dur, now, "${series.name} S${ep.season}E${ep.number}", series.logo, episodeId = ep.id))
+        }
         return
     }
     val key = req.progressKey ?: return

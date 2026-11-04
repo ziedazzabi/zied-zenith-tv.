@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.PlayArrow
@@ -89,7 +90,11 @@ fun DetailsScreen(nav: Nav, key: String) {
     var season by remember { mutableIntStateOf(-1) }
     LaunchedEffect(key) {
         details = runCatching { repo.source?.details(item) }.getOrNull() ?: MediaDetails(plot = item.plot, rating = item.rating)
-        season = details?.seasons?.keys?.firstOrNull() ?: -1
+        val ss = details?.seasons ?: emptyMap()
+        // open the season of the episode to continue with
+        val sp = store.profileData.value.progress[item.key]
+        val resumeSeason = sp?.episodeId?.takeIf { it.isNotBlank() }?.let { id -> ss.entries.firstOrNull { e -> e.value.any { it.id == id } }?.key }
+        season = resumeSeason ?: ss.keys.sorted().firstOrNull() ?: -1
         loading = false
     }
     val playFocus = remember { FocusRequester() }
@@ -99,15 +104,26 @@ fun DetailsScreen(nav: Nav, key: String) {
     val fav = item.key in data.favorites
     val d = details
 
-    fun playEpisode(eps: List<Episode>, i: Int, resume: Boolean) {
-        val ep = eps[i]
+    // all episodes of all seasons, in order (so "next episode" continues into the next season)
+    val allEps = remember(d) { d?.seasons?.toSortedMap()?.values?.flatten() ?: emptyList() }
+
+    fun playEpisode(ep: Episode, resume: Boolean) {
+        val i = allEps.indexOfFirst { it.id == ep.id && it.season == ep.season }.coerceAtLeast(0)
         val p = data.progress["${item.key}#${ep.id}"]
         nav.play(PlayRequest(
             items = listOf(item), title = "${item.name} · S${ep.season}E${ep.number}",
-            series = item, episodes = eps, episodeIndex = i, image = item.logo,
+            series = item, episodes = allEps, episodeIndex = i, image = item.logo,
             startPositionMs = if (resume) p?.positionMs ?: 0L else 0L,
         ))
     }
+
+    // episode to continue with: the one saved on the series, else the most recently watched one
+    val resumeEp: Episode? = remember(allEps, data.progress) {
+        val sp = data.progress[item.key]
+        allEps.firstOrNull { sp != null && sp.episodeId.isNotBlank() && it.id == sp.episodeId }
+            ?: allEps.maxByOrNull { data.progress["${item.key}#${it.id}"]?.updatedAt ?: -1L }?.takeIf { data.progress["${item.key}#${it.id}"] != null }
+    }
+    val resumePos = resumeEp?.let { data.progress["${item.key}#${it.id}"]?.positionMs } ?: 0L
 
     ScreenScaffold(item.name, nav) {
         Box(Modifier.fillMaxSize()) {
@@ -151,6 +167,21 @@ fun DetailsScreen(nav: Nav, key: String) {
                                             nav.play(PlayRequest(listOf(item), title = item.name, progressKey = item.key, image = item.logo))
                                         }
                                     }
+                                } else if (item.kind == Kind.SERIES && allEps.isNotEmpty()) {
+                                    val ep = resumeEp
+                                    if (ep != null) {
+                                        val label = if (resumePos > 0) stringResource(R.string.resume_episode, ep.season, ep.number, fmtDuration(resumePos))
+                                            else stringResource(R.string.play_episode, ep.season, ep.number)
+                                        ActionButton(label, Icons.Default.PlayArrow, primary = true, modifier = Modifier.focusRequester(playFocus)) {
+                                            playEpisode(ep, resume = true)
+                                        }
+                                        ActionButton(stringResource(R.string.from_start), Icons.Default.Replay) { playEpisode(allEps.first(), resume = false) }
+                                    } else {
+                                        val first = allEps.first()
+                                        ActionButton(stringResource(R.string.play_episode, first.season, first.number), Icons.Default.PlayArrow, primary = true, modifier = Modifier.focusRequester(playFocus)) {
+                                            playEpisode(first, resume = false)
+                                        }
+                                    }
                                 } else if (item.url.isNotBlank()) {
                                     ActionButton(stringResource(R.string.play), Icons.Default.PlayArrow, primary = true, modifier = Modifier.focusRequester(playFocus)) {
                                         nav.play(PlayRequest(listOf(item), title = item.name, progressKey = item.key, urlOverride = item.url, image = item.logo))
@@ -159,7 +190,7 @@ fun DetailsScreen(nav: Nav, key: String) {
                                 ActionButton(
                                     stringResource(if (fav) R.string.in_my_list else R.string.add_my_list),
                                     if (fav) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                                    modifier = if (item.kind == Kind.SERIES && item.url.isBlank()) Modifier.focusRequester(playFocus) else Modifier,
+                                    modifier = if (item.kind == Kind.SERIES && item.url.isBlank() && allEps.isEmpty()) Modifier.focusRequester(playFocus) else Modifier,
                                 ) { store.toggleFavorite(item.key) }
                                 if (!d?.trailer.isNullOrBlank()) ActionButton(stringResource(R.string.trailer), Icons.Default.Videocam) {
                                     val t = d!!.trailer
@@ -190,8 +221,10 @@ fun DetailsScreen(nav: Nav, key: String) {
                     items(eps.size, key = { eps[it].id + "_" + season }) { i ->
                         val ep = eps[i]
                         val p = data.progress["${item.key}#${ep.id}"]
+                        val watched = "${item.key}#${ep.id}" in data.watched
+                        val isResume = resumeEp != null && resumeEp.id == ep.id && resumeEp.season == ep.season
                         Focusable(
-                            onClick = { playEpisode(eps, i, resume = true) },
+                            onClick = { playEpisode(ep, resume = true) }, selected = isResume,
                             modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp), focusScale = 1.01f,
                         ) {
                             Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -206,7 +239,14 @@ fun DetailsScreen(nav: Nav, key: String) {
                                 Column(Modifier.weight(1f)) {
                                     Text("${ep.number}. ${ep.title.ifBlank { stringResource(R.string.episode_n, ep.number) }}", color = Z.text, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
                                     if (ep.plot.isNotBlank()) Text(ep.plot, color = Z.muted, fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
-                                    if (ep.duration.isNotBlank()) Text(ep.duration, color = Z.muted, fontSize = 11.sp)
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        if (watched && p == null) {
+                                            Icon(Icons.Default.CheckCircle, null, tint = Z.green, modifier = Modifier.size(14.dp))
+                                            Text(" " + stringResource(R.string.watched) + "   ", color = Z.green, fontSize = 11.sp)
+                                        }
+                                        if (p != null && p.positionMs > 0) Text(stringResource(R.string.resume_at, fmtDuration(p.positionMs)) + "   ", color = Z.accent, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                                        if (ep.duration.isNotBlank()) Text(ep.duration, color = Z.muted, fontSize = 11.sp)
+                                    }
                                 }
                             }
                         }

@@ -148,6 +148,7 @@
     <string name="pinned_home">Added to home screen</string>
     <string name="play">Play</string>
     <string name="play_catchup">Play (catch-up)</string>
+    <string name="play_episode">Play S%1$dE%2$d</string>
     <string name="playback_error">Playback error</string>
     <string name="player">Player</string>
     <string name="player_engine">Player engine</string>
@@ -180,6 +181,7 @@
     <string name="removed_favorite">Removed from favorites</string>
     <string name="removed_my_list">Removed from My list</string>
     <string name="resume_at">Resume %s</string>
+    <string name="resume_episode">Resume S%1$dE%2$d · %3$s</string>
     <string name="retry">Retry</string>
     <string name="save">Save</string>
     <string name="save_and_load">Save &amp; load</string>
@@ -238,6 +240,7 @@
     <string name="wallpaper_failed">Couldn\'t use this picture</string>
     <string name="watch_from_start">Watch from start</string>
     <string name="watch_live">Watch live</string>
+    <string name="watched">Watched</string>
     <string name="whos_watching">Who\'s watching?</string>
     <string name="wrong_pin">Wrong PIN</string>
     <string name="xtream">Xtream Codes</string>

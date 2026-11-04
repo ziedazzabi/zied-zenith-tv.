@@ -205,6 +205,13 @@ class PlaybackService {
     if (!r || !e || this.live || r.program) return;
     const key = r.progressKey || (this.item && this.item.kind === 'movie' ? this.item.key : null);
     if (key) store.saveProgress(key, e.time, e.duration);
+    if (r.series && e.duration > 0 && e.time > 15000) {
+      const ep = r.episodes[r.episodeIndex];
+      if (e.time > e.duration * 0.95) {
+        store.markWatched(key);
+        store.setSeriesPointer(r.series.key, r.episodes[r.episodeIndex + 1] || null, 0, 1);
+      } else if (ep) store.setSeriesPointer(r.series.key, ep, e.time, e.duration);
+    }
   }
 
   stop() {

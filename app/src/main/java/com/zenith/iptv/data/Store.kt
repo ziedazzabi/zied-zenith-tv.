@@ -113,9 +113,13 @@ class Store(context: Context) {
 
     /** Removes a movie / series (and all its episodes) from "Continue watching". */
     fun removeProgress(key: String) = updateProfileData { d ->
-        d.copy(progress = d.progress.filterKeys { it != key && !it.startsWith("$key#") })
+        d.copy(progress = d.progress.filterKeys { it != key && !it.startsWith("$key#") }, watched = d.watched.filterNot { it.startsWith("$key#") })
     }
     fun clearProgress() = updateProfileData { d -> d.copy(progress = emptyMap()) }
+
+    fun markWatched(key: String) = updateProfileData { d ->
+        if (key in d.watched) d else d.copy(watched = (d.watched + key).takeLast(3000))
+    }
 
     fun saveProgress(p: WatchProgress) = updateProfileData { d ->
         val finished = p.durationMs > 0 && p.positionMs > p.durationMs * 0.95

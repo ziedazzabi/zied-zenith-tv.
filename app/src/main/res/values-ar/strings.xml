@@ -148,6 +148,7 @@
     <string name="pinned_home">أضيف إلى الرئيسية</string>
     <string name="play">تشغيل</string>
     <string name="play_catchup">تشغيل (إعادة)</string>
+    <string name="play_episode">تشغيل م%1$d ح%2$d</string>
     <string name="playback_error">خطأ في التشغيل</string>
     <string name="player">المشغل</string>
     <string name="player_engine">محرّك التشغيل</string>
@@ -180,6 +181,7 @@
     <string name="removed_favorite">أزيلت من المفضلة</string>
     <string name="removed_my_list">أزيل من قائمتي</string>
     <string name="resume_at">استئناف %s</string>
+    <string name="resume_episode">متابعة م%1$d ح%2$d · %3$s</string>
     <string name="retry">إعادة المحاولة</string>
     <string name="save">حفظ</string>
     <string name="save_and_load">حفظ وتحميل</string>
@@ -238,6 +240,7 @@
     <string name="wallpaper_failed">تعذّر استخدام هذه الصورة</string>
     <string name="watch_from_start">شاهد من البداية</string>
     <string name="watch_live">شاهد مباشرة</string>
+    <string name="watched">تمت المشاهدة</string>
     <string name="whos_watching">من يشاهد؟</string>
     <string name="wrong_pin">رمز خاطئ</string>
     <string name="xtream">Xtream Codes</string>
