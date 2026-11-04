@@ -38,12 +38,16 @@ object PlayerFactory {
             .setConstantBitrateSeekingEnabled(true)
 
         val buffer = (s.bufferSeconds.coerceIn(2, 60)) * 1000
+        // Live streams must be read continuously: if the player pauses reading when its buffer is full,
+        // many IPTV servers drop that part of the stream and the picture breaks into blocks a few seconds later.
+        // So for live, min buffer == max buffer (the loader never stops while below it).
+        val liveBuffer = maxOf(buffer * 2, 40_000)
         val loadControl = DefaultLoadControl.Builder()
             .setBufferDurationsMs(
-                /* minBufferMs */ maxOf(buffer, 4000),
-                /* maxBufferMs */ maxOf(buffer * 3, 30_000),
-                /* bufferForPlaybackMs */ if (lowLatency) 1000 else 2000,
-                /* bufferForPlaybackAfterRebufferMs */ if (lowLatency) 2000 else 4000,
+                /* minBufferMs */ if (lowLatency) liveBuffer else maxOf(buffer, 4000),
+                /* maxBufferMs */ if (lowLatency) liveBuffer else maxOf(buffer * 3, 30_000),
+                /* bufferForPlaybackMs */ if (lowLatency) 1500 else 2000,
+                /* bufferForPlaybackAfterRebufferMs */ if (lowLatency) 3000 else 4000,
             )
             .setPrioritizeTimeOverSizeThresholds(true)
             .build()
