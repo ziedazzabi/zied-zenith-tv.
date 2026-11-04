@@ -1,0 +1,19 @@
+{
+  "name": "z-vision-smarttv",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Z-Vision for Samsung (Tizen) and LG (webOS) TVs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/build.mjs --dev"
+  },
+  "dependencies": {
+    "hls.js": "1.5.17",
+    "mpegts.js": "1.7.3",
+    "pako": "2.1.0"
+  },
+  "devDependencies": {
+    "@webos-tools/cli": "^3.2.6",
+    "esbuild": "0.24.0"
+  }
+}

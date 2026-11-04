@@ -1,5 +1,6 @@
 package com.zenith.iptv.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -45,6 +46,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -98,8 +100,10 @@ fun HomeScreen(nav: Nav) {
             Modifier.fillMaxWidth().padding(horizontal = gutter, vertical = if (isTv) 20.dp else 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("ZENITH", color = Z.text, fontWeight = FontWeight.Black, fontSize = if (isTv) 26.sp else 20.sp, letterSpacing = 3.sp)
-            Text(" TV", color = Z.accent, fontWeight = FontWeight.Black, fontSize = if (isTv) 26.sp else 20.sp)
+            Image(painterResource(R.drawable.logo_mark), "Z-Vision", modifier = Modifier.size(if (isTv) 44.dp else 34.dp))
+            Spacer(Modifier.width(6.dp))
+            Text("Z-", color = Z.accent, fontWeight = FontWeight.Bold, fontSize = if (isTv) 26.sp else 20.sp)
+            Text("Vision", color = Z.text, fontWeight = FontWeight.Bold, fontSize = if (isTv) 26.sp else 20.sp)
             Spacer(Modifier.width(16.dp))
             if (playlist != null) {
                 Focusable(onClick = { nav.go(Routes.PLAYLISTS) }, shape = RoundedCornerShape(50)) {

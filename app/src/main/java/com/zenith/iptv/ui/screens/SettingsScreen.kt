@@ -242,7 +242,7 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
 
             item { SectionTitle(stringResource(R.string.about)) }
             if (!catalog?.accountInfo.isNullOrBlank()) item { SettingRow(Icons.Default.AccountCircle, stringResource(R.string.account), catalog!!.accountInfo) {} }
-            item { SettingRow(Icons.Default.Info, "Zenith TV", BuildConfigInfo.version(ctx)) {} }
+            item { SettingRow(Icons.Default.Info, "Z-Vision", BuildConfigInfo.version(ctx)) {} }
         }
     }
 

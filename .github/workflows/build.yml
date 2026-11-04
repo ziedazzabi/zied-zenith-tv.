@@ -1,4 +1,4 @@
-name: Build APK
+name: Build Z-Vision
 
 on:
   push:
@@ -20,7 +20,11 @@ jobs:
 
       - uses: gradle/actions/setup-gradle@v4
 
-      - name: Build release APK
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build Android APK
         run: |
           chmod +x gradlew
           echo "sdk.dir=$ANDROID_HOME" > local.properties
@@ -33,21 +37,34 @@ jobs:
           fi
           exit $code
 
-      - name: Rename APK
+      - name: Build Samsung (.wgt) and LG (.ipk) TV apps
+        working-directory: tv
+        env:
+          APP_VERSION: 1.0.${{ github.run_number }}
+        run: |
+          npm ci --no-audit --no-fund
+          if ! node scripts/build.mjs > tvbuild.log 2>&1; then head -40 tvbuild.log | while IFS= read -r l; do echo "::error::$l"; done; exit 1; fi
+          cat tvbuild.log
+          npx ares-package dist/webos -o dist
+
+      - name: Collect files
         run: |
           mkdir -p out
-          cp app/build/outputs/apk/release/app-release.apk out/ZenithTV-${{ github.run_number }}.apk
+          cp app/build/outputs/apk/release/app-release.apk out/ZVision-${{ github.run_number }}.apk
+          cp tv/dist/ZVision.wgt out/ZVision-Samsung-${{ github.run_number }}.wgt
+          cp tv/dist/*.ipk out/ZVision-LG-${{ github.run_number }}.ipk
+          ls -la out
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ZenithTV-apk
-          path: out/*.apk
+          name: Z-Vision
+          path: out/*
 
       - name: Publish as GitHub release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: build-${{ github.run_number }}
-          name: Zenith TV build ${{ github.run_number }}
-          files: out/*.apk
+          name: Z-Vision build ${{ github.run_number }}
+          files: out/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

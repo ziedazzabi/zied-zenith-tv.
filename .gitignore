@@ -7,3 +7,5 @@ local.properties
 captures/
 .externalNativeBuild/
 .cxx/
+tv/node_modules/
+tv/dist/
