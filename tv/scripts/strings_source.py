@@ -241,6 +241,7 @@ S = {
 "remove_hint": ("Remove this item, or clear the whole list.", "احذف هذا العنصر، أو امسح القائمة كاملة.", "Retirez cet élément, ou videz toute la liste."),
 "remove_from_list": ("Remove", "حذف", "Retirer"),
 "clear_all": ("Clear all", "مسح الكل", "Tout effacer"),
+"panel_opacity": ("Channel list & menu opacity", "شفافية قائمة القنوات والخيارات", "Opacité de la liste des chaînes et du menu"),
 }
 import sys, os
 used = set(open('/tmp/claude-0/strings_used.txt').read().split()) | {"app_name"}

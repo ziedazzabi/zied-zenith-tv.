@@ -175,7 +175,7 @@ fun LiveScreen(nav: Nav) {
                 }
             } else {
                 Column(Modifier.fillMaxSize()) {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(vertical = 6.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(special + cats, key = { it.id + it.kind }) { c ->
                             val locked = !c.id.startsWith("__") && repo.isLocked(c)
                             Chip(c.name, c.id == selectedCat, onClick = { selectCat(c) }, icon = if (locked) Icons.Default.Lock else null)

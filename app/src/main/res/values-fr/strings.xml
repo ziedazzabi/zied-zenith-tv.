@@ -138,6 +138,7 @@
     <string name="open_paypal">Ouvrir PayPal</string>
     <string name="optional">Facultatif</string>
     <string name="out_of_memory">Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère.</string>
+    <string name="panel_opacity">Opacité de la liste des chaînes et du menu</string>
     <string name="parental_control">Contrôle parental</string>
     <string name="password">Mot de passe</string>
     <string name="paypal_hint">Scannez le code ou ouvrez PayPal et envoyez votre don à :</string>

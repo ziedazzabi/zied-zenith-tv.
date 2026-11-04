@@ -39,6 +39,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -91,8 +92,8 @@ fun PlayerMenu(
 
     Box(Modifier.fillMaxSize().clickable(onClick = onDismiss)) {
         Column(
-            Modifier.align(Alignment.CenterEnd).fillMaxHeight().widthIn(max = 380.dp).fillMaxWidth(0.4f)
-                .background(Z.bg.copy(alpha = .96f)).clickable(enabled = false) {}.padding(14.dp)
+            Modifier.align(Alignment.CenterEnd).fillMaxHeight().width(com.zenith.iptv.ui.Adaptive.panelWidth())
+                .background(Z.bg.copy(alpha = panelAlpha())).clickable(enabled = false) {}.padding(14.dp)
         ) {
             val fr = remember(page) { FocusRequester() }
             LaunchedEffect(page) { delay(60); runCatching { fr.requestFocus() } }
@@ -144,12 +145,13 @@ fun PlayerMenu(
                     val r = rows[i]
                     Focusable(
                         onClick = r.action, selected = r.selected, shape = RoundedCornerShape(10.dp), focusScale = 1.02f,
+                        background = Z.surface.copy(alpha = Z.surface.alpha * panelAlpha()),
                         modifier = Modifier.fillMaxWidth().then(if (i == 0) Modifier.focusRequester(fr) else Modifier),
                     ) {
                         Row(Modifier.padding(horizontal = 12.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically) {
                             if (r.icon != null) { Icon(r.icon, null, tint = Z.accent, modifier = Modifier.size(20.dp)); Spacer(Modifier.width(12.dp)) }
-                            Text(r.label, color = Z.text, modifier = Modifier.weight(1f), maxLines = 2, fontSize = 14.sp)
-                            if (r.value.isNotEmpty()) Text(r.value, color = Z.muted, fontSize = 13.sp)
+                            Text(r.label, color = Z.text, modifier = Modifier.weight(1f), maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis, fontSize = 14.sp)
+                            if (r.value.isNotEmpty()) { Spacer(Modifier.width(8.dp)); Text(r.value, color = Z.muted, fontSize = 13.sp, maxLines = 1) }
                             if (r.selected) Icon(Icons.Default.Check, null, tint = Z.accent, modifier = Modifier.size(18.dp))
                         }
                     }
@@ -204,4 +206,12 @@ private fun trackRows(player: Player, type: Int, noneLabel: String, done: () -> 
         }
     }
     return rows
+}
+
+
+/** Panel opacity chosen in Settings (0.3 – 1.0). */
+@Composable
+fun panelAlpha(): Float {
+    val s by Graph.store.settings.collectAsState()
+    return (s.panelOpacity / 100f).coerceIn(0.3f, 1f)
 }

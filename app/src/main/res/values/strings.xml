@@ -138,6 +138,7 @@
     <string name="open_paypal">Open PayPal</string>
     <string name="optional">Optional</string>
     <string name="out_of_memory">This playlist is too large for this device\'s memory. Try the M3U link for live TV only, or ask your provider for a lighter list.</string>
+    <string name="panel_opacity">Channel list &amp; menu opacity</string>
     <string name="parental_control">Parental control</string>
     <string name="password">Password</string>
     <string name="paypal_hint">Scan the code or open PayPal and send your donation to:</string>

@@ -180,7 +180,7 @@ fun HomeScreen(nav: Nav) {
                             DeviceClass.TABLET -> 176.dp to 116.dp
                             DeviceClass.PHONE -> 140.dp to 96.dp
                         }
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(if (isTv) 18.dp else 12.dp), contentPadding = PaddingValues(vertical = 8.dp)) {
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(if (isTv) 18.dp else 12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                             items(tiles) { t -> BigTile(t, Modifier.width(w).height(h), large = device == DeviceClass.TV) { nav.go(t.route) } }
                         }
                     }
@@ -190,7 +190,7 @@ fun HomeScreen(nav: Nav) {
                     SectionWithClear(stringResource(R.string.continue_watching), Icons.Default.PlayCircle) {
                         removeAsk = RemoveAsk(null, false)
                     }
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = PaddingValues(vertical = 6.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(continueWatching, key = { it.first.key }) { (m, p) ->
                             PosterCard(
                                 m, onClick = { nav.open(m) }, progress = if (p.durationMs > 0) p.positionMs.toFloat() / p.durationMs else 0f,
@@ -211,13 +211,13 @@ fun HomeScreen(nav: Nav) {
                 }
                 if (favVod.isNotEmpty()) item {
                     SectionTitle(stringResource(R.string.my_list))
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(favVod, key = { it.key }) { m -> PosterCard(m, onClick = { nav.open(m) }, favorite = true) }
                     }
                 }
                 if (newest.isNotEmpty()) item {
                     SectionTitle(stringResource(R.string.recently_added))
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(newest, key = { it.key }) { m -> PosterCard(m, onClick = { nav.open(m) }) }
                     }
                 }
@@ -273,7 +273,7 @@ private fun ChannelStrip(list: List<Media>, onLongClick: ((Media) -> Unit)? = nu
     val repo = Graph.repo
     val tick by repo.tick.collectAsState()
     val cardW = when (LocalDevice.current) { DeviceClass.PHONE -> 150.dp; DeviceClass.TABLET -> 180.dp; DeviceClass.TV -> 200.dp }
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(vertical = 4.dp)) {
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
         items(list, key = { it.key }) { m ->
             @Suppress("UNUSED_EXPRESSION") tick
             val now = repo.nowNext(m).first

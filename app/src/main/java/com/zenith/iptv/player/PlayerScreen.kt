@@ -602,8 +602,8 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
     val fr = remember { FocusRequester() }
     LaunchedEffect(Unit) { delay(80); runCatching { fr.requestFocus() } }
     Box(
-        Modifier.fillMaxHeight().widthIn(min = 360.dp, max = 560.dp).fillMaxWidth(0.42f)
-            .background(Brush.horizontalGradient(listOf(Z.bg.copy(alpha = .97f), Z.bg.copy(alpha = .85f))))
+        Modifier.fillMaxHeight().width(com.zenith.iptv.ui.Adaptive.panelWidth())
+            .background(Brush.horizontalGradient(listOf(Z.bg.copy(alpha = panelAlpha()), Z.bg.copy(alpha = panelAlpha() * 0.85f))))
             .padding(10.dp)
     ) {
         @Suppress("UNUSED_EXPRESSION") tick
@@ -611,6 +611,7 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
             itemsIndexed(items, key = { _, m -> m.key }) { i, m ->
                 ChannelRow(
                     item = m, now = repo.nowNext(m).first, selected = i == current, favorite = m.key in favorites, compact = true,
+                    bgAlpha = panelAlpha(),
                     onClick = { onPick(i) },
                     modifier = if (i == current) Modifier.focusRequester(fr) else Modifier,
                 )

@@ -194,9 +194,11 @@ fun ChannelRow(
     onLongClick: (() -> Unit)? = null,
     onFocus: (() -> Unit)? = null,
     compact: Boolean = false,
+    bgAlpha: Float = 1f,
 ) {
     Focusable(
         onClick = onClick, onLongClick = onLongClick, onFocus = onFocus, selected = selected,
+        background = Z.surface.copy(alpha = Z.surface.alpha * bgAlpha),
         modifier = modifier.fillMaxWidth(), focusScale = 1.01f, shape = RoundedCornerShape(10.dp),
     ) { focused ->
         Row(Modifier.padding(horizontal = if (compact) 6.dp else 10.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {

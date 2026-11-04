@@ -253,7 +253,7 @@ fun HomeAppsRow(nav: Nav) {
     val apps = remember(installed, settings.pinnedApps) { AppLauncher.homeApps(ctx, settings.pinnedApps, installed) }
     val w = cardWidth()
     SectionTitle(stringResource(R.string.my_apps), icon = Icons.Default.Apps)
-    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), contentPadding = PaddingValues(vertical = 6.dp)) {
+    LazyRow(horizontalArrangement = Arrangement.spacedBy(10.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
         items(apps, key = { it.pkg }) { a ->
             AppCard(a.label, a.pkg, w,
                 onClick = { AppLauncher.launch(ctx, a.pkg, tv) },

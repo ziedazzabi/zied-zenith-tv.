@@ -77,6 +77,7 @@ export function applyTheme() {
     bgImg.style.backgroundImage = w ? 'url("' + w.url.replace(/"/g, '%22') + '")' : 'none';
     bgDim.style.background = w ? 'linear-gradient(rgba(0,0,0,' + Math.max(0, w.dim - 0.15) + '), rgba(0,0,0,' + w.dim + ') 50%, rgba(0,0,0,' + Math.min(0.95, w.dim + 0.2) + '))' : '';
   }
+  r.setProperty('--panel-a', String(Math.max(0.3, Math.min(1, (s.panelOpacity || 85) / 100))));
   // interface size: everything is in rem relative to a 1920px wide design
   const scale = (window.innerWidth / 1920) * 16 * (s.uiScale || 1);
   document.documentElement.style.fontSize = scale + 'px';

@@ -76,13 +76,13 @@ fun SearchScreen(nav: Nav) {
                 if (q.length >= 2 && results.isEmpty()) item { EmptyState(stringResource(R.string.no_results)) }
                 if (movies.isNotEmpty()) item {
                     SectionTitle("${stringResource(R.string.movies)} (${movies.size})")
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(movies, key = { it.key }) { m -> PosterCard(m, onClick = { nav.open(m) }, favorite = m.key in data.favorites) }
                     }
                 }
                 if (series.isNotEmpty()) item {
                     SectionTitle("${stringResource(R.string.series)} (${series.size})")
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(series, key = { it.key }) { m -> PosterCard(m, onClick = { nav.open(m) }, favorite = m.key in data.favorites) }
                     }
                 }

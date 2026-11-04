@@ -364,7 +364,7 @@ html.avplay .vl-full { background: transparent; }
 .pbar.vod { flex: 1; height: 0.5rem; }
 .vod-btns { display: flex; gap: 1.2rem; align-items: center; }
 .vod-btns .ibtn { background: rgba(255,255,255,.12); color: #fff; }
-.p-list { position: absolute; top: 0; bottom: 0; left: 0; width: 46rem; background: rgba(8,10,16,.94); padding: 2.4rem 1.4rem 1.4rem; display: flex; flex-direction: column; }
+.p-list { position: absolute; top: 0; bottom: 0; left: 0; width: 46rem; background: rgba(8,10,16,var(--panel-a,.9)); padding: 2.4rem 1.4rem 1.4rem; display: flex; flex-direction: column; }
 [dir=rtl] .p-list { left: auto; right: 0; }
 .p-list-title { font-size: 1.8rem; font-weight: 800; padding: 0 0.6rem 1rem; }
 
@@ -509,3 +509,12 @@ html.avplay .vl-full { background: transparent; }
 [dir=rtl] .pay-email { text-align: right; }
 .chip.small { padding: 0.4rem 1rem; font-size: 1.1rem; font-weight: 500; }
 .section .chip .ic { color: var(--muted); }
+
+/* panels over the video follow the opacity setting */
+.p-list .crow { background: rgba(30,36,50,calc(var(--panel-a,.9) * .8)); }
+.p-list .crow.focused { background: var(--s3); }
+.modal .dialog.side { background: rgba(8,10,16,var(--panel-a,.9)); }
+/* room for focused (enlarged) cards so they're never cut at the edges */
+.tiles { padding: 1.4rem 1.4rem 1.6rem; }
+.hrow { padding: 1rem 1.4rem 1.2rem; }
+.app-grid, .theme-grid { padding-left: 1.2rem; padding-right: 1.2rem; }

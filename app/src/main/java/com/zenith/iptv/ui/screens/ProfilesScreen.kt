@@ -69,7 +69,7 @@ fun ProfilesScreen(nav: Nav, pickMode: Boolean) {
 
     ScreenScaffold(stringResource(R.string.whos_watching), nav, showBack = !pickMode) {
         Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(24.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                 items(profiles, key = { it.id }) { p ->
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Focusable(

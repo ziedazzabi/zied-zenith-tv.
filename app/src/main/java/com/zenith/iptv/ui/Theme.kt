@@ -176,6 +176,19 @@ object Adaptive {
         return (cfg.screenWidthDp * sys / LocalDensity.current.density).toInt()
     }
 
+    /** Padding inside horizontal rows so focused (enlarged) cards are never cut off at the edges. */
+    @Composable
+    fun rowPad(): androidx.compose.foundation.layout.PaddingValues =
+        if (LocalDevice.current == DeviceClass.TV) androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+        else androidx.compose.foundation.layout.PaddingValues(horizontal = 6.dp, vertical = 8.dp)
+
+    /** Width of side panels over the video (channel list, options menu). */
+    @Composable
+    fun panelWidth(): Dp {
+        val w = LocalConfiguration.current.screenWidthDp.toFloat()
+        return (w * 0.40f).coerceIn(minOf(340f, w * 0.9f), 560f).dp
+    }
+
     @Composable
     fun gutter(): Dp = when (LocalDevice.current) {
         DeviceClass.PHONE -> 12.dp; DeviceClass.TABLET -> 22.dp; DeviceClass.TV -> 40.dp

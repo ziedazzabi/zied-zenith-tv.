@@ -185,6 +185,8 @@ data class Settings(
     val playerEngine: String = "auto",
     /** Extra margin (percent of the screen) for TVs that cut off the picture edges. */
     val screenMargin: Int = 0,
+    /** Opacity (%) of the channel list and options panels over the video. */
+    val panelOpacity: Int = 85,
 )
 
 /** A theme made from a picture the user chose. Theme id is "wp:<id>". */

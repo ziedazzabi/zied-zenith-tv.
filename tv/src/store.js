@@ -30,6 +30,7 @@ export const DEFAULT_SETTINGS = {
   wallpapers: [],
   pinnedApps: null,
   miniPlayer: true,
+  panelOpacity: 85,
   engine: 'auto',
 };
 

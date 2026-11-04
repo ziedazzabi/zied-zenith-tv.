@@ -240,7 +240,8 @@
 "edit_list": "Edit",
 "remove_hint": "Remove this item, or clear the whole list.",
 "remove_from_list": "Remove",
-"clear_all": "Clear all"
+"clear_all": "Clear all",
+"panel_opacity": "Channel list & menu opacity"
 },
 "ar": {
 "app_name": "Z-Vision",
@@ -483,7 +484,8 @@
 "edit_list": "تعديل",
 "remove_hint": "احذف هذا العنصر، أو امسح القائمة كاملة.",
 "remove_from_list": "حذف",
-"clear_all": "مسح الكل"
+"clear_all": "مسح الكل",
+"panel_opacity": "شفافية قائمة القنوات والخيارات"
 },
 "fr": {
 "app_name": "Z-Vision",
@@ -726,6 +728,7 @@
 "edit_list": "Modifier",
 "remove_hint": "Retirez cet élément, ou videz toute la liste.",
 "remove_from_list": "Retirer",
-"clear_all": "Tout effacer"
+"clear_all": "Tout effacer",
+"panel_opacity": "Opacité de la liste des chaînes et du menu"
 }
 }

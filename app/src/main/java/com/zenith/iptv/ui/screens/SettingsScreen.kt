@@ -149,6 +149,13 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
                 }
             }
             item {
+                val t = stringResource(R.string.panel_opacity)
+                val opts = listOf(100, 90, 85, 75, 65, 50, 40).map { "$it" to "$it%" }
+                SettingRow(Icons.Default.Palette, t, "${s.panelOpacity}%") {
+                    choice = Choice(t, opts, "${s.panelOpacity}") { v -> store.updateSettings { it.copy(panelOpacity = v.toInt()) } }
+                }
+            }
+            item {
                 val t = stringResource(R.string.screen_margin)
                 val opts = listOf("0" to stringResource(R.string.off), "2" to "2%", "4" to "4%", "6" to "6%")
                 SettingRow(Icons.Default.AspectRatio, t, opts.firstOrNull { it.first == "${s.screenMargin}" }?.second ?: "${s.screenMargin}%") {

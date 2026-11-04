@@ -37,6 +37,8 @@ export function SettingsScreen(params, nav) {
         up((st) => ({ wallpapers: st.wallpapers.map((x) => (x.id === w.id ? Object.assign({}, x, { dim: +v }) : x)) })))));
     }
     const sizes = [['0.85', t('size_small')], ['1', t('size_normal')], ['1.15', t('size_large')], ['1.3', t('size_xlarge')]];
+    const ops = [100, 90, 85, 75, 65, 50, 40].map((n) => [String(n), n + '%']);
+    list.appendChild(settingRow('eye', t('panel_opacity'), (s.panelOpacity || 85) + '%', () => choiceDialog(t('panel_opacity'), ops, String(s.panelOpacity || 85), (v) => up(() => ({ panelOpacity: +v })))));
     list.appendChild(settingRow('size', t('ui_size'), (sizes.find((x) => +x[0] === s.uiScale) || ['', Math.round(s.uiScale * 100) + '%'])[1],
       () => choiceDialog(t('ui_size'), sizes, String(s.uiScale), (v) => up(() => ({ uiScale: +v })))));
 

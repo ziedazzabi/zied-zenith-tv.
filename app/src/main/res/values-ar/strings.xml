@@ -138,6 +138,7 @@
     <string name="open_paypal">فتح PayPal</string>
     <string name="optional">اختياري</string>
     <string name="out_of_memory">هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف.</string>
+    <string name="panel_opacity">شفافية قائمة القنوات والخيارات</string>
     <string name="parental_control">الرقابة الأبوية</string>
     <string name="password">كلمة المرور</string>
     <string name="paypal_hint">امسح الرمز أو افتح PayPal وأرسل تبرعك إلى:</string>

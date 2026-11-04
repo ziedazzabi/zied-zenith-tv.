@@ -179,7 +179,7 @@ fun DetailsScreen(nav: Nav, key: String) {
                 if (seasons.isNotEmpty()) {
                     item {
                         Spacer(Modifier.height(18.dp))
-                        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                             items(seasons.keys.toList()) { s ->
                                 Chip(stringResource(R.string.season_n, s), s == season, onClick = { season = s })
                             }

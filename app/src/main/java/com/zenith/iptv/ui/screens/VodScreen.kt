@@ -102,7 +102,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
 
             val grid: @Composable (Modifier) -> Unit = { mod ->
                 Column(mod) {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(vertical = 6.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         val sorts = listOf(
                             "default" to R.string.sort_default, "az" to R.string.sort_az,
                             "new" to R.string.sort_newest, "rating" to R.string.sort_rating,
@@ -116,7 +116,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
                             columns = GridCells.Adaptive(com.zenith.iptv.ui.Adaptive.poster()),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalArrangement = Arrangement.spacedBy(14.dp),
-                            contentPadding = PaddingValues(6.dp, 6.dp, 6.dp, 32.dp),
+                            contentPadding = PaddingValues(start = 14.dp, top = 14.dp, end = 14.dp, bottom = 32.dp),
                         ) {
                             items(vodItems, key = { it.key }) { m ->
                                 val p = data.progress[m.key]
@@ -151,7 +151,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
                 }
             } else {
                 Column(Modifier.fillMaxSize()) {
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(top = 4.dp)) {
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(special + cats, key = { it.id }) { c ->
                             Chip(c.name, c.id == selectedCat, onClick = { selectCat(c) },
                                 icon = if (!c.id.startsWith("__") && repo.isLocked(c)) Icons.Default.Lock else null)

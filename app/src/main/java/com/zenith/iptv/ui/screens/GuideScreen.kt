@@ -122,7 +122,7 @@ fun GuideScreen(nav: Nav) {
                 }
             }
             Column(Modifier.fillMaxSize()) {
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(vertical = 6.dp)) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                     item { Chip(stringResource(R.string.all_channels), cat == CAT_ALL, onClick = { cat = CAT_ALL }) }
                     item { Chip(stringResource(R.string.favorites), cat == CAT_FAV, onClick = { cat = CAT_FAV }) }
                     items(cats.filter { !repo.isLocked(it) }, key = { it.id }) { c -> Chip(c.name, cat == c.id, onClick = { cat = c.id }) }
