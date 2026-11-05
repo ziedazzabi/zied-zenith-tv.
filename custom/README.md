@@ -24,3 +24,10 @@ Users of that edition only type their username and password.
 
 The custom edition installs next to the normal Z-Vision (different app id).
 With an empty `servers` list nothing extra is built.
+
+## Changing a server address without a new version
+
+`servers.json` (this folder) is read by the installed apps at every start (`remoteUrl` in `preset.json`).
+Edit it on GitHub and commit: within about 5 minutes, every app that is restarted uses the new addresses,
+and users who were signed in on a server keep their login (servers are matched by **name**, so keep the names).
+Editing only `servers.json` does not start a new build.

@@ -1,5 +1,6 @@
 // App shell: screen stack, global keys, mini player frame, reminders.
 import { h, clear, timeText } from './util.js';
+import { refreshPreset } from './preset.js';
 import { Focus } from './focus.js';
 import { t, setLang } from './i18n.js';
 import { store } from './store.js';
@@ -222,6 +223,8 @@ export function boot() {
     if (store.profiles.get().length > 1) app.go('profiles', { pick: true }); else app.go('home');
     repo.open(pl);
   }
+  // custom edition: newest server addresses (custom/servers.json); reload when the active server moved
+  refreshPreset().then((moved) => { if (moved) { repo.playlist = null; repo.open(moved, true); } }).catch(() => {});
 
   // started by a reminder alarm (Samsung)
   const rid = launchReminderId();

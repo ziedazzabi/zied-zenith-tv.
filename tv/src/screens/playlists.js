@@ -7,6 +7,7 @@ import { fz, button, chip, field, dialog, confirmDialog, toast } from '../ui.js'
 import { parseXtreamLink } from '../sources/sources.js';
 import { shell } from './common.js';
 import { Focus } from '../focus.js';
+import { getPreset, presetIndex, presetPlaylist, refreshPreset } from '../preset.js';
 
 const TYPES = [['xtream', 'xtream'], ['m3u', 'm3u_url'], ['stalker', 'mac_portal']];
 
@@ -50,29 +51,14 @@ export function PlaylistsScreen(params, nav) {
 }
 
 // Custom edition: servers are built in (custom/preset.json), users only sign in.
-/* global __PRESET__ */
-const PRESET = (function () {
-  try {
-    const p = typeof __PRESET__ !== 'undefined' ? __PRESET__ : null;
-    if (!p || !p.servers) return null;
-    p.servers = p.servers.filter((s) => s && s.url);
-    return p.servers.length ? p : null;
-  } catch (e) { return null; }
-})();
-const normUrl = (u) => { u = String(u || '').trim().replace(/\/+$/, ''); return /:\/\//.test(u) ? u : 'http://' + u; };
-function presetIndex(pl) {
-  if (!pl) return 0;
-  return PRESET.servers.findIndex((s) => {
-    const u = normUrl(s.url);
-    return (pl.url || '').replace(/\/+$/, '').toLowerCase() === u.toLowerCase() || (s.type === 'm3u' && (pl.url || '').indexOf(u.split('{')[0]) === 0);
-  });
-}
-
 function PresetLogin(params, nav, existing, onAdvanced) {
   const sh = shell(t('login_title'), nav, { noBack: !!params.first && !store.playlists.get().length });
   const form = h('div', { class: 'form scroll' });
   sh.body.appendChild(form);
+  let PRESET = getPreset();
   let server = Math.max(0, presetIndex(existing));
+  // the online server list may still be loading: redraw when it arrives
+  refreshPreset().then(() => { if (getPreset() !== PRESET && sh.el.isConnected) { PRESET = getPreset(); server = Math.max(0, Math.min(server, PRESET.servers.length - 1)); draw(); } });
   const cred = { username: existing ? existing.username : '', password: existing ? existing.password : '' };
 
   function draw() {
@@ -95,10 +81,7 @@ function PresetLogin(params, nav, existing, onAdvanced) {
     const u = (cred.username || '').trim(), pw = (cred.password || '').trim();
     if (!u || !pw) { toast(t('fill_required')); return; }
     const s = PRESET.servers[server] || PRESET.servers[0];
-    const m3u = s.type === 'm3u';
-    const url = m3u ? normUrl(s.url).replace('{username}', encodeURIComponent(u)).replace('{password}', encodeURIComponent(pw)) : normUrl(s.url);
-    const name = [PRESET.providerName, s.name].filter(Boolean).filter((x, i, a) => a.indexOf(x) === i).join(' · ') || u;
-    const pl = Object.assign({}, existing || { id: uid() }, { type: m3u ? 'm3u' : 'xtream', name, url, username: u, password: pw, mac: '', epgUrl: s.epg || (existing && existing.epgUrl) || '' });
+    const pl = presetPlaylist(existing || { id: uid() }, s, u, pw);
     store.savePlaylist(pl);
     store.updateSettings(() => ({ activePlaylistId: pl.id }));
     repo.playlist = null;
@@ -112,6 +95,7 @@ function PresetLogin(params, nav, existing, onAdvanced) {
 
 export function AddPlaylistScreen(params, nav) {
   const existing = params.id ? store.playlists.get().find((p) => p.id === params.id) : null;
+  const PRESET = getPreset();
   if (PRESET && !params.advanced && (!existing || presetIndex(existing) >= 0)) {
     return PresetLogin(params, nav, existing, PRESET.allowOtherSources ? () => nav.go('addPlaylist', { advanced: true }) : null);
   }

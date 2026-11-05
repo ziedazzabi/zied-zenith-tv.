@@ -21,6 +21,8 @@ data class Playlist(
     val epgUrl: String = "",
     val userAgent: String = "",
     val createdAt: Long = System.currentTimeMillis(),
+    /** Custom edition: name of the built-in server this playlist uses (so its address can be updated remotely). */
+    val presetServer: String = "",
 )
 
 @Serializable

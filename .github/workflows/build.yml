@@ -3,6 +3,8 @@ name: Build Z-Vision
 on:
   push:
     branches: [ main ]
+    # changing only the online server list must not build a new version
+    paths-ignore: [ 'custom/servers.json', '**/*.md' ]
   workflow_dispatch:
 
 jobs:

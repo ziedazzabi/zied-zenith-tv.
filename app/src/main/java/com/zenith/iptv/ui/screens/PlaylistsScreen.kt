@@ -144,7 +144,9 @@ fun AddPlaylistScreen(nav: Nav, editId: String) {
     val ctx = LocalContext.current
     val existing = remember(editId) { store.playlists.value.firstOrNull { it.id == editId } }
     val prefill = remember { PrefillHolder.m3u.also { PrefillHolder.m3u = null } }
-    val preset = remember { Presets.get(ctx) }
+    remember { Presets.get(ctx) }
+    val presetState by Presets.flow.collectAsState()
+    val preset = presetState
     var advanced by rememberSaveable { mutableStateOf(false) }
     if (preset != null && !advanced && (existing == null || Presets.serverIndexOf(preset, existing) >= 0)) {
         PresetLogin(nav, preset, existing, onAdvanced = if (preset.allowOtherSources) ({ advanced = true }) else null)

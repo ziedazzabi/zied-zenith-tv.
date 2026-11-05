@@ -12,6 +12,8 @@ class ZenithApp : Application() {
         super.onCreate()
         CrashReporter.install(this)
         Graph.init(this)
+        // custom edition: fetch the latest server addresses (custom/servers.json)
+        com.zenith.iptv.data.Presets.refreshAsync(this)
         val nm = getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(NotificationChannel(CH_REMINDERS, getString(R.string.reminders), NotificationManager.IMPORTANCE_HIGH))
         nm.createNotificationChannel(NotificationChannel(CH_RECORDING, getString(R.string.recordings), NotificationManager.IMPORTANCE_LOW))

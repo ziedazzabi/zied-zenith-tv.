@@ -2,6 +2,7 @@
   "appName": "Z-Vision Max",
   "providerName": "",
   "allowOtherSources": false,
+  "remoteUrl": "https://raw.githubusercontent.com/ziedazzabi/zied-zenith-tv./main/custom/servers.json",
   "servers": [
     { "name": "Vision Prime", "url": "http://1.888000.eu" },
     { "name": "Vision Extreme", "url": "http://2.900900.eu" },

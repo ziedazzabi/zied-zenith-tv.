@@ -50,7 +50,8 @@ class Store(context: Context) {
 
     // ---- playlists ----
     fun savePlaylist(p: Playlist) {
-        val list = _playlists.value.filterNot { it.id == p.id } + p
+        val cur = _playlists.value
+        val list = if (cur.any { it.id == p.id }) cur.map { if (it.id == p.id) p else it } else cur + p
         _playlists.value = list
         write("playlists.json", ListSerializer(Playlist.serializer()), list)
     }
