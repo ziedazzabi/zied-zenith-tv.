@@ -49,8 +49,72 @@ export function PlaylistsScreen(params, nav) {
   return { el: sh.el, destroy: sh.destroy, onShow(fresh) { if (!fresh) draw(); } };
 }
 
+// Custom edition: servers are built in (custom/preset.json), users only sign in.
+/* global __PRESET__ */
+const PRESET = (function () {
+  try {
+    const p = typeof __PRESET__ !== 'undefined' ? __PRESET__ : null;
+    if (!p || !p.servers) return null;
+    p.servers = p.servers.filter((s) => s && s.url);
+    return p.servers.length ? p : null;
+  } catch (e) { return null; }
+})();
+const normUrl = (u) => { u = String(u || '').trim().replace(/\/+$/, ''); return /:\/\//.test(u) ? u : 'http://' + u; };
+function presetIndex(pl) {
+  if (!pl) return 0;
+  return PRESET.servers.findIndex((s) => {
+    const u = normUrl(s.url);
+    return (pl.url || '').replace(/\/+$/, '').toLowerCase() === u.toLowerCase() || (s.type === 'm3u' && (pl.url || '').indexOf(u.split('{')[0]) === 0);
+  });
+}
+
+function PresetLogin(params, nav, existing, onAdvanced) {
+  const sh = shell(t('login_title'), nav, { noBack: !!params.first && !store.playlists.get().length });
+  const form = h('div', { class: 'form scroll' });
+  sh.body.appendChild(form);
+  let server = Math.max(0, presetIndex(existing));
+  const cred = { username: existing ? existing.username : '', password: existing ? existing.password : '' };
+
+  function draw() {
+    clear(form);
+    add(form, h('div', { class: 'welcome' }, h('img', { class: 'welcome-logo', src: 'img/logo.png', alt: '' }),
+      PRESET.providerName ? h('div', { class: 'pl-name', text: PRESET.providerName }) : null,
+      h('div', { class: 'muted', text: t('login_hint') })));
+    if (PRESET.servers.length > 1) {
+      form.appendChild(h('div', { class: 'muted small', text: t('choose_server') }));
+      form.appendChild(h('div', { class: 'hrow fgroup types' }, PRESET.servers.map((s, i) => chip(s.name || t('choose_server') + ' ' + (i + 1), server === i, () => { server = i; draw(); }))));
+    }
+    form.appendChild(field(t('username'), cred.username, { dir: 'ltr', onInput: (v) => { cred.username = v; } }));
+    form.appendChild(field(t('password'), cred.password, { dir: 'ltr', onInput: (v) => { cred.password = v; } }));
+    form.appendChild(h('div', { class: 'row gap' }, button(t('sign_in'), 'check', signIn, { primary: true, auto: !existing }),
+      onAdvanced ? button(t('add_playlist'), 'add', onAdvanced) : null,
+      existing ? button(t('cancel'), 'close', () => nav.back()) : null));
+  }
+
+  function signIn() {
+    const u = (cred.username || '').trim(), pw = (cred.password || '').trim();
+    if (!u || !pw) { toast(t('fill_required')); return; }
+    const s = PRESET.servers[server] || PRESET.servers[0];
+    const m3u = s.type === 'm3u';
+    const url = m3u ? normUrl(s.url).replace('{username}', encodeURIComponent(u)).replace('{password}', encodeURIComponent(pw)) : normUrl(s.url);
+    const name = [PRESET.providerName, s.name].filter(Boolean).filter((x, i, a) => a.indexOf(x) === i).join(' · ') || u;
+    const pl = Object.assign({}, existing || { id: uid() }, { type: m3u ? 'm3u' : 'xtream', name, url, username: u, password: pw, mac: '', epgUrl: s.epg || (existing && existing.epgUrl) || '' });
+    store.savePlaylist(pl);
+    store.updateSettings(() => ({ activePlaylistId: pl.id }));
+    repo.playlist = null;
+    repo.open(pl, true);
+    nav.home();
+  }
+
+  draw();
+  return { el: sh.el, destroy: sh.destroy };
+}
+
 export function AddPlaylistScreen(params, nav) {
   const existing = params.id ? store.playlists.get().find((p) => p.id === params.id) : null;
+  if (PRESET && !params.advanced && (!existing || presetIndex(existing) >= 0)) {
+    return PresetLogin(params, nav, existing, PRESET.allowOtherSources ? () => nav.go('addPlaylist', { advanced: true }) : null);
+  }
   const sh = shell(existing ? t('edit_playlist') : t('add_playlist'), nav, { noBack: !!params.first && !store.playlists.get().length });
   const pl = Object.assign({ id: uid(), type: 'xtream', name: '', url: '', username: '', password: '', mac: '', epgUrl: '' }, existing || {});
   const form = h('div', { class: 'form scroll' });

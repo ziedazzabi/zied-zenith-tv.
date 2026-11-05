@@ -8,7 +8,16 @@ const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..')
 const dev = process.argv.includes('--dev');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const version = process.env.APP_VERSION || pkg.version;
-const dist = path.join(root, 'dist');
+// Custom edition (servers built in): node scripts/build.mjs --custom  -> dist-custom/
+const custom = process.argv.includes('--custom');
+let preset = null;
+if (custom) {
+  const pf = path.join(root, '..', 'custom', 'preset.json');
+  preset = fs.existsSync(pf) ? JSON.parse(fs.readFileSync(pf, 'utf8')) : null;
+  if (!preset || !(preset.servers || []).some((s) => s && s.url)) { console.log('custom/preset.json has no servers: custom TV edition skipped'); process.exit(0); }
+}
+const appTitle = (preset && preset.appName) || 'Z-Vision';
+const dist = path.join(root, custom ? 'dist-custom' : 'dist');
 fs.rmSync(dist, { recursive: true, force: true });
 const www = path.join(dist, 'www');
 fs.mkdirSync(www, { recursive: true });
@@ -22,7 +31,7 @@ await esbuild.build({
   minify: !dev,
   sourcemap: dev ? 'inline' : false,
   loader: { '.json': 'json' },
-  define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"' },
+  define: { 'process.env.NODE_ENV': dev ? '"development"' : '"production"', __PRESET__: JSON.stringify(preset) },
   logLevel: 'warning',
 });
 
@@ -39,7 +48,9 @@ copyDir(path.join(root, 'static'), www);
 const tz = path.join(dist, 'tizen');
 copyDir(www, tz);
 copyDir(path.join(root, 'platform/tizen'), tz);
-fs.writeFileSync(path.join(tz, 'config.xml'), fs.readFileSync(path.join(tz, 'config.xml'), 'utf8').replace('__VERSION__', version));
+let tzConf = fs.readFileSync(path.join(tz, 'config.xml'), 'utf8').replace('__VERSION__', version);
+if (custom) tzConf = tzConf.replace(/zVisionTV1/g, 'zVisionCu1').replace('https://zvision.tv/app', 'https://zvision.tv/custom').replace('<name>Z-Vision</name>', '<name>' + appTitle.replace(/[<&]/g, '') + '</name>');
+fs.writeFileSync(path.join(tz, 'config.xml'), tzConf);
 // Samsung's TV APIs (AVPlay, product info) are loaded from the TV itself
 const tzIndex = path.join(tz, 'index.html');
 fs.writeFileSync(tzIndex, fs.readFileSync(tzIndex, 'utf8').replace('<script src="app.js">', '<script src="$WEBAPIS/webapis/webapis.js"></script>\n  <script src="app.js">'));
@@ -51,6 +62,8 @@ try {
 const wo = path.join(dist, 'webos');
 copyDir(www, wo);
 copyDir(path.join(root, 'platform/webos'), wo);
-fs.writeFileSync(path.join(wo, 'appinfo.json'), fs.readFileSync(path.join(wo, 'appinfo.json'), 'utf8').replace('__VERSION__', version));
+const appinfo = JSON.parse(fs.readFileSync(path.join(wo, 'appinfo.json'), 'utf8').replace('__VERSION__', version));
+if (custom) { appinfo.id = 'com.zvision.tv.custom'; appinfo.title = appTitle; }
+fs.writeFileSync(path.join(wo, 'appinfo.json'), JSON.stringify(appinfo, null, 2));
 
-console.log('Built Z-Vision TV ' + version + (dev ? ' (dev)' : ''));
+console.log('Built ' + appTitle + ' TV ' + version + (custom ? ' (custom edition)' : '') + (dev ? ' (dev)' : ''));

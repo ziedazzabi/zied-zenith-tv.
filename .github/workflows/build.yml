@@ -29,6 +29,7 @@ jobs:
           chmod +x gradlew
           echo "sdk.dir=$ANDROID_HOME" > local.properties
           set +e
+          # builds the standard and the custom edition (custom is only published when custom/preset.json lists servers)
           ./gradlew --no-daemon --stacktrace assembleRelease 2>&1 | tee build.log
           code=${PIPESTATUS[0]}
           if [ $code -ne 0 ]; then
@@ -46,13 +47,23 @@ jobs:
           if ! node scripts/build.mjs > tvbuild.log 2>&1; then head -40 tvbuild.log | while IFS= read -r l; do echo "::error::$l"; done; exit 1; fi
           cat tvbuild.log
           npx ares-package dist/webos -o dist
+          # Custom edition (only when custom/preset.json lists servers)
+          node scripts/build.mjs --custom
+          if [ -d dist-custom/webos ]; then npx ares-package dist-custom/webos -o dist-custom; fi
 
       - name: Collect files
         run: |
           mkdir -p out
-          cp app/build/outputs/apk/release/app-release.apk out/ZVision-${{ github.run_number }}.apk
-          cp tv/dist/ZVision.wgt out/ZVision-Samsung-${{ github.run_number }}.wgt
-          cp tv/dist/*.ipk out/ZVision-LG-${{ github.run_number }}.ipk
+          N=${{ github.run_number }}
+          cp app/build/outputs/apk/standard/release/app-standard-release.apk out/ZVision-$N.apk
+          cp tv/dist/ZVision.wgt out/ZVision-Samsung-$N.wgt
+          cp tv/dist/*.ipk out/ZVision-LG-$N.ipk
+          # Custom edition: only published when custom/preset.json has servers
+          if grep -q '"url"[[:space:]]*:[[:space:]]*"[^"]' custom/preset.json; then
+            cp app/build/outputs/apk/custom/release/app-custom-release.apk out/ZVision-Custom-$N.apk
+            [ -f tv/dist-custom/ZVision.wgt ] && cp tv/dist-custom/ZVision.wgt out/ZVision-Custom-Samsung-$N.wgt
+            ls tv/dist-custom/*.ipk >/dev/null 2>&1 && cp tv/dist-custom/*.ipk out/ZVision-Custom-LG-$N.ipk
+          fi
           ls -la out
 
       - uses: actions/upload-artifact@v4

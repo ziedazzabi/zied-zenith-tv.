@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -56,6 +57,8 @@ import androidx.compose.ui.unit.sp
 import com.zenith.iptv.Graph
 import com.zenith.iptv.R
 import com.zenith.iptv.data.Playlist
+import com.zenith.iptv.data.Preset
+import com.zenith.iptv.data.Presets
 import com.zenith.iptv.data.SourceType
 import com.zenith.iptv.ui.Chip
 import com.zenith.iptv.ui.EmptyState
@@ -138,6 +141,12 @@ fun AddPlaylistScreen(nav: Nav, editId: String) {
     val ctx = LocalContext.current
     val existing = remember(editId) { store.playlists.value.firstOrNull { it.id == editId } }
     val prefill = remember { PrefillHolder.m3u.also { PrefillHolder.m3u = null } }
+    val preset = remember { Presets.get(ctx) }
+    var advanced by rememberSaveable { mutableStateOf(false) }
+    if (preset != null && !advanced && (existing == null || Presets.serverIndexOf(preset, existing) >= 0)) {
+        PresetLogin(nav, preset, existing, onAdvanced = if (preset.allowOtherSources) ({ advanced = true }) else null)
+        return
+    }
 
     var type by rememberSaveable { mutableStateOf(existing?.type ?: if (prefill != null) SourceType.M3U else SourceType.XTREAM) }
     var name by rememberSaveable { mutableStateOf(existing?.name ?: "") }
@@ -159,8 +168,12 @@ fun AddPlaylistScreen(nav: Nav, editId: String) {
 
     // Users often paste a full get.php?username=…&password=… link — split it into Xtream fields.
     fun maybeSplitXtream(v: String) {
-        val u = Uri.parse(v.trim())
-        val un = u.getQueryParameter("username"); val pw = u.getQueryParameter("password")
+        val t = v.trim()
+        if (!t.startsWith("http://", true) && !t.startsWith("https://", true)) return
+        val u = runCatching { Uri.parse(t) }.getOrNull() ?: return
+        if (!u.isHierarchical) return
+        val un = runCatching { u.getQueryParameter("username") }.getOrNull()
+        val pw = runCatching { u.getQueryParameter("password") }.getOrNull()
         if (!un.isNullOrBlank() && !pw.isNullOrBlank() && ("get.php" in v || "player_api.php" in v)) {
             type = SourceType.XTREAM
             url = "${u.scheme}://${u.authority}"
@@ -171,11 +184,14 @@ fun AddPlaylistScreen(nav: Nav, editId: String) {
     fun save() {
         error = null
         if (url.isBlank()) { error = ctx.getString(R.string.err_url); return }
+        // "server.com:8080" → "http://server.com:8080"
+        val raw = url.trim()
+        if (!raw.contains("://") && !raw.startsWith("/")) url = "http://$raw"
         if (type == SourceType.XTREAM && (user.isBlank() || pass.isBlank())) { error = ctx.getString(R.string.err_credentials); return }
         if (type == SourceType.STALKER && !Regex("^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$").matches(mac.trim())) { error = ctx.getString(R.string.err_mac); return }
         val p = Playlist(
             id = existing?.id ?: store.newId(),
-            name = name.ifBlank { Uri.parse(url).host ?: ctx.getString(R.string.my_playlist) },
+            name = name.ifBlank { runCatching { Uri.parse(url).host }.getOrNull() ?: ctx.getString(R.string.my_playlist) },
             type = type, url = url.trim(), username = user.trim(), password = pass.trim(),
             mac = mac.trim().uppercase(), epgUrl = epg.trim(), userAgent = ua.trim(),
             createdAt = existing?.createdAt ?: System.currentTimeMillis(),
@@ -218,6 +234,57 @@ fun AddPlaylistScreen(nav: Nav, editId: String) {
                 error?.let { Text(it, color = Z.red, fontSize = 13.sp) }
                 Spacer(Modifier.height(4.dp))
                 ActionButton(stringResource(R.string.save_and_load), Icons.Default.CheckCircle, primary = true) { save() }
+            }
+        }
+    }
+}
+
+/** Custom edition: the servers are built in, the user only signs in. */
+@Composable
+private fun PresetLogin(nav: Nav, preset: Preset, existing: Playlist?, onAdvanced: (() -> Unit)?) {
+    val store = Graph.store
+    val repo = Graph.repo
+    val ctx = LocalContext.current
+    var server by rememberSaveable { mutableStateOf(Presets.serverIndexOf(preset, existing).coerceAtLeast(0)) }
+    var user by rememberSaveable { mutableStateOf(existing?.username ?: "") }
+    var pass by rememberSaveable { mutableStateOf(existing?.password ?: "") }
+    var error by remember { mutableStateOf<String?>(null) }
+
+    fun signIn() {
+        error = null
+        if (user.isBlank() || pass.isBlank()) { error = ctx.getString(R.string.err_credentials); return }
+        val s = preset.servers.getOrNull(server) ?: preset.servers.first()
+        val p = Presets.playlist(
+            existing?.id ?: store.newId(), preset, s, user.trim(), pass.trim(),
+            existing?.createdAt ?: System.currentTimeMillis(),
+        ).copy(userAgent = existing?.userAgent ?: "")
+        store.savePlaylist(p)
+        repo.open(p, forceRefresh = true)
+        nav.home()
+    }
+
+    ScreenScaffold(stringResource(R.string.login_title), nav) {
+        Column(
+            Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Column(Modifier.widthIn(max = 560.dp).fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                if (preset.providerName.isNotBlank()) Text(preset.providerName, color = Z.text, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.login_hint), color = Z.muted, fontSize = 14.sp)
+                if (preset.servers.size > 1) {
+                    Text(stringResource(R.string.choose_server), color = Z.muted, fontSize = 13.sp, modifier = Modifier.padding(top = 4.dp))
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                        preset.servers.forEachIndexed { i, s ->
+                            Chip(s.name.ifBlank { "${stringResource(R.string.choose_server)} ${i + 1}" }, server == i, onClick = { server = i })
+                        }
+                    }
+                }
+                Field(stringResource(R.string.username), user, { user = it })
+                Field(stringResource(R.string.password), pass, { pass = it }, password = true)
+                error?.let { Text(it, color = Z.red, fontSize = 13.sp) }
+                Spacer(Modifier.height(4.dp))
+                ActionButton(stringResource(R.string.sign_in), Icons.Default.CheckCircle, primary = true) { signIn() }
+                onAdvanced?.let { ActionButton(stringResource(R.string.add_playlist), Icons.Default.Add) { it() } }
             }
         }
     }

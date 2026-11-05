@@ -15,7 +15,6 @@
     <string name="all">All</string>
     <string name="all_apps">All apps</string>
     <string name="all_channels">All channels</string>
-    <string name="app_name">Z-Vision</string>
     <string name="appearance">Appearance</string>
     <string name="apps">Apps</string>
     <string name="apps_hint">Tap to open (or install). Long-press, or MENU on the remote, to add or remove an app from the home screen.</string>
@@ -35,6 +34,7 @@
     <string name="catchup">Catch-up</string>
     <string name="change_pin">Change PIN</string>
     <string name="channel_not_found">Channel %d not found</string>
+    <string name="choose_server">Server</string>
     <string name="clear_all">Clear all</string>
     <string name="clock_24h">24-hour clock</string>
     <string name="close">Close</string>
@@ -43,7 +43,9 @@
     <string name="contact_hint">Need help or have a suggestion? Write to:</string>
     <string name="continue_watching">Continue watching</string>
     <string name="copy_email">Copy email</string>
+    <string name="crash_send_failed">Couldn\'t send it. Scan this code with your phone to e-mail the report to %s.</string>
     <string name="crash_text">Sorry! Please send this report to %s so the problem can be fixed.</string>
+    <string name="crash_text_online">Sorry! Press Send report so the problem can be fixed (needs internet).</string>
     <string name="crash_title">Z-Vision closed unexpectedly</string>
     <string name="current_pin">Current PIN</string>
     <string name="decoder">Video decoder</string>
@@ -103,6 +105,8 @@
     <string name="lock_category">Lock with PIN</string>
     <string name="lock_hint">Long-press (or MENU) on a category to lock or unlock it</string>
     <string name="locked_categories">Locked categories</string>
+    <string name="login_hint">Enter the username and password from your subscription.</string>
+    <string name="login_title">Sign in</string>
     <string name="m3u">M3U playlist</string>
     <string name="m3u_url">M3U link</string>
     <string name="mac_address">MAC address</string>
@@ -180,6 +184,7 @@
     <string name="remove_reminder">Remove reminder</string>
     <string name="removed_favorite">Removed from favorites</string>
     <string name="removed_my_list">Removed from My list</string>
+    <string name="report_sent">Report sent — thank you!</string>
     <string name="resume_at">Resume %s</string>
     <string name="resume_episode">Resume S%1$dE%2$d · %3$s</string>
     <string name="retry">Retry</string>
@@ -194,11 +199,13 @@
     <string name="season_n">Season %d</string>
     <string name="send_email">Send email</string>
     <string name="send_report">Send report</string>
+    <string name="sending">Sending…</string>
     <string name="series">Series</string>
     <string name="server_url">Server URL</string>
     <string name="set_reminder">Remind me</string>
     <string name="settings">Settings</string>
     <string name="show_hidden_categories">Show hidden categories again</string>
+    <string name="sign_in">Sign in</string>
     <string name="size_large">Large</string>
     <string name="size_normal">Normal</string>
     <string name="size_small">Small</string>

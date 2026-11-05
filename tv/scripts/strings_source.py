@@ -1,6 +1,5 @@
 # key: (en, ar, fr)
 S = {
-"app_name": ("Z-Vision", "Z-Vision", "Z-Vision"),
 "about": ("About", "حول التطبيق", "À propos"),
 "account": ("Account", "الحساب", "Compte"),
 "add_channel": ("Add channel", "إضافة قناة", "Ajouter une chaîne"),
@@ -245,9 +244,17 @@ S = {
 "resume_episode": ("Resume S%1$dE%2$d · %3$s", "متابعة م%1$d ح%2$d · %3$s", "Reprendre S%1$dE%2$d · %3$s"),
 "play_episode": ("Play S%1$dE%2$d", "تشغيل م%1$d ح%2$d", "Lire S%1$dE%2$d"),
 "watched": ("Watched", "تمت المشاهدة", "Vu"),
+"crash_text_online": ("Sorry! Press Send report so the problem can be fixed (needs internet).", "نعتذر! اضغط «إرسال التقرير» ليتم إصلاح المشكلة (يتطلب الإنترنت).", "Désolé ! Appuyez sur Envoyer le rapport pour que le problème soit corrigé (Internet requis)."),
+"crash_send_failed": ("Couldn't send it. Scan this code with your phone to e-mail the report to %s.", "تعذّر الإرسال. امسح هذا الرمز بهاتفك لإرسال التقرير بالبريد إلى %s.", "Échec de l'envoi. Scannez ce code avec votre téléphone pour envoyer le rapport par e-mail à %s."),
+"report_sent": ("Report sent — thank you!", "تم إرسال التقرير — شكرًا لك!", "Rapport envoyé — merci !"),
+"sending": ("Sending…", "جارٍ الإرسال…", "Envoi…"),
+"login_title": ("Sign in", "تسجيل الدخول", "Connexion"),
+"login_hint": ("Enter the username and password from your subscription.", "أدخل اسم المستخدم وكلمة المرور الخاصين باشتراكك.", "Saisissez l'identifiant et le mot de passe de votre abonnement."),
+"choose_server": ("Server", "الخادم", "Serveur"),
+"sign_in": ("Sign in", "دخول", "Se connecter"),
 }
 import sys, os
-used = set(open('/tmp/claude-0/strings_used.txt').read().split()) | {"app_name"}
+used = set(open('/tmp/claude-0/strings_used.txt').read().split())
 missing = used - set(S); extra = set(S) - used
 print("missing:", sorted(missing)); print("unused:", sorted(extra))
 def esc(t): return t.replace("&","&amp;").replace("<","&lt;").replace("'", "\\'").replace('"','\\"')

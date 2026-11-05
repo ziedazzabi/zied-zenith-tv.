@@ -1,3 +1,10 @@
+// Custom edition: servers come from custom/preset.json (users only type username + password)
+val presetFile = rootProject.file("custom/preset.json")
+@Suppress("UNCHECKED_CAST")
+val preset: Map<String, Any?> = if (presetFile.exists()) groovy.json.JsonSlurper().parse(presetFile) as Map<String, Any?> else emptyMap()
+val customAppName: String = (preset["appName"] as? String)?.takeIf { it.isNotBlank() } ?: "Z-Vision"
+val buildNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -13,8 +20,9 @@ android {
         applicationId = "com.zenith.iptv"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0.0"
+        versionCode = buildNumber
+        versionName = "1.0.$buildNumber"
+        resValue("string", "app_name", "Z-Vision")
         vectorDrawables { useSupportLibrary = true }
         // TV boxes and phones are ARM
         ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a") }
@@ -40,6 +48,19 @@ android {
         debug {
             signingConfig = signingConfigs.getByName("shared")
         }
+    }
+
+    flavorDimensions += "edition"
+    productFlavors {
+        create("standard") { dimension = "edition" }
+        create("custom") {
+            dimension = "edition"
+            applicationIdSuffix = ".custom"
+            resValue("string", "app_name", customAppName)
+        }
+    }
+    sourceSets {
+        getByName("custom") { assets.srcDirs(rootProject.file("custom")) }
     }
 
     compileOptions {
@@ -82,6 +103,8 @@ dependencies {
     implementation("org.videolan.android:libvlc-all:3.6.0")
     // FFmpeg audio decoders for ExoPlayer (AC-3, E-AC-3, DTS, MP2… on boxes without them)
     implementation("org.jellyfin.media3:media3-ffmpeg-decoder:1.5.0+1")
+    // QR codes (crash report fallback)
+    implementation("com.google.zxing:core:3.5.3")
     implementation("androidx.media3:media3-exoplayer-hls:$media3")
     implementation("androidx.media3:media3-exoplayer-dash:$media3")
     implementation("androidx.media3:media3-exoplayer-rtsp:$media3")

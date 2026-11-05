@@ -15,7 +15,6 @@
     <string name="all">الكل</string>
     <string name="all_apps">كل التطبيقات</string>
     <string name="all_channels">كل القنوات</string>
-    <string name="app_name">Z-Vision</string>
     <string name="appearance">المظهر</string>
     <string name="apps">التطبيقات</string>
     <string name="apps_hint">اضغط للفتح (أو للتثبيت). اضغط مطولًا أو زر القائمة في الريموت لإضافة التطبيق إلى الرئيسية أو إزالته.</string>
@@ -35,6 +34,7 @@
     <string name="catchup">إعادة المشاهدة</string>
     <string name="change_pin">تغيير الرمز السري</string>
     <string name="channel_not_found">القناة %d غير موجودة</string>
+    <string name="choose_server">الخادم</string>
     <string name="clear_all">مسح الكل</string>
     <string name="clock_24h">ساعة 24 ساعة</string>
     <string name="close">إغلاق</string>
@@ -43,7 +43,9 @@
     <string name="contact_hint">تحتاج مساعدة أو لديك اقتراح؟ راسلنا على:</string>
     <string name="continue_watching">متابعة المشاهدة</string>
     <string name="copy_email">نسخ البريد</string>
+    <string name="crash_send_failed">تعذّر الإرسال. امسح هذا الرمز بهاتفك لإرسال التقرير بالبريد إلى %s.</string>
     <string name="crash_text">نعتذر! أرسل هذا التقرير إلى %s ليتم إصلاح المشكلة.</string>
+    <string name="crash_text_online">نعتذر! اضغط «إرسال التقرير» ليتم إصلاح المشكلة (يتطلب الإنترنت).</string>
     <string name="crash_title">تم إغلاق Z-Vision بشكل غير متوقع</string>
     <string name="current_pin">الرمز الحالي</string>
     <string name="decoder">مفكك الفيديو</string>
@@ -103,6 +105,8 @@
     <string name="lock_category">قفل بالرمز السري</string>
     <string name="lock_hint">اضغط مطولاً (أو زر القائمة) على فئة لقفلها أو فتحها</string>
     <string name="locked_categories">الفئات المقفلة</string>
+    <string name="login_hint">أدخل اسم المستخدم وكلمة المرور الخاصين باشتراكك.</string>
+    <string name="login_title">تسجيل الدخول</string>
     <string name="m3u">قائمة M3U</string>
     <string name="m3u_url">رابط M3U</string>
     <string name="mac_address">عنوان MAC</string>
@@ -180,6 +184,7 @@
     <string name="remove_reminder">حذف التذكير</string>
     <string name="removed_favorite">أزيلت من المفضلة</string>
     <string name="removed_my_list">أزيل من قائمتي</string>
+    <string name="report_sent">تم إرسال التقرير — شكرًا لك!</string>
     <string name="resume_at">استئناف %s</string>
     <string name="resume_episode">متابعة م%1$d ح%2$d · %3$s</string>
     <string name="retry">إعادة المحاولة</string>
@@ -194,11 +199,13 @@
     <string name="season_n">الموسم %d</string>
     <string name="send_email">إرسال بريد</string>
     <string name="send_report">إرسال التقرير</string>
+    <string name="sending">جارٍ الإرسال…</string>
     <string name="series">المسلسلات</string>
     <string name="server_url">رابط الخادم</string>
     <string name="set_reminder">ذكّرني</string>
     <string name="settings">الإعدادات</string>
     <string name="show_hidden_categories">إظهار الفئات المخفية</string>
+    <string name="sign_in">دخول</string>
     <string name="size_large">كبير</string>
     <string name="size_normal">عادي</string>
     <string name="size_small">صغير</string>

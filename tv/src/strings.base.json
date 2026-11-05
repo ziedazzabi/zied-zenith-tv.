@@ -244,7 +244,15 @@
 "panel_opacity": "Channel list & menu opacity",
 "resume_episode": "Resume S{0}E{1} · {2}",
 "play_episode": "Play S{0}E{1}",
-"watched": "Watched"
+"watched": "Watched",
+"crash_text_online": "Sorry! Press Send report so the problem can be fixed (needs internet).",
+"crash_send_failed": "Couldn't send it. Scan this code with your phone to e-mail the report to {0}.",
+"report_sent": "Report sent — thank you!",
+"sending": "Sending…",
+"login_title": "Sign in",
+"login_hint": "Enter the username and password from your subscription.",
+"choose_server": "Server",
+"sign_in": "Sign in"
 },
 "ar": {
 "app_name": "Z-Vision",
@@ -491,7 +499,15 @@
 "panel_opacity": "شفافية قائمة القنوات والخيارات",
 "resume_episode": "متابعة م{0} ح{1} · {2}",
 "play_episode": "تشغيل م{0} ح{1}",
-"watched": "تمت المشاهدة"
+"watched": "تمت المشاهدة",
+"crash_text_online": "نعتذر! اضغط «إرسال التقرير» ليتم إصلاح المشكلة (يتطلب الإنترنت).",
+"crash_send_failed": "تعذّر الإرسال. امسح هذا الرمز بهاتفك لإرسال التقرير بالبريد إلى {0}.",
+"report_sent": "تم إرسال التقرير — شكرًا لك!",
+"sending": "جارٍ الإرسال…",
+"login_title": "تسجيل الدخول",
+"login_hint": "أدخل اسم المستخدم وكلمة المرور الخاصين باشتراكك.",
+"choose_server": "الخادم",
+"sign_in": "دخول"
 },
 "fr": {
 "app_name": "Z-Vision",
@@ -738,6 +754,14 @@
 "panel_opacity": "Opacité de la liste des chaînes et du menu",
 "resume_episode": "Reprendre S{0}E{1} · {2}",
 "play_episode": "Lire S{0}E{1}",
-"watched": "Vu"
+"watched": "Vu",
+"crash_text_online": "Désolé ! Appuyez sur Envoyer le rapport pour que le problème soit corrigé (Internet requis).",
+"crash_send_failed": "Échec de l'envoi. Scannez ce code avec votre téléphone pour envoyer le rapport par e-mail à {0}.",
+"report_sent": "Rapport envoyé — merci !",
+"sending": "Envoi…",
+"login_title": "Connexion",
+"login_hint": "Saisissez l'identifiant et le mot de passe de votre abonnement.",
+"choose_server": "Serveur",
+"sign_in": "Se connecter"
 }
 }
