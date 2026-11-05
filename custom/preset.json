@@ -1,5 +1,10 @@
 {
   "appName": "Z-Vision",
-  "providerName": "My IPTV",
-  "servers": []
+  "providerName": "",
+  "allowOtherSources": false,
+  "servers": [
+    { "name": "Vision Prime", "url": "http://1.888000.eu" },
+    { "name": "Vision Extreme", "url": "http://2.900900.eu" },
+    { "name": "Vision Ultra", "url": "http://zie.silverflo.xyz" }
+  ]
 }
