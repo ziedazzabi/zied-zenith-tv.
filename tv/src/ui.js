@@ -140,7 +140,7 @@ export function pinDialog(title, onPin, autoLen) {
 /** Labelled text field. OK opens the TV keyboard. */
 export function field(label, value, o) {
   o = o || {};
-  const input = h('input', { class: 'f', type: o.type || 'text', value: value || '', placeholder: o.placeholder || '', autocomplete: 'off', spellcheck: 'false', dir: o.dir || 'auto' });
+  const input = h('input', { class: 'f', type: o.password ? 'password' : (o.type || 'text'), value: value || '', placeholder: o.placeholder || '', autocomplete: 'off', spellcheck: 'false', dir: o.dir || 'auto' });
   if (o.onInput) input.addEventListener('input', () => o.onInput(input.value));
   input.addEventListener('keydown', (e) => {
     // TV keyboards send OK/Done as Enter
@@ -149,7 +149,22 @@ export function field(label, value, o) {
   if (o.onSubmit) input._submit = () => o.onSubmit(input.value);
   const wrap = h('label', { class: 'field' + (o.cls ? ' ' + o.cls : '') }, h('span', { class: 'flabel', text: label }), input);
   wrap.input = input;
-  return wrap;
+  if (!o.password) return wrap;
+  // password: hidden by default, with a "Show password" switch under it
+  const lbl = h('span', { text: t('show_password') });
+  const ic = h('span', { class: 'f-eye-ic' }, icon('eye'));
+  const toggle = fz(h('div', { class: 'f-eye' }, ic, lbl), {
+    click: () => {
+      const show = input.type === 'password';
+      input.type = show ? 'text' : 'password';
+      toggle.classList.toggle('on', show);
+      ic.innerHTML = ''; ic.appendChild(icon(show ? 'hide' : 'eye'));
+      lbl.textContent = t(show ? 'hide_password' : 'show_password');
+    },
+  });
+  const box = h('div', { class: 'field-pw' }, wrap, toggle);
+  box.input = input;
+  return box;
 }
 
 export function toggleRow(ic, label, value, onChange) {

@@ -1,5 +1,6 @@
 import { h, clear, timeText } from '../util.js';
 import { icon } from '../icons.js';
+import { brandName } from '../brand.js';
 import { t } from '../i18n.js';
 import { repo } from '../repo.js';
 import { store } from '../store.js';
@@ -17,7 +18,7 @@ export function HomeScreen(params, nav) {
   const prof = store.activeProfile();
   const avatar = fz(h('div', { class: 'avatar', style: 'background:#' + (prof.color >>> 0).toString(16).slice(2) }, prof.name.slice(0, 1).toUpperCase()), { click: () => nav.go('profiles', {}) });
   const header = h('div', { class: 'hdr home-hdr' },
-    h('div', { class: 'brand' }, h('img', { src: 'img/mark.png', alt: '' }), h('span', {}, h('span', { class: 'z', text: 'Z-' }), 'Vision')),
+    h('div', { class: 'brand' }, h('img', { src: 'img/mark.png', alt: '' }), brandName()),
     plChip, h('div', { class: 'grow' }), clock,
     fz(h('div', { class: 'ibtn heart' }, icon('heart')), { click: () => nav.go('about') }),
     fz(h('div', { class: 'ibtn' }, icon('search')), { click: () => nav.go('search') }), avatar);

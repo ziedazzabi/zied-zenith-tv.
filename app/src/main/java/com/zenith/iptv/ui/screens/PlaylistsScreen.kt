@@ -30,8 +30,11 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FolderOpen
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -295,12 +298,22 @@ private fun Field(
     label: String, value: String, onChange: (String) -> Unit, hint: String = "",
     password: Boolean = false, keyboard: KeyboardType = KeyboardType.Text,
 ) {
+    var shown by rememberSaveable { mutableStateOf(false) }
     OutlinedTextField(
         value = value, onValueChange = onChange, singleLine = true,
         label = { Text(label) },
         placeholder = { if (hint.isNotEmpty()) Text(hint, color = Z.muted) },
-        visualTransformation = if (password) PasswordVisualTransformation() else VisualTransformation.None,
-        keyboardOptions = KeyboardOptions(keyboardType = if (password) KeyboardType.Password else keyboard),
+        trailingIcon = if (password) ({
+            IconButton(onClick = { shown = !shown }) {
+                Icon(
+                    if (shown) Icons.Default.VisibilityOff else Icons.Default.Visibility,
+                    stringResource(if (shown) R.string.hide_password else R.string.show_password),
+                    tint = if (shown) Z.accent else Z.muted,
+                )
+            }
+        }) else null,
+        visualTransformation = if (password && !shown) PasswordVisualTransformation() else VisualTransformation.None,
+        keyboardOptions = KeyboardOptions(keyboardType = if (password && !shown) KeyboardType.Password else keyboard),
         colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = Z.accent, focusedLabelColor = Z.accent),
         modifier = Modifier.fillMaxWidth(),
     )

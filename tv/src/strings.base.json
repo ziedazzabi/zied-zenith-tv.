@@ -252,6 +252,8 @@
 "login_title": "Sign in",
 "login_hint": "Enter the username and password from your subscription.",
 "choose_server": "Server",
+"show_password": "Show password",
+"hide_password": "Hide password",
 "sign_in": "Sign in"
 },
 "ar": {
@@ -507,6 +509,8 @@
 "login_title": "تسجيل الدخول",
 "login_hint": "أدخل اسم المستخدم وكلمة المرور الخاصين باشتراكك.",
 "choose_server": "الخادم",
+"show_password": "إظهار كلمة المرور",
+"hide_password": "إخفاء كلمة المرور",
 "sign_in": "دخول"
 },
 "fr": {
@@ -762,6 +766,8 @@
 "login_title": "Connexion",
 "login_hint": "Saisissez l'identifiant et le mot de passe de votre abonnement.",
 "choose_server": "Serveur",
+"show_password": "Afficher le mot de passe",
+"hide_password": "Masquer le mot de passe",
 "sign_in": "Se connecter"
 }
 }

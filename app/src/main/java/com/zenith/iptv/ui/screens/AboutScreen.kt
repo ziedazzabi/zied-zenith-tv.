@@ -73,10 +73,7 @@ fun AboutScreen(nav: Nav) {
                     Image(painterResource(R.drawable.logo_mark), null, Modifier.size(if (isTv) 96.dp else 72.dp))
                     Spacer(Modifier.width(16.dp))
                     Column {
-                        Row {
-                            Text("Z-", color = Z.accent, fontWeight = FontWeight.Bold, fontSize = 28.sp)
-                            Text("Vision", color = Z.text, fontWeight = FontWeight.Bold, fontSize = 28.sp)
-                        }
+                        com.zenith.iptv.ui.BrandName(28.sp)
                         Text(stringResource(R.string.version_n, BuildConfigInfo.version(ctx)), color = Z.muted, fontSize = 13.sp)
                         Spacer(Modifier.height(6.dp))
                         Text(stringResource(R.string.idea_dev) + ": " + DEVELOPER, color = Z.text, fontWeight = FontWeight.SemiBold)

@@ -107,8 +107,7 @@ fun HomeScreen(nav: Nav) {
         ) {
             Image(painterResource(R.drawable.logo_mark), "Z-Vision", modifier = Modifier.size(if (isTv) 44.dp else 34.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Z-", color = Z.accent, fontWeight = FontWeight.Bold, fontSize = if (isTv) 26.sp else 20.sp)
-            Text("Vision", color = Z.text, fontWeight = FontWeight.Bold, fontSize = if (isTv) 26.sp else 20.sp)
+            com.zenith.iptv.ui.BrandName(if (isTv) 26.sp else 20.sp)
             Spacer(Modifier.width(16.dp))
             if (playlist != null) {
                 Focusable(onClick = { nav.go(Routes.PLAYLISTS) }, shape = RoundedCornerShape(50)) {

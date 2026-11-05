@@ -85,7 +85,7 @@ function PresetLogin(params, nav, existing, onAdvanced) {
       form.appendChild(h('div', { class: 'hrow fgroup types' }, PRESET.servers.map((s, i) => chip(s.name || t('choose_server') + ' ' + (i + 1), server === i, () => { server = i; draw(); }))));
     }
     form.appendChild(field(t('username'), cred.username, { dir: 'ltr', onInput: (v) => { cred.username = v; } }));
-    form.appendChild(field(t('password'), cred.password, { dir: 'ltr', onInput: (v) => { cred.password = v; } }));
+    form.appendChild(field(t('password'), cred.password, { dir: 'ltr', password: true, onInput: (v) => { cred.password = v; } }));
     form.appendChild(h('div', { class: 'row gap' }, button(t('sign_in'), 'check', signIn, { primary: true, auto: !existing }),
       onAdvanced ? button(t('add_playlist'), 'add', onAdvanced) : null,
       existing ? button(t('cancel'), 'close', () => nav.back()) : null));
@@ -133,7 +133,7 @@ export function AddPlaylistScreen(params, nav) {
         if (parsed) { pl.url = parsed.url; pl.username = parsed.username; pl.password = parsed.password; draw(); toast(t('link_split')); }
       } }));
       form.appendChild(f(t('username'), 'username', { dir: 'ltr' }));
-      form.appendChild(f(t('password'), 'password', { dir: 'ltr' }));
+      form.appendChild(f(t('password'), 'password', { dir: 'ltr', password: true }));
     } else if (pl.type === 'm3u') {
       form.appendChild(f(t('m3u_url'), 'url', { dir: 'ltr', placeholder: 'http://…/playlist.m3u' }));
     } else {

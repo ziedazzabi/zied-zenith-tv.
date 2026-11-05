@@ -87,6 +87,7 @@ html.avplay .vl-full { background: transparent; }
 .brand { display: flex; align-items: center; gap: 0.8rem; font-size: 2.6rem; font-weight: 800; letter-spacing: 0.05rem; }
 .brand img { height: 4rem; width: 4rem; }
 .brand .z { color: var(--accent); }
+.brand-sfx { display: inline-block; vertical-align: middle; margin-inline-start: 0.7rem; padding: 0.15rem 0.8rem; border-radius: 2rem; font-size: 0.5em; letter-spacing: 0.15rem; color: #1A0F06; background: linear-gradient(90deg, #FFD15C, #FF8A1F 60%, #FF4D6D); position: relative; top: -0.15em; }
 .pl-chip { padding: 0.6rem 1.4rem; border-radius: 3rem; background: var(--s1); color: var(--muted); font-size: 1.3rem; max-width: 30rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .avatar { width: 4rem; height: 4rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800; font-size: 1.8rem; }
 
@@ -271,6 +272,11 @@ html.avplay .vl-full { background: transparent; }
 
 /* fields */
 .field { display: block; margin-bottom: 1rem; }
+.field-pw .field { margin-bottom: 0.4rem; }
+.f-eye { display: inline-flex; align-items: center; padding: 0.5rem 1rem; margin: 0 0 1rem 0.2rem; border-radius: 2rem; color: var(--muted); font-size: 1.2rem; }
+.f-eye .ic, .f-eye svg { width: 1.6rem; height: 1.6rem; margin-inline-end: 0.6rem; }
+.f-eye.on { color: var(--accent); }
+.f-eye.focused { background: var(--s2); color: var(--text); box-shadow: 0 0 0 0.2rem var(--accent); }
 .flabel { display: block; font-size: 1.15rem; color: var(--muted); margin: 0 0 0.4rem 0.3rem; }
 .field input { width: 100%; height: 4.4rem; padding: 0 1.3rem; border-radius: 0.8rem; border: 0.18rem solid var(--line); background: var(--s1); color: var(--text); font-size: 1.5rem; outline: none; }
 .field input.focused, .field input:focus { border-color: var(--accent); background: var(--s2); box-shadow: 0 0 0 0.2rem var(--accent); }

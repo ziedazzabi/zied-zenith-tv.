@@ -1,5 +1,6 @@
 // About Z-Vision: credits, contact and donations (PayPal / Neteller) with QR codes to scan from a phone.
 import { h } from '../util.js';
+import { brandName } from '../brand.js';
 import { icon } from '../icons.js';
 import { t } from '../i18n.js';
 import { button, toast } from '../ui.js';
@@ -45,7 +46,7 @@ export function AboutScreen(params, nav) {
     h('div', { class: 'about-head' },
       h('img', { src: 'img/mark.png', alt: '' }),
       h('div', {},
-        h('div', { class: 'about-name' }, h('span', { class: 'z', text: 'Z-' }), 'Vision'),
+        h('div', { class: 'about-name' }, brandName()),
         h('div', { class: 'muted', text: t('version_n', APP_VERSION) }),
         h('div', { class: 'about-credit', text: t('idea_dev') + ': ' + DEVELOPER }))),
     h('div', { class: 'section' }, icon('info'), h('span', { text: t('contact') })),

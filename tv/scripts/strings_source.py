@@ -251,6 +251,8 @@ S = {
 "login_title": ("Sign in", "تسجيل الدخول", "Connexion"),
 "login_hint": ("Enter the username and password from your subscription.", "أدخل اسم المستخدم وكلمة المرور الخاصين باشتراكك.", "Saisissez l'identifiant et le mot de passe de votre abonnement."),
 "choose_server": ("Server", "الخادم", "Serveur"),
+"show_password": ("Show password", "إظهار كلمة المرور", "Afficher le mot de passe"),
+"hide_password": ("Hide password", "إخفاء كلمة المرور", "Masquer le mot de passe"),
 "sign_in": ("Sign in", "دخول", "Se connecter"),
 }
 import sys, os

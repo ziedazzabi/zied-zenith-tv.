@@ -43,11 +43,15 @@ const copyDir = (from, to) => {
   }
 };
 copyDir(path.join(root, 'static'), www);
+// custom edition: its own logo / icons (branding/tv)
+const brand = path.join(root, '..', 'branding', 'tv');
+if (custom && fs.existsSync(brand)) copyDir(path.join(brand, 'img'), path.join(www, 'img'));
 
 // ---- Samsung Tizen ----
 const tz = path.join(dist, 'tizen');
 copyDir(www, tz);
 copyDir(path.join(root, 'platform/tizen'), tz);
+if (custom && fs.existsSync(brand)) copyDir(path.join(brand, 'tizen'), tz);
 let tzConf = fs.readFileSync(path.join(tz, 'config.xml'), 'utf8').replace('__VERSION__', version);
 if (custom) tzConf = tzConf.replace(/zVisionTV1/g, 'zVisionCu1').replace('https://zvision.tv/app', 'https://zvision.tv/custom').replace('<name>Z-Vision</name>', '<name>' + appTitle.replace(/[<&]/g, '') + '</name>');
 fs.writeFileSync(path.join(tz, 'config.xml'), tzConf);
@@ -62,6 +66,7 @@ try {
 const wo = path.join(dist, 'webos');
 copyDir(www, wo);
 copyDir(path.join(root, 'platform/webos'), wo);
+if (custom && fs.existsSync(brand)) copyDir(path.join(brand, 'webos'), wo);
 const appinfo = JSON.parse(fs.readFileSync(path.join(wo, 'appinfo.json'), 'utf8').replace('__VERSION__', version));
 if (custom) { appinfo.id = 'com.zvision.tv.custom'; appinfo.title = appTitle; }
 fs.writeFileSync(path.join(wo, 'appinfo.json'), JSON.stringify(appinfo, null, 2));

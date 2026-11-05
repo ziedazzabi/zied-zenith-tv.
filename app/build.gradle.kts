@@ -3,6 +3,8 @@ val presetFile = rootProject.file("custom/preset.json")
 @Suppress("UNCHECKED_CAST")
 val preset: Map<String, Any?> = if (presetFile.exists()) groovy.json.JsonSlurper().parse(presetFile) as Map<String, Any?> else emptyMap()
 val customAppName: String = (preset["appName"] as? String)?.takeIf { it.isNotBlank() } ?: "Z-Vision"
+// "Z-Vision Max" -> "Max" (badge next to the logo)
+val customSuffix: String = customAppName.replace(Regex("^Z-?\\s?Vision\\s*", RegexOption.IGNORE_CASE), "").trim()
 val buildNumber: Int = System.getenv("GITHUB_RUN_NUMBER")?.toIntOrNull() ?: 1
 
 plugins {
@@ -23,6 +25,7 @@ android {
         versionCode = buildNumber
         versionName = "1.0.$buildNumber"
         resValue("string", "app_name", "Z-Vision")
+        resValue("string", "brand_suffix", "")
         vectorDrawables { useSupportLibrary = true }
         // TV boxes and phones are ARM
         ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a") }
@@ -57,10 +60,15 @@ android {
             dimension = "edition"
             applicationIdSuffix = ".custom"
             resValue("string", "app_name", customAppName)
+            resValue("string", "brand_suffix", customSuffix)
         }
     }
     sourceSets {
-        getByName("custom") { assets.srcDirs(rootProject.file("custom")) }
+        getByName("custom") {
+            assets.srcDirs(rootProject.file("custom"))
+            // its own logo, launcher icon and TV banner
+            res.srcDirs(rootProject.file("branding/android-res"))
+        }
     }
 
     compileOptions {
