@@ -147,7 +147,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
                         itemsIndexed(allCats, key = { _, it -> it.id }) { ci, c ->
                             CategoryItem(
                                 modifier = catNav.row(ci, allCats.size),
-                                c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
+                                c = c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
                                 count = if (c.id.startsWith("__") || c.lazy) -1 else repo.items(kind, c.id).size,
                                 onClick = { selectCat(c) }, onLongClick = { if (!c.id.startsWith("__")) catMenu = c },
                             )

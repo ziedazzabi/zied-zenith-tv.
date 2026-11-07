@@ -205,7 +205,7 @@ fun LiveScreen(nav: Nav) {
                         itemsIndexed(allCats, key = { _, it -> it.id + it.kind }) { ci, c ->
                             CategoryItem(
                                 modifier = catNav.row(ci, allCats.size),
-                                c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
+                                c = c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
                                 count = if (c.id.startsWith("__")) -1 else repo.items(Kind.LIVE, c.id).size,
                                 onClick = { selectCat(c) }, onLongClick = { if (!c.id.startsWith("__")) catMenu = c },
                             )
