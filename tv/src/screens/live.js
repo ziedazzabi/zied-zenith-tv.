@@ -23,7 +23,7 @@ export function channelsFor(catId) {
   const d = store.profileData.get();
   if (catId === CAT_ALL) return repo.items('live', null);
   if (catId === CAT_FAV) return d.favorites.map((k) => repo.get(k)).filter((m) => m && m.kind === 'live');
-  if (catId === CAT_RECENT) return d.recentChannels.map((k) => repo.get(k)).filter(Boolean);
+  if (catId === CAT_RECENT) return d.recentChannels.map((k) => repo.get(k)).filter((m) => m && !repo.isRestricted(m));
   return repo.items('live', catId);
 }
 

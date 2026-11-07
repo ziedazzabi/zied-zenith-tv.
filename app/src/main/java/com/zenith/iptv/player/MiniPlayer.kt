@@ -83,6 +83,9 @@ object MiniPlayer {
         return if (same) s.player else { s.player.release(); null }
     }
 
+    /** Takes the running player away from the mini window without stopping it (the caller now owns it). */
+    fun detach() { state = null }
+
     fun close() {
         state?.player?.release()
         state = null

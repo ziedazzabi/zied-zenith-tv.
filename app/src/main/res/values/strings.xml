@@ -78,6 +78,7 @@
     <string name="external_player">Use external player</string>
     <string name="favorite_channels">Favorite channels</string>
     <string name="favorites">Favorites</string>
+    <string name="forward_10">Forward 10 s</string>
     <string name="four_screens">4 screens</string>
     <string name="from_start">From start</string>
     <string name="general">General</string>
@@ -127,6 +128,7 @@
     <string name="neteller_hint">In the Neteller app choose Money Transfer and send to:</string>
     <string name="new_pin">New PIN (4+ digits)</string>
     <string name="next">Next</string>
+    <string name="next_episode">Next episode</string>
     <string name="no_catchup">Catch-up not available for this programme</string>
     <string name="no_channels">No channels here</string>
     <string name="no_epg">No programme information</string>
@@ -142,10 +144,12 @@
     <string name="ok">OK</string>
     <string name="open_paypal">Open PayPal</string>
     <string name="optional">Optional</string>
+    <string name="options">Options</string>
     <string name="out_of_memory">This playlist is too large for this device\'s memory. Try the M3U link for live TV only, or ask your provider for a lighter list.</string>
     <string name="panel_opacity">Channel list &amp; menu opacity</string>
     <string name="parental_control">Parental control</string>
     <string name="password">Password</string>
+    <string name="pause">Pause</string>
     <string name="paypal_hint">Scan the code or open PayPal and send your donation to:</string>
     <string name="pick_file">Choose file on device</string>
     <string name="pin_changed">PIN changed</string>
@@ -161,6 +165,7 @@
     <string name="playlists">Playlists</string>
     <string name="popular_apps">Popular apps</string>
     <string name="portal_url">Portal URL</string>
+    <string name="prev_episode">Previous episode</string>
     <string name="preview_hint">Select a channel to preview it here. Select again for full screen.</string>
     <string name="profile">Profile</string>
     <string name="profile_hint">Long-press a profile to edit it</string>
@@ -168,12 +173,14 @@
     <string name="recent">Recent</string>
     <string name="recent_channels">Recently watched</string>
     <string name="recently_added">Recently added movies</string>
+    <string name="recently_added_series">Recently added series</string>
     <string name="record_now">Record now</string>
     <string name="recording_in_progress">Recording in progress</string>
     <string name="recording_scheduled">Recording scheduled</string>
     <string name="recording_started">Recording started</string>
     <string name="recordings">Recordings</string>
     <string name="refresh">Refresh</string>
+    <string name="refreshing">Refreshing the list…</string>
     <string name="reload_epg">Reload TV guide</string>
     <string name="reminder_removed">Reminder removed</string>
     <string name="reminder_set">Reminder set</string>
@@ -189,6 +196,7 @@
     <string name="resume_at">Resume %s</string>
     <string name="resume_episode">Resume S%1$dE%2$d · %3$s</string>
     <string name="retry">Retry</string>
+    <string name="rewind_10">Back 10 s</string>
     <string name="save">Save</string>
     <string name="save_and_load">Save &amp; load</string>
     <string name="scan_hint">Scan with your phone camera</string>

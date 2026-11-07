@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -101,7 +102,41 @@ fun LiveScreen(nav: Nav) {
     var pinFor by remember { mutableStateOf<Category?>(null) }
     var catMenu by remember { mutableStateOf<Category?>(null) }
     var focused by remember { mutableStateOf<Media?>(null) }
+    // The channel playing in the floating mini window moves into the preview box (no second window here)
     var previewing by remember { mutableStateOf<Media?>(null) }
+    var previewPlayer by remember { mutableStateOf<androidx.media3.exoplayer.ExoPlayer?>(null) }
+    val loadedKey = remember { mutableStateOf<String?>(null) }
+    var handedOff by remember { mutableStateOf(false) }
+    val currentChannels = remember { arrayOf<List<Media>>(emptyList()) }
+    val currentPreview = androidx.compose.runtime.rememberUpdatedState(previewing)
+    val currentPlayer = androidx.compose.runtime.rememberUpdatedState(previewPlayer)
+    val miniEnabled = androidx.compose.runtime.rememberUpdatedState(settings.miniPlayer)
+    fun ensurePlayer(): androidx.media3.exoplayer.ExoPlayer =
+        previewPlayer ?: PlayerFactory.create(ctx, lowLatency = true).also { previewPlayer = it }
+    val mini = com.zenith.iptv.player.MiniPlayer.state
+    androidx.compose.runtime.LaunchedEffect(mini, threePane) {
+        val st = mini ?: return@LaunchedEffect
+        if (!threePane || handedOff || st.request.urlOverride != null || st.request.current?.kind != Kind.LIVE) return@LaunchedEffect
+        com.zenith.iptv.player.MiniPlayer.detach()
+        previewPlayer?.takeIf { it !== st.player }?.release()
+        previewPlayer = st.player
+        loadedKey.value = st.request.current?.key
+        previewing = st.request.current
+        st.player.play()
+    }
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose {
+            val m = currentPreview.value
+            val p = currentPlayer.value
+            // leaving the screen: the preview keeps playing in the mini window
+            if (p != null && !handedOff) {
+                if (m != null && miniEnabled.value && loadedKey.value == m.key) {
+                    val list = currentChannels[0].ifEmpty { listOf(m) }
+                    com.zenith.iptv.player.MiniPlayer.receive(p, PlayRequest(items = list, index = list.indexOfFirst { it.key == m.key }.coerceAtLeast(0), title = m.name), m.name)
+                } else p.release()
+            }
+        }
+    }
 
     ScreenScaffold(stringResource(R.string.live_tv), nav, actions = {
         Focusable(onClick = { nav.go(Routes.GUIDE) }, shape = RoundedCornerShape(50)) {
@@ -125,7 +160,7 @@ fun LiveScreen(nav: Nav) {
                 when (selectedCat) {
                     CAT_ALL -> repo.items(Kind.LIVE, null).filter { m -> repo.categoryOf(m)?.let { !repo.isLocked(it) } ?: true }
                     CAT_FAV -> data.favorites.mapNotNull { repo.byKey(it) }.filter { it.kind == Kind.LIVE }
-                    CAT_RECENT -> data.recentChannels.mapNotNull { repo.byKey(it) }
+                    CAT_RECENT -> data.recentChannels.mapNotNull { repo.byKey(it) }.filterNot { repo.isRestricted(it) }
                     else -> repo.items(Kind.LIVE, selectedCat)
                 }
             }
@@ -134,9 +169,17 @@ fun LiveScreen(nav: Nav) {
                 if (c.id.startsWith("__") || !repo.isLocked(c)) selectedCat = c.id else pinFor = c
             }
 
+            currentChannels[0] = channels
+
             fun openFull(m: Media) {
-                previewing = null
-                nav.play(PlayRequest(items = channels, index = channels.indexOf(m).coerceAtLeast(0), title = m.name))
+                val req = PlayRequest(items = channels, index = channels.indexOf(m).coerceAtLeast(0), title = m.name)
+                // same channel already playing in the preview box: full screen continues it without reloading
+                val p = previewPlayer
+                if (threePane && p != null && previewing?.key == m.key && loadedKey.value == m.key && !handedOff) {
+                    handedOff = true
+                    com.zenith.iptv.player.MiniPlayer.receive(p, req, m.name)
+                }
+                nav.play(req)
             }
 
             fun onChannelClick(m: Media) {
@@ -168,7 +211,7 @@ fun LiveScreen(nav: Nav) {
                     )
                     // Preview + EPG (only when there's room for a third pane)
                     if (threePane) Column(Modifier.weight(0.9f).fillMaxHeight()) {
-                        PreviewPane(previewing, onOpen = { previewing?.let { openFull(it) } })
+                        PreviewPane(previewing, previewPlayer, ::ensurePlayer, loadedKey, onOpen = { previewing?.let { openFull(it) } })
                         Spacer(Modifier.height(10.dp))
                         EpgPanel(focused ?: previewing, settings.use24h, tick)
                     }
@@ -223,13 +266,15 @@ private fun ChannelList(
 ) {
     val repo = Graph.repo
     val state = rememberLazyListState()
+    val listNav = com.zenith.iptv.ui.rememberListNav(state)
     if (channels.isEmpty()) { EmptyState(stringResource(R.string.no_channels), modifier); return }
     LazyColumn(modifier, state = state, verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 24.dp)) {
-        items(channels, key = { it.key }) { m ->
+        itemsIndexed(channels, key = { _, m -> m.key }) { i, m ->
             @Suppress("UNUSED_EXPRESSION") tick
             ChannelRow(
                 item = m, now = repo.nowNext(m).first, selected = m.key == previewKey, favorite = m.key in favorites,
                 onClick = { onClick(m) }, onLongClick = { onLong(m) }, onFocus = { onFocus(m) },
+                modifier = listNav.row(i, channels.size),
             )
         }
     }
@@ -237,14 +282,18 @@ private fun ChannelList(
 
 @OptIn(UnstableApi::class)
 @Composable
-private fun PreviewPane(item: Media?, onOpen: () -> Unit) {
-    val ctx = LocalContext.current
+private fun PreviewPane(
+    item: Media?, player: androidx.media3.exoplayer.ExoPlayer?, getPlayer: () -> androidx.media3.exoplayer.ExoPlayer,
+    loadedKey: androidx.compose.runtime.MutableState<String?>, onOpen: () -> Unit,
+) {
     val scope = rememberCoroutineScope()
-    val player = remember { PlayerFactory.create(ctx, lowLatency = true) }
-    DisposableEffect(Unit) { onDispose { player.release() } }
     androidx.compose.runtime.LaunchedEffect(item?.key) {
-        if (item == null) { player.stop(); return@LaunchedEffect }
+        if (item == null) { player?.stop(); loadedKey.value = null; return@LaunchedEffect }
+        if (loadedKey.value == item.key && player != null) { player.play(); return@LaunchedEffect } // already playing (taken over from the mini window)
+        val player = getPlayer()
         com.zenith.iptv.player.MiniPlayer.close() // avoid two channels playing sound at once
+        loadedKey.value = item.key
+        if (!Graph.repo.isRestricted(item)) Graph.store.addRecent(item.key)
         scope.launch {
             val url = runCatching { Graph.repo.resolve(item) }.getOrNull() ?: return@launch
             player.setMediaItem(PlayerFactory.mediaItem(url, item.name)); player.prepare(); player.play()
@@ -252,7 +301,7 @@ private fun PreviewPane(item: Media?, onOpen: () -> Unit) {
     }
     Focusable(onClick = onOpen, modifier = Modifier.fillMaxWidth().aspectRatio(16f / 9f), background = Color.Black, focusedBackground = Color.Black, focusScale = 1f) {
         Box(Modifier.fillMaxSize()) {
-            if (item == null) {
+            if (item == null || player == null) {
                 Text(stringResource(R.string.preview_hint), color = Z.muted, fontSize = 13.sp, modifier = Modifier.align(Alignment.Center).padding(16.dp))
             } else {
                 AndroidView(factory = { c ->
@@ -260,7 +309,7 @@ private fun PreviewPane(item: Media?, onOpen: () -> Unit) {
                         layoutParams = FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
                         useController = false; isFocusable = false; this.player = player
                     }
-                }, modifier = Modifier.fillMaxSize())
+                }, update = { v -> if (v.player !== player) v.player = player }, onRelease = { v -> v.player = null }, modifier = Modifier.fillMaxSize())
                 Text(
                     item.name, color = Color.White, fontSize = 12.sp,
                     modifier = Modifier.align(Alignment.TopStart).padding(8.dp).clip(RoundedCornerShape(6.dp))

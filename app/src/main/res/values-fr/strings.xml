@@ -78,6 +78,7 @@
     <string name="external_player">Utiliser un lecteur externe</string>
     <string name="favorite_channels">Chaînes favorites</string>
     <string name="favorites">Favoris</string>
+    <string name="forward_10">Avancer 10 s</string>
     <string name="four_screens">4 écrans</string>
     <string name="from_start">Depuis le début</string>
     <string name="general">Général</string>
@@ -127,6 +128,7 @@
     <string name="neteller_hint">Dans l\'app Neteller, choisissez Transfert d\'argent et envoyez à :</string>
     <string name="new_pin">Nouveau PIN (4 chiffres min.)</string>
     <string name="next">Ensuite</string>
+    <string name="next_episode">Épisode suivant</string>
     <string name="no_catchup">Replay indisponible pour ce programme</string>
     <string name="no_channels">Aucune chaîne ici</string>
     <string name="no_epg">Pas d\'informations de programme</string>
@@ -142,10 +144,12 @@
     <string name="ok">OK</string>
     <string name="open_paypal">Ouvrir PayPal</string>
     <string name="optional">Facultatif</string>
+    <string name="options">Options</string>
     <string name="out_of_memory">Cette playlist est trop volumineuse pour la mémoire de cet appareil. Essayez le lien M3U des chaînes en direct seulement, ou demandez une liste plus légère.</string>
     <string name="panel_opacity">Opacité de la liste des chaînes et du menu</string>
     <string name="parental_control">Contrôle parental</string>
     <string name="password">Mot de passe</string>
+    <string name="pause">Pause</string>
     <string name="paypal_hint">Scannez le code ou ouvrez PayPal et envoyez votre don à :</string>
     <string name="pick_file">Choisir un fichier</string>
     <string name="pin_changed">PIN modifié</string>
@@ -161,6 +165,7 @@
     <string name="playlists">Playlists</string>
     <string name="popular_apps">Applications populaires</string>
     <string name="portal_url">URL du portail</string>
+    <string name="prev_episode">Épisode précédent</string>
     <string name="preview_hint">Sélectionnez une chaîne pour l\'aperçu, puis à nouveau pour le plein écran.</string>
     <string name="profile">Profil</string>
     <string name="profile_hint">Appui long sur un profil pour le modifier</string>
@@ -168,12 +173,14 @@
     <string name="recent">Récentes</string>
     <string name="recent_channels">Regardées récemment</string>
     <string name="recently_added">Films ajoutés récemment</string>
+    <string name="recently_added_series">Séries ajoutées récemment</string>
     <string name="record_now">Enregistrer maintenant</string>
     <string name="recording_in_progress">Enregistrement en cours</string>
     <string name="recording_scheduled">Enregistrement programmé</string>
     <string name="recording_started">Enregistrement démarré</string>
     <string name="recordings">Enregistrements</string>
     <string name="refresh">Actualiser</string>
+    <string name="refreshing">Actualisation de la liste…</string>
     <string name="reload_epg">Recharger le guide</string>
     <string name="reminder_removed">Rappel supprimé</string>
     <string name="reminder_set">Rappel programmé</string>
@@ -189,6 +196,7 @@
     <string name="resume_at">Reprendre à %s</string>
     <string name="resume_episode">Reprendre S%1$dE%2$d · %3$s</string>
     <string name="retry">Réessayer</string>
+    <string name="rewind_10">Reculer 10 s</string>
     <string name="save">Enregistrer</string>
     <string name="save_and_load">Enregistrer et charger</string>
     <string name="scan_hint">Scannez avec l\'appareil photo de votre téléphone</string>

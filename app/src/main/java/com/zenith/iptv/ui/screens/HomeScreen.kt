@@ -147,15 +147,21 @@ fun HomeScreen(nav: Nav) {
                 Tile(stringResource(R.string.settings), Icons.Default.Settings, Routes.SETTINGS, tc[6]),
             )
 
-            val recents = remember(data.recentChannels, c) { data.recentChannels.mapNotNull { repo.byKey(it) }.take(20) }
+            // locked (e.g. adult) channels never show in "Recently watched"
+            val recents = remember(data.recentChannels, c, settings.lockedCategories, settings.autoLockAdult) {
+                data.recentChannels.mapNotNull { repo.byKey(it) }.filterNot { repo.isRestricted(it) }.take(20)
+            }
             val favChannels = remember(data.favorites, c) { data.favorites.mapNotNull { repo.byKey(it) }.filter { it.kind == Kind.LIVE } }
             val favVod = remember(data.favorites, c) { data.favorites.mapNotNull { repo.byKey(it) }.filter { it.kind != Kind.LIVE } }
             val continueWatching = remember(data.progress, c) {
                 data.progress.values.sortedByDescending { it.updatedAt }
                     .mapNotNull { p -> if ('#' in p.key) null else repo.byKey(p.key)?.let { it to p } }.take(20)
             }
-            val newest = remember(c) {
-                c.items.asSequence().filter { it.kind == Kind.MOVIE && it.added > 0 }.sortedByDescending { it.added }.take(20).toList()
+            val newest = remember(c, settings.lockedCategories, settings.autoLockAdult) {
+                c.items.asSequence().filter { it.kind == Kind.MOVIE && it.added > 0 && !repo.isRestricted(it) }.sortedByDescending { it.added }.take(20).toList()
+            }
+            val newestSeries = remember(c, settings.lockedCategories, settings.autoLockAdult) {
+                c.items.asSequence().filter { it.kind == Kind.SERIES && it.added > 0 && !repo.isRestricted(it) }.sortedByDescending { it.added }.take(20).toList()
             }
 
             LazyColumn(
@@ -218,6 +224,12 @@ fun HomeScreen(nav: Nav) {
                     SectionTitle(stringResource(R.string.recently_added))
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
                         items(newest, key = { it.key }) { m -> PosterCard(m, onClick = { nav.open(m) }) }
+                    }
+                }
+                if (newestSeries.isNotEmpty()) item {
+                    SectionTitle(stringResource(R.string.recently_added_series))
+                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp), contentPadding = com.zenith.iptv.ui.Adaptive.rowPad()) {
+                        items(newestSeries, key = { it.key }) { m -> PosterCard(m, onClick = { nav.open(m) }) }
                     }
                 }
                 if (c.accountInfo.isNotBlank()) item {

@@ -133,6 +133,10 @@ fun PlayerScreen(onBack: () -> Unit) {
     var sleepAt by remember { mutableLongStateOf(0L) }
     var videoInfo by remember { mutableStateOf("") }
     val rootFocus = remember { FocusRequester() }
+    val playFocus = remember { FocusRequester() }
+    var vPos by remember { mutableLongStateOf(0L) }
+    var vDur by remember { mutableLongStateOf(0L) }
+    var vPlaying by remember { mutableStateOf(true) }
 
     // VLC fallback for channels whose video the device can't decode (sound but no picture)
     LaunchedEffect(Unit) { VlcMemory.load(ctx) }
@@ -210,7 +214,7 @@ fun PlayerScreen(onBack: () -> Unit) {
         retries = 0
         title = target.name
         poke()
-        if (target.kind == Kind.LIVE) store.addRecent(target.key)
+        if (target.kind == Kind.LIVE && !repo.isRestricted(target)) store.addRecent(target.key)
         scope.launch {
             buffering = true
             val url = try { repo.resolve(target) } catch (e: Exception) { error = e.message; return@launch }
@@ -236,6 +240,27 @@ fun PlayerScreen(onBack: () -> Unit) {
         }
     }
 
+    // ---- movie / episode controls (ExoPlayer or VLC) ----
+    fun vodPos(): Long = vlc?.time ?: player.currentPosition
+    fun vodDur(): Long = (vlc?.length ?: player.duration).let { if (it < 0) 0L else it }
+    fun togglePause() {
+        val v = vlc
+        if (v != null) { if (v.isPlaying) v.pause() else v.resume(); vPlaying = !v.isPlaying }
+        else { player.playWhenReady = !player.playWhenReady; vPlaying = player.playWhenReady }
+        poke()
+    }
+    fun seekBy(delta: Long) {
+        val d = vodDur()
+        val t = (vodPos() + delta).coerceIn(0L, if (d > 0) d - 1000 else Long.MAX_VALUE)
+        val v = vlc
+        if (v != null) v.seekTo(t) else player.seekTo(t)
+        vPos = t
+        poke()
+    }
+    fun seekTo(t: Long) { seekBy(t - vodPos()) }
+    fun nextEpisode() { if (req.series != null && episodeIndex + 1 < req.episodes.size) { playEpisode(episodeIndex + 1); poke() } }
+    fun prevEpisode() { if (req.series != null && episodeIndex > 0) { playEpisode(episodeIndex - 1); poke() } }
+
     onVlcEnded[0] = { if (req.series != null && episodeIndex + 1 < req.episodes.size) playEpisode(episodeIndex + 1) }
 
     // initial start
@@ -249,7 +274,7 @@ fun PlayerScreen(onBack: () -> Unit) {
         if (req.series != null && req.episodeIndex >= 0) playEpisode(req.episodeIndex, req.startPositionMs)
         else if (req.urlOverride != null) startPlayback(req.urlOverride, req.startPositionMs)
         else {
-            if (item.kind == Kind.LIVE) store.addRecent(item.key)
+            if (item.kind == Kind.LIVE && !repo.isRestricted(item)) store.addRecent(item.key)
             val url = try { repo.resolve(item) } catch (e: Exception) { error = e.message; null }
             if (url != null) startPlayback(url, req.startPositionMs)
         }
@@ -327,9 +352,20 @@ fun PlayerScreen(onBack: () -> Unit) {
         }
     }
 
-    // auto-hide info banner
-    LaunchedEffect(infoStamp, showInfo) {
-        if (showInfo) { delay(5000); if (System.currentTimeMillis() - infoStamp >= 4900) showInfo = false }
+    // movie / episode position for the controls
+    LaunchedEffect(live) {
+        if (live) return@LaunchedEffect
+        while (true) {
+            val v = vlc
+            if (v != null) { vPos = v.time; vDur = v.length.coerceAtLeast(0); vPlaying = v.isPlaying || buffering }
+            else { vPos = player.currentPosition; vDur = player.duration.coerceAtLeast(0); vPlaying = player.playWhenReady }
+            delay(500)
+        }
+    }
+
+    // auto-hide info banner / controls (controls stay while paused)
+    LaunchedEffect(infoStamp, showInfo, vPlaying, showMenu) {
+        if (showInfo && (live || (vPlaying && !showMenu))) { delay(5000); if (System.currentTimeMillis() - infoStamp >= 4900) showInfo = false }
     }
 
     // number entry → jump to channel
@@ -359,13 +395,16 @@ fun PlayerScreen(onBack: () -> Unit) {
         when {
             showMenu -> showMenu = false
             showList -> showList = false
+            !live && showInfo -> showInfo = false
             else -> exit()
         }
     }
 
-    LaunchedEffect(live, showList, showMenu) {
-        if (live && !showList && !showMenu) runCatching { rootFocus.requestFocus() }
-        if (!live && !showMenu) playerView?.requestFocus()
+    // focus: controls' play button when they are shown, otherwise the screen itself (keys handled below)
+    LaunchedEffect(live, showList, showMenu, showInfo) {
+        if (showList || showMenu) return@LaunchedEffect
+        if (!live && showInfo) { delay(30); runCatching { playFocus.requestFocus() } }
+        else runCatching { rootFocus.requestFocus() }
     }
 
     Box(
@@ -376,18 +415,29 @@ fun PlayerScreen(onBack: () -> Unit) {
             .onPreviewKeyEvent { ev ->
                 if (ev.type != KeyEventType.KeyDown || showList || showMenu) return@onPreviewKeyEvent false
                 val k = ev.key
-                val v = vlc
-                if (!live && v != null) {
-                    // simple VOD controls while VLC is playing
-                    return@onPreviewKeyEvent when (k) {
-                        Key.DirectionCenter, Key.Enter, Key.NumPadEnter, Key.MediaPlayPause, Key.Spacebar -> { if (v.isPlaying) v.pause() else v.resume(); poke(); true }
-                        Key.DirectionLeft, Key.MediaRewind -> { v.seekTo(v.time - 10_000); poke(); true }
-                        Key.DirectionRight, Key.MediaFastForward -> { v.seekTo(v.time + 10_000); poke(); true }
-                        Key.Menu, Key.Info -> { showMenu = true; true }
-                        else -> false
+                if (!live) {
+                    // media keys always work
+                    when (k) {
+                        Key.MediaPlayPause, Key.MediaPlay, Key.MediaPause, Key.Spacebar -> { togglePause(); return@onPreviewKeyEvent true }
+                        Key.MediaFastForward -> { seekBy(30_000); return@onPreviewKeyEvent true }
+                        Key.MediaRewind -> { seekBy(-30_000); return@onPreviewKeyEvent true }
+                        Key.MediaNext, Key.ChannelUp, Key.PageDown -> { nextEpisode(); return@onPreviewKeyEvent true }
+                        Key.MediaPrevious, Key.ChannelDown, Key.PageUp -> { prevEpisode(); return@onPreviewKeyEvent true }
+                        Key.Menu, Key.Info -> { showMenu = true; return@onPreviewKeyEvent true }
                     }
+                    if (!showInfo) {
+                        // controls hidden: OK = pause/play, ←/→ = 10 s, ↑/↓ = show the controls
+                        return@onPreviewKeyEvent when (k) {
+                            Key.DirectionCenter, Key.Enter, Key.NumPadEnter -> { togglePause(); true }
+                            Key.DirectionLeft -> { seekBy(-10_000); true }
+                            Key.DirectionRight -> { seekBy(10_000); true }
+                            Key.DirectionUp, Key.DirectionDown -> { poke(); true }
+                            else -> false
+                        }
+                    }
+                    poke() // controls visible: the remote moves between buttons
+                    return@onPreviewKeyEvent false
                 }
-                if (!live) return@onPreviewKeyEvent false
                 when {
                     k == Key.DirectionUp || k == Key.ChannelDown || k == Key.PageUp -> { zap(-1); true }
                     k == Key.DirectionDown || k == Key.ChannelUp || k == Key.PageDown -> { zap(1); true }
@@ -413,13 +463,13 @@ fun PlayerScreen(onBack: () -> Unit) {
                 }
             },
             update = { v ->
-                v.useController = !live
+                v.useController = false
                 v.resizeMode = when (aspect) {
                     "fill" -> AspectRatioFrameLayout.RESIZE_MODE_FILL
                     "zoom" -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
                     else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
                 }
-                if (!live) v.isFocusable = true
+                v.isFocusable = false
                 v.visibility = if (vlc != null) android.view.View.INVISIBLE else android.view.View.VISIBLE
             },
             modifier = Modifier.fillMaxSize(),
@@ -443,6 +493,17 @@ fun PlayerScreen(onBack: () -> Unit) {
                             onVerticalDrag = { _, d -> total += d },
                         )
                     }
+            )
+        }
+
+        if (!live) {
+            Box(
+                Modifier.fillMaxSize().pointerInput(Unit) {
+                    detectTapGestures(
+                        onTap = { if (showInfo) showInfo = false else poke() },
+                        onDoubleTap = { o -> seekBy(if (o.x < size.width / 2) -10_000 else 10_000) },
+                    )
+                }
             )
         }
 
@@ -473,8 +534,22 @@ fun PlayerScreen(onBack: () -> Unit) {
             InfoBanner(item, videoInfo, settings.use24h, favorite = item.key in profileData.favorites)
         }
 
-        // Touch top bar
-        if (!isTv && (showInfo || !live)) {
+        // Movie / episode controls
+        AnimatedVisibility(visible = !live && showInfo && !showMenu, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
+            VodControls(
+                title = title.ifBlank { item.name },
+                positionMs = vPos, durationMs = vDur, playing = vPlaying,
+                hasPrev = req.series != null && episodeIndex > 0,
+                hasNext = req.series != null && episodeIndex + 1 < req.episodes.size,
+                isTv = isTv, playFocus = playFocus,
+                onToggle = ::togglePause, onSeekBy = ::seekBy, onSeekTo = ::seekTo,
+                onPrev = ::prevEpisode, onNext = ::nextEpisode,
+                onMenu = { showMenu = true }, onBack = { exit() },
+            )
+        }
+
+        // Touch top bar (live)
+        if (!isTv && live && showInfo) {
             Row(
                 Modifier.align(Alignment.TopStart).fillMaxWidth()
                     .background(Brush.verticalGradient(listOf(Color.Black.copy(alpha = .7f), Color.Transparent)))
@@ -600,6 +675,7 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
     val tick by repo.tick.collectAsState()
     val state = rememberLazyListState(initialFirstVisibleItemIndex = (current - 3).coerceAtLeast(0))
     val fr = remember { FocusRequester() }
+    val listNav = com.zenith.iptv.ui.rememberListNav(state)
     LaunchedEffect(Unit) { delay(80); runCatching { fr.requestFocus() } }
     Box(
         Modifier.fillMaxHeight().width(com.zenith.iptv.ui.Adaptive.panelWidth())
@@ -613,7 +689,8 @@ private fun ChannelListOverlay(items: List<Media>, current: Int, favorites: Set<
                     item = m, now = repo.nowNext(m).first, selected = i == current, favorite = m.key in favorites, compact = true,
                     bgAlpha = panelAlpha(),
                     onClick = { onPick(i) },
-                    modifier = if (i == current) Modifier.focusRequester(fr) else Modifier,
+                    // ↑ on the first channel → last one; ←/→, CH+/CH− → page up / page down
+                    modifier = (if (i == current) Modifier.focusRequester(fr) else Modifier).then(listNav.row(i, items.size, leftRightPages = true)),
                 )
             }
         }

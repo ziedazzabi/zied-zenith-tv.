@@ -118,6 +118,13 @@ class Repo extends Emitter {
     return (s.lockedCategories || []).indexOf(k) >= 0 || (s.autoLockAdult && this.isAdult(c));
   }
   unlock(c) { this.unlocked.add(this.categoryKey(c)); }
+  /** Locked or hidden category (even when unlocked for this session): kept out of "Recently watched" etc. */
+  isRestricted(m) {
+    const c = m && this.categoryOf(m);
+    if (!c) return false;
+    const s = store.settings.get(), k = this.categoryKey(c);
+    return (s.lockedCategories || []).indexOf(k) >= 0 || (s.autoLockAdult && this.isAdult(c)) || (s.hiddenCategories || []).indexOf(k) >= 0;
+  }
 
   toggleLock(c) {
     const k = this.categoryKey(c);

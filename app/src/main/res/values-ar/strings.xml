@@ -78,6 +78,7 @@
     <string name="external_player">استخدام مشغل خارجي</string>
     <string name="favorite_channels">القنوات المفضلة</string>
     <string name="favorites">المفضلة</string>
+    <string name="forward_10">تقديم 10 ث</string>
     <string name="four_screens">4 شاشات</string>
     <string name="from_start">من البداية</string>
     <string name="general">عام</string>
@@ -127,6 +128,7 @@
     <string name="neteller_hint">في تطبيق Neteller اختر تحويل الأموال (Money Transfer) وأرسل إلى:</string>
     <string name="new_pin">رمز جديد (4 أرقام أو أكثر)</string>
     <string name="next">التالي</string>
+    <string name="next_episode">الحلقة التالية</string>
     <string name="no_catchup">إعادة المشاهدة غير متاحة لهذا البرنامج</string>
     <string name="no_channels">لا توجد قنوات هنا</string>
     <string name="no_epg">لا توجد معلومات عن البرنامج</string>
@@ -142,10 +144,12 @@
     <string name="ok">موافق</string>
     <string name="open_paypal">فتح PayPal</string>
     <string name="optional">اختياري</string>
+    <string name="options">خيارات</string>
     <string name="out_of_memory">هذه القائمة كبيرة جدًا على ذاكرة هذا الجهاز. جرّب رابط M3U للبث المباشر فقط، أو اطلب من المزوّد قائمة أخف.</string>
     <string name="panel_opacity">شفافية قائمة القنوات والخيارات</string>
     <string name="parental_control">الرقابة الأبوية</string>
     <string name="password">كلمة المرور</string>
+    <string name="pause">إيقاف مؤقت</string>
     <string name="paypal_hint">امسح الرمز أو افتح PayPal وأرسل تبرعك إلى:</string>
     <string name="pick_file">اختيار ملف من الجهاز</string>
     <string name="pin_changed">تم تغيير الرمز</string>
@@ -161,6 +165,7 @@
     <string name="playlists">قوائم التشغيل</string>
     <string name="popular_apps">تطبيقات مشهورة</string>
     <string name="portal_url">رابط البوابة</string>
+    <string name="prev_episode">الحلقة السابقة</string>
     <string name="preview_hint">اختر قناة لمعاينتها هنا، ثم اخترها مرة أخرى لملء الشاشة.</string>
     <string name="profile">الملف الشخصي</string>
     <string name="profile_hint">اضغط مطولاً على ملف لتعديله</string>
@@ -168,12 +173,14 @@
     <string name="recent">الأخيرة</string>
     <string name="recent_channels">شوهدت مؤخراً</string>
     <string name="recently_added">أفلام أضيفت مؤخراً</string>
+    <string name="recently_added_series">مسلسلات أضيفت مؤخراً</string>
     <string name="record_now">تسجيل الآن</string>
     <string name="recording_in_progress">جارٍ التسجيل</string>
     <string name="recording_scheduled">تمت جدولة التسجيل</string>
     <string name="recording_started">بدأ التسجيل</string>
     <string name="recordings">التسجيلات</string>
     <string name="refresh">تحديث</string>
+    <string name="refreshing">جارٍ تحديث القائمة…</string>
     <string name="reload_epg">إعادة تحميل الدليل</string>
     <string name="reminder_removed">تم حذف التذكير</string>
     <string name="reminder_set">تم ضبط التذكير</string>
@@ -189,6 +196,7 @@
     <string name="resume_at">استئناف %s</string>
     <string name="resume_episode">متابعة م%1$d ح%2$d · %3$s</string>
     <string name="retry">إعادة المحاولة</string>
+    <string name="rewind_10">رجوع 10 ث</string>
     <string name="save">حفظ</string>
     <string name="save_and_load">حفظ وتحميل</string>
     <string name="scan_hint">امسح الرمز بكاميرا هاتفك</string>

@@ -124,8 +124,10 @@ export class VList {
     let n = -1;
     const rtl = isRtl();
     const leftD = rtl ? 1 : -1;
-    if (dir === 'up') n = i - c;
-    else if (dir === 'down') { n = i + c; if (n >= this.items.length && Math.floor(i / c) < Math.floor((this.items.length - 1) / c)) n = this.items.length - 1; }
+    const last = this.items.length - 1;
+    // single-column lists (channels) wrap around: ↑ on the first row → last, ↓ on the last → first
+    if (dir === 'up') n = (c === 1 && i === 0 && last > 0) ? last : i - c;
+    else if (dir === 'down') { n = (c === 1 && i === last && last > 0) ? 0 : i + c; if (n >= this.items.length && Math.floor(i / c) < Math.floor((this.items.length - 1) / c)) n = this.items.length - 1; }
     else if (dir === 'left' && c > 1) { const m = i + leftD; if (Math.floor(m / c) === Math.floor(i / c) && m >= 0 && m < this.items.length) n = m; }
     else if (dir === 'right' && c > 1) { const m = i - leftD; if (Math.floor(m / c) === Math.floor(i / c) && m >= 0 && m < this.items.length) n = m; }
     if (n < 0 || n >= this.items.length) return false;
@@ -134,4 +136,14 @@ export class VList {
   }
 
   pageBy(rows) { this.focusIndex(this.index + rows * this.cols); }
+
+  /** CH+/CH−: one screen of rows down / up (wraps at the ends). */
+  page(dir) {
+    const rows = Math.max(1, Math.floor((this.el.clientHeight || 400) / this.rowPx()) - 1);
+    const last = this.items.length - 1;
+    let n = this.index + dir * rows * this.cols;
+    if (dir > 0 && this.index >= last) n = 0;
+    else if (dir < 0 && this.index <= 0) n = last;
+    this.focusIndex(Math.max(0, Math.min(n, last)));
+  }
 }

@@ -158,6 +158,10 @@ function onKeyDown(e) {
   if (name === 'exit') { Playback.stop(); exitApp(); return; }
   if (!Focus.current || !Focus.current.isConnected) Focus.ensure();
   if (Focus.dispatch(name, e)) return;
+  // CH+/CH− inside a list (channels, movies…): jump one page
+  if ((name === 'chup' || name === 'chdown') && Focus.current && Focus.current._vlist && !(Playback.active && Playback.mode === 'full')) {
+    Focus.current._vlist.page(name === 'chdown' ? 1 : -1); return;
+  }
   const top = app.top();
   if (top && top.key && top.key(name)) return;
   // global fallbacks

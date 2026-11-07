@@ -62,7 +62,7 @@ export function HomeScreen(params, nav) {
       body.appendChild(editable(t('continue_watching'), 'play', false));
       body.appendChild(hrow(cont.map(([m, p]) => posterCard(m, { progress: p.positionMs / p.durationMs, click: () => nav.open(m), long: () => askRemove(m, false) }))));
     }
-    const recents = d.recentChannels.map((k) => repo.get(k)).filter(Boolean).slice(0, 20);
+    const recents = d.recentChannels.map((k) => repo.get(k)).filter((m) => m && !repo.isRestricted(m)).slice(0, 20);
     if (recents.length) {
       body.appendChild(editable(t('recent_channels'), 'live', true));
       body.appendChild(hrow(recents.map((m) => channelCard(m, () => nav.open(m, recents), () => askRemove(m, true)))));
@@ -78,10 +78,15 @@ export function HomeScreen(params, nav) {
       body.appendChild(h('div', { class: 'section' }, icon('star'), h('span', { text: t('my_list') })));
       body.appendChild(hrow(favVod.map((m) => posterCard(m, { click: () => nav.open(m) }))));
     }
-    const newest = c.items.filter((i) => i.kind === 'movie' && i.added > 0).sort((a, b) => b.added - a.added).slice(0, 20);
+    const newest = c.items.filter((i) => i.kind === 'movie' && i.added > 0 && !repo.isRestricted(i)).sort((a, b) => b.added - a.added).slice(0, 20);
+    const newestSeries = c.items.filter((i) => i.kind === 'series' && i.added > 0 && !repo.isRestricted(i)).sort((a, b) => b.added - a.added).slice(0, 20);
     if (newest.length) {
       body.appendChild(h('div', { class: 'section' }, icon('movie'), h('span', { text: t('recently_added') })));
       body.appendChild(hrow(newest.map((m) => posterCard(m, { click: () => nav.open(m), long: () => toast(t(store.toggleFavorite(m.key) ? 'added_my_list' : 'removed_my_list')) }))));
+    }
+    if (newestSeries.length) {
+      body.appendChild(h('div', { class: 'section' }, icon('series'), h('span', { text: t('recently_added_series') })));
+      body.appendChild(hrow(newestSeries.map((m) => posterCard(m, { click: () => nav.open(m), long: () => toast(t(store.toggleFavorite(m.key) ? 'added_my_list' : 'removed_my_list')) }))));
     }
     body.appendChild(homeAppsRow(nav));
     if (c.accountInfo) body.appendChild(h('div', { class: 'muted small account', text: c.accountInfo }));

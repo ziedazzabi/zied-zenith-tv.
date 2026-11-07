@@ -152,6 +152,12 @@ class Repository(private val context: Context, val store: Store) {
     private fun isLockedIgnoringSession(cat: Category): Boolean =
         categoryKey(cat) in settings.lockedCategories || (settings.autoLockAdult && ADULT.containsMatchIn(cat.name))
 
+    /** True when the item's category is locked or hidden (even if unlocked for this session). */
+    fun isRestricted(item: Media): Boolean {
+        val cat = categoryOf(item) ?: return false
+        return isLockedIgnoringSession(cat) || categoryKey(cat) in settings.hiddenCategories
+    }
+
     fun allCategories(kind: Kind): List<Category> = _catalog.value?.categories?.filter { it.kind == kind } ?: emptyList()
 
     fun categoryOf(item: Media): Category? = _catalog.value?.categories?.firstOrNull { it.kind == item.kind && it.id == item.categoryId }

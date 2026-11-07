@@ -1,5 +1,11 @@
 package com.zenith.iptv.ui.screens
 
+import androidx.compose.foundation.layout.Box
+
+import androidx.compose.foundation.background
+
+import android.widget.Toast
+
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -80,6 +86,7 @@ fun PlaylistsScreen(nav: Nav) {
     val playlists by store.playlists.collectAsState()
     val settings by store.settings.collectAsState()
     var confirmDelete by remember { mutableStateOf<Playlist?>(null) }
+    val ctx = LocalContext.current
 
     ScreenScaffold(stringResource(R.string.playlists), nav, actions = {
         ActionButton(stringResource(R.string.add_playlist), Icons.Default.Add, primary = true) { nav.go(Routes.addPlaylist()) }
@@ -88,30 +95,30 @@ fun PlaylistsScreen(nav: Nav) {
         LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), contentPadding = PaddingValues(vertical = 8.dp)) {
             items(playlists, key = { it.id }) { p ->
                 val active = p.id == (settings.activePlaylistId.ifBlank { playlists.first().id })
-                Focusable(
-                    onClick = { repo.open(p); nav.home() },
-                    onLongClick = { nav.go(Routes.addPlaylist(p.id)) },
-                    selected = active, modifier = Modifier.fillMaxWidth(), focusScale = 1.01f,
-                ) {
-                    Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.CheckCircle, null, tint = if (active) Z.accent else Z.line, modifier = Modifier.size(22.dp))
-                        Spacer(Modifier.width(12.dp))
-                        Column(Modifier.weight(1f)) {
-                            Text(p.name, color = Z.text, fontWeight = FontWeight.SemiBold)
-                            Text(
-                                "${typeLabel(p.type)} · ${p.url}", color = Z.muted, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis
-                            )
-                        }
-                        Focusable(onClick = { repo.open(p, forceRefresh = true); nav.home() }, shape = RoundedCornerShape(50)) {
-                            Icon(Icons.Default.Refresh, stringResource(R.string.refresh), tint = Z.muted, modifier = Modifier.padding(8.dp))
-                        }
-                        Focusable(onClick = { nav.go(Routes.addPlaylist(p.id)) }, shape = RoundedCornerShape(50)) {
-                            Icon(Icons.Default.Edit, stringResource(R.string.edit), tint = Z.muted, modifier = Modifier.padding(8.dp))
-                        }
-                        Focusable(onClick = { confirmDelete = p }, shape = RoundedCornerShape(50)) {
-                            Icon(Icons.Default.Delete, stringResource(R.string.delete), tint = Z.muted, modifier = Modifier.padding(8.dp))
+                // the row and its three buttons are separate focus targets, so the remote can reach each button (right arrow)
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Focusable(
+                        onClick = { repo.open(p); nav.home() },
+                        onLongClick = { nav.go(Routes.addPlaylist(p.id)) },
+                        selected = active, modifier = Modifier.weight(1f), focusScale = 1.01f,
+                    ) {
+                        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.CheckCircle, null, tint = if (active) Z.accent else Z.line, modifier = Modifier.size(22.dp))
+                            Spacer(Modifier.width(12.dp))
+                            Column(Modifier.weight(1f)) {
+                                Text(p.name, color = Z.text, fontWeight = FontWeight.SemiBold)
+                                Text(
+                                    "${typeLabel(p.type)} · ${p.url}", color = Z.muted, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis
+                                )
+                            }
                         }
                     }
+                    RowAction(Icons.Default.Refresh, stringResource(R.string.refresh)) {
+                        Toast.makeText(ctx, R.string.refreshing, Toast.LENGTH_SHORT).show()
+                        repo.open(p, forceRefresh = true); nav.home()
+                    }
+                    RowAction(Icons.Default.Edit, stringResource(R.string.edit)) { nav.go(Routes.addPlaylist(p.id)) }
+                    RowAction(Icons.Default.Delete, stringResource(R.string.delete), danger = true) { confirmDelete = p }
                 }
             }
         }
@@ -129,6 +136,16 @@ fun PlaylistsScreen(nav: Nav) {
             },
             dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text(stringResource(R.string.cancel)) } },
         )
+    }
+}
+
+/** Round button next to a playlist (refresh / edit / delete), reachable with the remote. */
+@Composable
+private fun RowAction(icon: androidx.compose.ui.graphics.vector.ImageVector, label: String, danger: Boolean = false, onClick: () -> Unit) {
+    Focusable(onClick = onClick, shape = RoundedCornerShape(50), focusScale = 1.12f) {
+        Box(Modifier.size(52.dp).background(Z.surface2, RoundedCornerShape(50)), contentAlignment = Alignment.Center) {
+            Icon(icon, label, tint = if (danger) Z.red else Z.text, modifier = Modifier.size(24.dp))
+        }
     }
 }
 

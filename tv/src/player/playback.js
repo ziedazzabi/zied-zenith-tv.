@@ -88,7 +88,7 @@ class PlaybackService {
     if (req.series && req.episodes && req.episodeIndex >= 0) return this.playEpisode(req.episodeIndex, req.startMs);
     this.title = req.title || (it ? it.name : '');
     this.emit('item');
-    if (it && it.kind === 'live' && !req.url) store.addRecent(it.key);
+    if (it && it.kind === 'live' && !req.url && !repo.isRestricted(it)) store.addRecent(it.key);
     let url = req.url;
     try { if (!url) url = await repo.resolve(it); }
     catch (e) { this.setState({ error: e.message || 'Error', buffering: false }); return; }
@@ -114,7 +114,7 @@ class PlaybackService {
     const it = this.item;
     this.title = it.name;
     this.emit('item');
-    if (it.kind === 'live') store.addRecent(it.key);
+    if (it.kind === 'live' && !repo.isRestricted(it)) store.addRecent(it.key);
     try { this.start(await repo.resolve(it), 0); } catch (e) { this.setState({ error: e.message, buffering: false }); }
   }
 
