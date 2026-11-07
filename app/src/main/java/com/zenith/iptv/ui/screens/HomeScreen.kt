@@ -158,14 +158,14 @@ fun HomeScreen(nav: Nav) {
                     .mapNotNull { p -> if ('#' in p.key) null else repo.byKey(p.key)?.let { it to p } }.take(20)
             }
             val newest = remember(c, settings.lockedCategories, settings.autoLockAdult) {
-                c.items.asSequence().filter { it.kind == Kind.MOVIE && it.added > 0 && !repo.isRestricted(it) }.sortedByDescending { it.added }.take(20).toList()
+                c.items.asSequence().filter { it.kind == Kind.MOVIE && it.added > 0 }.sortedByDescending { it.added }.filterNot { repo.isRestricted(it) }.take(20).toList()
             }
             val newestSeries = remember(c, settings.lockedCategories, settings.autoLockAdult) {
-                c.items.asSequence().filter { it.kind == Kind.SERIES && it.added > 0 && !repo.isRestricted(it) }.sortedByDescending { it.added }.take(20).toList()
+                c.items.asSequence().filter { it.kind == Kind.SERIES && it.added > 0 }.sortedByDescending { it.added }.filterNot { repo.isRestricted(it) }.take(20).toList()
             }
 
             LazyColumn(
-                contentPadding = PaddingValues(horizontal = gutter, vertical = 8.dp),
+                contentPadding = PaddingValues(start = gutter, end = gutter, top = 8.dp, bottom = if (isTv) 56.dp else 16.dp),
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 item {

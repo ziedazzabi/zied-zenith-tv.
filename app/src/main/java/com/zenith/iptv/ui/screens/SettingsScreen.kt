@@ -114,7 +114,7 @@ fun SettingsScreen(nav: Nav, activity: MainActivity) {
     val langs = listOf("" to stringResource(R.string.lang_system), "en" to "English", "ar" to "العربية", "fr" to "Français")
     val off = stringResource(R.string.off)
 
-    ScreenScaffold(stringResource(R.string.settings), nav) {
+    ScreenScaffold(stringResource(R.string.settings), nav, rail = Routes.SETTINGS) {
         LazyColumn(
             Modifier.widthIn(max = 760.dp).fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(6.dp), contentPadding = PaddingValues(bottom = 40.dp)

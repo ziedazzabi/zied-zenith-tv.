@@ -60,6 +60,7 @@ import com.zenith.iptv.data.LoadState
 import com.zenith.iptv.data.Media
 import com.zenith.iptv.player.PlayRequest
 import com.zenith.iptv.recording.Recordings
+import com.zenith.iptv.ui.Routes
 import com.zenith.iptv.ui.CatalogGate
 import com.zenith.iptv.ui.Chip
 import com.zenith.iptv.ui.EmptyState
@@ -97,7 +98,7 @@ fun GuideScreen(nav: Nav) {
     var now by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) { while (true) { delay(30_000); now = System.currentTimeMillis() } }
 
-    ScreenScaffold(stringResource(R.string.tv_guide), nav, actions = {
+    ScreenScaffold(stringResource(R.string.tv_guide), nav, rail = Routes.GUIDE, actions = {
         Focusable(onClick = { start -= SLOT * 2 }, shape = RoundedCornerShape(50)) {
             Icon(Icons.AutoMirrored.Filled.KeyboardArrowLeft, stringResource(R.string.earlier), tint = Z.text, modifier = Modifier.padding(8.dp))
         }

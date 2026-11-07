@@ -132,6 +132,8 @@ fun PlayerScreen(onBack: () -> Unit) {
     var aspect by remember { mutableStateOf(settings.aspect) }
     var sleepAt by remember { mutableLongStateOf(0L) }
     var videoInfo by remember { mutableStateOf("") }
+    var videoSizeText by remember { mutableStateOf("") }
+    var decoderText by remember { mutableStateOf("") }
     val rootFocus = remember { FocusRequester() }
     val playFocus = remember { FocusRequester() }
     var vPos by remember { mutableLongStateOf(0L) }
@@ -293,21 +295,24 @@ fun PlayerScreen(onBack: () -> Unit) {
             override fun onTracksChanged(tracks: androidx.media3.common.Tracks) {
                 if (settings.playerEngine != "auto" || vlc != null) return
                 val video = tracks.groups.filter { it.type == androidx.media3.common.C.TRACK_TYPE_VIDEO }
-                if (video.isNotEmpty() && video.none { it.isSupported }) {
+                // "exceeds capabilities" (e.g. 4K HEVC on boxes that under-report their decoder) still plays fine
+                // in hardware with ExoPlayer: only switch to VLC when the format is really not supported
+                if (video.isNotEmpty() && video.none { it.isSupported(true) }) {
                     val mime = video.first().getTrackFormat(0).sampleMimeType ?: video.first().getTrackFormat(0).codecs ?: "?"
                     switchToVlc(mime.substringAfter('/').uppercase())
                     return
                 }
                 // sound missing: the device can't decode this audio (AC-3 / E-AC-3 / DTS / MP2…)
                 val audio = tracks.groups.filter { it.type == androidx.media3.common.C.TRACK_TYPE_AUDIO }
-                if (audio.isNotEmpty() && audio.none { it.isSupported }) {
+                if (audio.isNotEmpty() && audio.none { it.isSupported(true) }) {
                     val mime = audio.first().getTrackFormat(0).sampleMimeType ?: "?"
                     switchToVlc(mime.substringAfter('/').uppercase())
                 }
             }
 
             override fun onVideoSizeChanged(videoSize: androidx.media3.common.VideoSize) {
-                videoInfo = if (videoSize.height > 0) "${videoSize.width}×${videoSize.height}" else ""
+                videoSizeText = if (videoSize.height > 0) "${videoSize.width}×${videoSize.height}" else ""
+                videoInfo = listOf(videoSizeText, decoderText).filter { it.isNotEmpty() }.joinToString(" · ")
             }
 
             override fun onPlayerError(e: PlaybackException) {
@@ -332,10 +337,24 @@ fun PlayerScreen(onBack: () -> Unit) {
             }
         }
         player.addListener(listener)
+        // which decoder plays the video (hardware / software) — shown with the resolution, helps with 4K problems
+        val analytics = object : androidx.media3.exoplayer.analytics.AnalyticsListener {
+            override fun onVideoDecoderInitialized(
+                eventTime: androidx.media3.exoplayer.analytics.AnalyticsListener.EventTime,
+                decoderName: String, initializedTimestampMs: Long, initializationDurationMs: Long,
+            ) {
+                val sw = decoderName.startsWith("OMX.google.", true) || decoderName.startsWith("c2.android.", true)
+                val codec = player.videoFormat?.sampleMimeType?.substringAfter('/')?.uppercase()?.replace("VIDEO/", "") ?: ""
+                decoderText = listOf(codec, if (sw) "SW" else "HW").filter { it.isNotEmpty() }.joinToString(" ")
+                videoInfo = listOf(videoSizeText, decoderText).filter { it.isNotEmpty() }.joinToString(" · ")
+            }
+        }
+        player.addAnalyticsListener(analytics)
         onDispose {
             val v = vlc
             if (v != null) saveProgress(req, v.time, v.length, episodeIndex) else saveProgress(req, player.currentPosition, player.duration, episodeIndex)
             player.removeListener(listener)
+            player.removeAnalyticsListener(analytics)
             v?.release()
             if (MiniPlayer.handoff && v == null) MiniPlayer.receive(player, req.copy(index = index), title.ifBlank { req.items.getOrNull(index)?.name ?: "" })
             else player.release()
@@ -537,7 +556,7 @@ fun PlayerScreen(onBack: () -> Unit) {
         // Movie / episode controls
         AnimatedVisibility(visible = !live && showInfo && !showMenu, enter = fadeIn(), exit = fadeOut(), modifier = Modifier.fillMaxSize()) {
             VodControls(
-                title = title.ifBlank { item.name },
+                title = title.ifBlank { item.name }, info = videoInfo,
                 positionMs = vPos, durationMs = vDur, playing = vPlaying,
                 hasPrev = req.series != null && episodeIndex > 0,
                 hasNext = req.series != null && episodeIndex + 1 < req.episodes.size,

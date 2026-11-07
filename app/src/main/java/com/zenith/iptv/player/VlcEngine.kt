@@ -93,7 +93,11 @@ object VlcMemory {
     private fun prefs(ctx: Context) = ctx.getSharedPreferences("player", Context.MODE_PRIVATE)
 
     fun load(ctx: Context) {
-        if (keys.isEmpty()) keys.addAll(prefs(ctx).getStringSet(PREF, emptySet()) ?: emptySet())
+        val p = prefs(ctx)
+        // v2: 4K files that only "exceed" the reported decoder capabilities are no longer sent to VLC,
+        // so forget the old choices once
+        if (p.getInt("vlc_keys_v", 1) < 2) { p.edit().remove(PREF).putInt("vlc_keys_v", 2).apply(); keys.clear() }
+        if (keys.isEmpty()) keys.addAll(p.getStringSet(PREF, emptySet()) ?: emptySet())
     }
 
     fun needs(key: String) = key in keys

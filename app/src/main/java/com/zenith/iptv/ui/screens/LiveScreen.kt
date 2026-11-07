@@ -138,7 +138,7 @@ fun LiveScreen(nav: Nav) {
         }
     }
 
-    ScreenScaffold(stringResource(R.string.live_tv), nav, actions = {
+    ScreenScaffold(stringResource(R.string.live_tv), nav, rail = Routes.LIVE, actions = {
         Focusable(onClick = { nav.go(Routes.GUIDE) }, shape = RoundedCornerShape(50)) {
             Icon(Icons.Default.ViewList, stringResource(R.string.tv_guide), tint = Z.text, modifier = Modifier.padding(10.dp))
         }
@@ -156,7 +156,10 @@ fun LiveScreen(nav: Nav) {
                 Category(CAT_FAV, stringResource(R.string.favorites), Kind.LIVE),
                 Category(CAT_RECENT, stringResource(R.string.recent), Kind.LIVE),
             )
-            val channels: List<Media> = remember(selectedCat, catalog, data.favorites, data.recentChannels, settings) {
+            // only the list being shown depends on favorites / recents (avoids rebuilding big lists on every channel change)
+            val favKey = if (selectedCat == CAT_FAV) data.favorites else null
+            val recentKey = if (selectedCat == CAT_RECENT) data.recentChannels else null
+            val channels: List<Media> = remember(selectedCat, catalog, favKey, recentKey, settings) {
                 when (selectedCat) {
                     CAT_ALL -> repo.items(Kind.LIVE, null).filter { m -> repo.categoryOf(m)?.let { !repo.isLocked(it) } ?: true }
                     CAT_FAV -> data.favorites.mapNotNull { repo.byKey(it) }.filter { it.kind == Kind.LIVE }
@@ -195,9 +198,13 @@ fun LiveScreen(nav: Nav) {
             if (wide) {
                 Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     // Categories
-                    LazyColumn(Modifier.width(if (threePane) com.zenith.iptv.ui.Adaptive.sidePane() else 200.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
-                        items(special + cats, key = { it.id + it.kind }) { c ->
+                    val catState = rememberLazyListState()
+                    val catNav = com.zenith.iptv.ui.rememberListNav(catState)
+                    val allCats = special + cats
+                    LazyColumn(Modifier.width(if (threePane) com.zenith.iptv.ui.Adaptive.sidePane() else 200.dp).fillMaxHeight(), state = catState, verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+                        itemsIndexed(allCats, key = { _, it -> it.id + it.kind }) { ci, c ->
                             CategoryItem(
+                                modifier = catNav.row(ci, allCats.size),
                                 c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
                                 count = if (c.id.startsWith("__")) -1 else repo.items(Kind.LIVE, c.id).size,
                                 onClick = { selectCat(c) }, onLongClick = { if (!c.id.startsWith("__")) catMenu = c },
@@ -244,8 +251,8 @@ fun LiveScreen(nav: Nav) {
 }
 
 @Composable
-fun CategoryItem(c: Category, selected: Boolean, locked: Boolean, count: Int, onClick: () -> Unit, onLongClick: () -> Unit) {
-    Focusable(onClick = onClick, onLongClick = onLongClick, selected = selected, modifier = Modifier.fillMaxWidth(), focusScale = 1.02f, shape = RoundedCornerShape(10.dp)) {
+fun CategoryItem(c: Category, selected: Boolean, locked: Boolean, count: Int, onClick: () -> Unit, onLongClick: () -> Unit, modifier: Modifier = Modifier) {
+    Focusable(onClick = onClick, onLongClick = onLongClick, selected = selected, modifier = modifier.fillMaxWidth(), focusScale = 1.02f, shape = RoundedCornerShape(10.dp)) {
         Row(Modifier.padding(horizontal = 12.dp, vertical = 11.dp), verticalAlignment = Alignment.CenterVertically) {
             when (c.id) {
                 CAT_FAV -> Icon(Icons.Default.Favorite, null, tint = Z.pink, modifier = Modifier.size(16.dp).padding(end = 2.dp))

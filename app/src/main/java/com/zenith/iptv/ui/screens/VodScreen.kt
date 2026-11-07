@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -38,6 +39,7 @@ import com.zenith.iptv.R
 import com.zenith.iptv.data.Category
 import com.zenith.iptv.data.Kind
 import com.zenith.iptv.data.Media
+import com.zenith.iptv.ui.Routes
 import com.zenith.iptv.ui.CatalogGate
 import com.zenith.iptv.ui.Chip
 import com.zenith.iptv.ui.EmptyState
@@ -69,7 +71,7 @@ fun VodScreen(nav: Nav, kind: Kind) {
     var loadingLazy by remember { mutableStateOf(false) }
 
     val title = stringResource(if (kind == Kind.MOVIE) R.string.movies else R.string.series)
-    ScreenScaffold(title, nav) {
+    ScreenScaffold(title, nav, rail = if (kind == Kind.MOVIE) Routes.MOVIES else Routes.SERIES) {
         CatalogGate(nav) {
             val cats = remember(catalog, settings) { repo.categories(kind) }
             val special = listOf(
@@ -138,9 +140,13 @@ fun VodScreen(nav: Nav, kind: Kind) {
 
             if (wide) {
                 Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                    LazyColumn(Modifier.width(com.zenith.iptv.ui.Adaptive.sidePane()).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
-                        items(special + cats, key = { it.id }) { c ->
+                    val catState = androidx.compose.foundation.lazy.rememberLazyListState()
+                    val catNav = com.zenith.iptv.ui.rememberListNav(catState)
+                    val allCats = special + cats
+                    LazyColumn(Modifier.width(com.zenith.iptv.ui.Adaptive.sidePane()).fillMaxHeight(), state = catState, verticalArrangement = Arrangement.spacedBy(4.dp), contentPadding = PaddingValues(bottom = 16.dp)) {
+                        itemsIndexed(allCats, key = { _, it -> it.id }) { ci, c ->
                             CategoryItem(
+                                modifier = catNav.row(ci, allCats.size),
                                 c, selected = c.id == selectedCat, locked = !c.id.startsWith("__") && repo.isLocked(c),
                                 count = if (c.id.startsWith("__") || c.lazy) -1 else repo.items(kind, c.id).size,
                                 onClick = { selectCat(c) }, onLongClick = { if (!c.id.startsWith("__")) catMenu = c },

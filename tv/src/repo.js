@@ -85,6 +85,8 @@ class Repo extends Emitter {
       const k = it.kind + '|' + it.cat;
       let l = this.byCat.get(k); if (!l) { l = []; this.byCat.set(k, l); } l.push(it);
     }
+    this.catIndex = new Map();
+    for (const c of cat.categories) this.catIndex.set(c.kind + '|' + c.id, c);
     this._channels = null;
     this.emit('catalog');
   }
@@ -108,7 +110,7 @@ class Repo extends Emitter {
     return this.catalog.categories.filter((c) => c.kind === kind && !hidden.has(this.categoryKey(c)) && !(kids && this.isAdult(c)));
   }
 
-  categoryOf(m) { return this.catalog ? this.catalog.categories.find((c) => c.kind === m.kind && c.id === m.cat) || null : null; }
+  categoryOf(m) { return this.catIndex ? this.catIndex.get(m.kind + '|' + m.cat) || null : null; }
 
   isLocked(c) {
     if (!c) return false;

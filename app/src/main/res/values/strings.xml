@@ -84,6 +84,7 @@
     <string name="general">General</string>
     <string name="hide_category">Hide category</string>
     <string name="hide_password">Hide password</string>
+    <string name="home">Home</string>
     <string name="idea_dev">Idea &amp; development</string>
     <string name="image_link">Image link (https://…jpg)</string>
     <string name="image_link_hint">Use a direct image link: open the picture, long-press it and choose \"Copy image address\". Google search page links won\'t work.</string>

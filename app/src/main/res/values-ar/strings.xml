@@ -84,6 +84,7 @@
     <string name="general">عام</string>
     <string name="hide_category">إخفاء الفئة</string>
     <string name="hide_password">إخفاء كلمة المرور</string>
+    <string name="home">الرئيسية</string>
     <string name="idea_dev">فكرة وتطوير</string>
     <string name="image_link">رابط الصورة (https://…jpg)</string>
     <string name="image_link_hint">استخدم رابطًا مباشرًا للصورة: افتح الصورة، اضغط عليها مطولًا واختر \"نسخ عنوان الصورة\". روابط صفحات بحث Google لن تعمل.</string>

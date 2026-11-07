@@ -110,6 +110,7 @@ S = {
 "profiles": ("Profiles", "الملفات الشخصية", "Profils"),
 "recent": ("Recent", "الأخيرة", "Récentes"),
 "recent_channels": ("Recently watched", "شوهدت مؤخراً", "Regardées récemment"),
+"home": ("Home", "الرئيسية", "Accueil"),
 "recently_added_series": ("Recently added series", "مسلسلات أضيفت مؤخراً", "Séries ajoutées récemment"),
 "refreshing": ("Refreshing the list…", "جارٍ تحديث القائمة…", "Actualisation de la liste…"),
 "rewind_10": ("Back 10 s", "رجوع 10 ث", "Reculer 10 s"),

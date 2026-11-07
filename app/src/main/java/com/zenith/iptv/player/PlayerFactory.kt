@@ -49,7 +49,10 @@ object PlayerFactory {
                 /* bufferForPlaybackMs */ if (lowLatency) 1500 else 2000,
                 /* bufferForPlaybackAfterRebufferMs */ if (lowLatency) 3000 else 4000,
             )
-            .setPrioritizeTimeOverSizeThresholds(true)
+            // Movies (4K files can be 50+ Mbit/s): limit the buffer by size, otherwise tens of seconds of 4K
+            // fill the memory and the picture freezes. Live keeps time priority (continuous reading, see above).
+            .setPrioritizeTimeOverSizeThresholds(lowLatency)
+            .setTargetBufferBytes(if (lowLatency) C.LENGTH_UNSET else 96 * 1024 * 1024)
             .build()
 
         val renderers = DefaultRenderersFactory(context)

@@ -32,6 +32,7 @@ import com.zenith.iptv.Graph
 import com.zenith.iptv.R
 import com.zenith.iptv.data.Kind
 import com.zenith.iptv.data.Media
+import com.zenith.iptv.ui.Routes
 import com.zenith.iptv.ui.CatalogGate
 import com.zenith.iptv.ui.ChannelRow
 import com.zenith.iptv.ui.EmptyState
@@ -57,7 +58,7 @@ fun SearchScreen(nav: Nav) {
         results = withContext(Dispatchers.Default) { repo.search(q) }
     }
 
-    ScreenScaffold(stringResource(R.string.search), nav) {
+    ScreenScaffold(stringResource(R.string.search), nav, rail = Routes.SEARCH) {
         CatalogGate(nav) {
             val channels = results.filter { it.kind == Kind.LIVE }
             val movies = results.filter { it.kind == Kind.MOVIE }

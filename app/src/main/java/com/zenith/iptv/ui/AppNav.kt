@@ -68,6 +68,12 @@ class Nav(val controller: NavController) {
     fun back() { if (!controller.popBackStack()) controller.navigate(Routes.HOME) }
     fun go(route: String) = controller.navigate(route) { launchSingleTop = true }
 
+    /** Side bar: switches section (Live / Movies / Series…) without piling screens up behind it. */
+    fun section(route: String) = controller.navigate(route) {
+        popUpTo(Routes.HOME) { inclusive = false }
+        launchSingleTop = true
+    }
+
     /** Goes to home and clears everything behind it (after first setup / profile pick). */
     fun home() = controller.navigate(Routes.HOME) {
         popUpTo(controller.graph.id) { inclusive = true }

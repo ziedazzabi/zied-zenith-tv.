@@ -84,6 +84,7 @@
     <string name="general">Général</string>
     <string name="hide_category">Masquer la catégorie</string>
     <string name="hide_password">Masquer le mot de passe</string>
+    <string name="home">Accueil</string>
     <string name="idea_dev">Idée et développement</string>
     <string name="image_link">Lien de l\'image (https://…jpg)</string>
     <string name="image_link_hint">Utilisez un lien direct vers l\'image : ouvrez l\'image, appui long puis « Copier l\'adresse de l\'image ». Les liens de recherche Google ne fonctionnent pas.</string>

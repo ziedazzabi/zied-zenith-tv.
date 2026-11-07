@@ -79,6 +79,7 @@ fun fmtTime(ms: Long): String {
 @Composable
 fun VodControls(
     title: String,
+    info: String,
     positionMs: Long,
     durationMs: Long,
     playing: Boolean,
@@ -105,8 +106,9 @@ fun VodControls(
             if (!isTv) IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null, tint = Color.White) }
             Text(
                 title, color = Color.White, fontSize = if (isTv) 24.sp else 17.sp, fontWeight = FontWeight.Bold,
-                maxLines = 1, overflow = TextOverflow.Ellipsis,
+                maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f),
             )
+            if (info.isNotEmpty()) Text(info, color = Z.muted, fontSize = 13.sp, modifier = Modifier.padding(start = 12.dp))
         }
 
         // seek bar + buttons

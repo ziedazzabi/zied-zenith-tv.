@@ -102,6 +102,10 @@ class Repository(private val context: Context, val store: Store) {
         (source as? XtreamSource)?.let { if (it.timezone.isBlank()) it.timezone = c.serverTimezone }
         byKey = c.items.associateBy { it.key }
         byCategory = c.items.groupBy { "${it.kind}:${it.categoryId}" }
+        // O(1) category lookups (were a linear search per item → slow screens on big playlists)
+        catByKindId = c.categories.associateBy { "${it.kind}:${it.id}" }
+        catById = c.categories.associateBy { it.id }
+        adultCache.clear()
         _catalog.value = c
     }
 
@@ -136,7 +140,7 @@ class Repository(private val context: Context, val store: Store) {
         val key = categoryKey(cat)
         if (key in unlocked) return false
         if (key in s.lockedCategories) return true
-        return s.autoLockAdult && ADULT.containsMatchIn(cat.name)
+        return s.autoLockAdult && isAdultName(cat.name)
     }
 
     fun unlock(cat: Category) { unlocked += categoryKey(cat) }
@@ -150,7 +154,7 @@ class Repository(private val context: Context, val store: Store) {
     }
 
     private fun isLockedIgnoringSession(cat: Category): Boolean =
-        categoryKey(cat) in settings.lockedCategories || (settings.autoLockAdult && ADULT.containsMatchIn(cat.name))
+        categoryKey(cat) in settings.lockedCategories || (settings.autoLockAdult && isAdultName(cat.name))
 
     /** True when the item's category is locked or hidden (even if unlocked for this session). */
     fun isRestricted(item: Media): Boolean {
@@ -160,8 +164,12 @@ class Repository(private val context: Context, val store: Store) {
 
     fun allCategories(kind: Kind): List<Category> = _catalog.value?.categories?.filter { it.kind == kind } ?: emptyList()
 
-    fun categoryOf(item: Media): Category? = _catalog.value?.categories?.firstOrNull { it.kind == item.kind && it.id == item.categoryId }
-        ?: _catalog.value?.categories?.firstOrNull { it.id == item.categoryId }
+    @Volatile private var catByKindId: Map<String, Category> = emptyMap()
+    @Volatile private var catById: Map<String, Category> = emptyMap()
+    private val adultCache = ConcurrentHashMap<String, Boolean>()
+    private fun isAdultName(name: String): Boolean = adultCache.getOrPut(name) { ADULT.containsMatchIn(name) }
+
+    fun categoryOf(item: Media): Category? = catByKindId["${item.kind}:${item.categoryId}"] ?: catById[item.categoryId]
 
     fun items(kind: Kind, categoryId: String?): List<Media> {
         val c = _catalog.value ?: return emptyList()
