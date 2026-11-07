@@ -55,7 +55,10 @@ object PlayerFactory {
             .setTargetBufferBytes(if (lowLatency) C.LENGTH_UNSET else 96 * 1024 * 1024)
             .build()
 
-        val renderers = DefaultRenderersFactory(context)
+        // Video always goes to the device's own (hardware) decoders. The FFmpeg extension is for audio only:
+        // its experimental software video decoder was being picked for 4K HEVC (when the hardware decoder only
+        // "exceeds" its reported limits) and failed with DECODING_FAILED. "software" mode keeps the old behaviour.
+        val renderers = (if (s.decoderMode == "software") DefaultRenderersFactory(context) else HardwareVideoRenderersFactory(context))
             .setEnableDecoderFallback(true)
             .setExtensionRendererMode(
                 when (s.decoderMode) {
@@ -82,5 +85,25 @@ object PlayerFactory {
         }
         if (title.isNotEmpty()) b.setMediaMetadata(androidx.media3.common.MediaMetadata.Builder().setTitle(title).build())
         return b.build()
+    }
+}
+
+/** Same as DefaultRenderersFactory, but never adds extension (FFmpeg) video renderers. */
+@OptIn(UnstableApi::class)
+private class HardwareVideoRenderersFactory(context: Context) : DefaultRenderersFactory(context) {
+    override fun buildVideoRenderers(
+        context: Context,
+        extensionRendererMode: Int,
+        mediaCodecSelector: androidx.media3.exoplayer.mediacodec.MediaCodecSelector,
+        enableDecoderFallback: Boolean,
+        eventHandler: android.os.Handler,
+        eventListener: androidx.media3.exoplayer.video.VideoRendererEventListener,
+        allowedVideoJoiningTimeMs: Long,
+        out: ArrayList<androidx.media3.exoplayer.Renderer>,
+    ) {
+        super.buildVideoRenderers(
+            context, EXTENSION_RENDERER_MODE_OFF, mediaCodecSelector, enableDecoderFallback,
+            eventHandler, eventListener, allowedVideoJoiningTimeMs, out,
+        )
     }
 }
