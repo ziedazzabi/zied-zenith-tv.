@@ -74,7 +74,7 @@ html.avplay .vl-full { background: transparent; }
 
 /* ---------- focus ---------- */
 .f { transition: transform .12s ease, background-color .12s, box-shadow .12s; outline: none; }
-.f.focused { box-shadow: 0 0 0 0.25rem var(--accent), 0 0.6rem 1.6rem rgba(0,0,0,.45); z-index: 2; }
+.f.focused { box-shadow: 0 0 0 0.25rem var(--accent), var(--focus-drop, 0 0.6rem 1.6rem rgba(0,0,0,.45)); z-index: 2; }
 
 /* ---------- screen frame ---------- */
 .screen { position: absolute; left: 0; top: 0; right: 0; bottom: 0; display: flex; flex-direction: column; padding: 2.2rem 3.5rem 0; }
@@ -435,7 +435,7 @@ html.avplay .vl-full { background: transparent; }
 #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* light theme tweaks */
-.light .f.focused { box-shadow: 0 0 0 0.25rem var(--accent), 0 0.6rem 1.6rem rgba(0,0,0,.18); }
+.light .f.focused { box-shadow: 0 0 0 0.25rem var(--accent), var(--focus-drop, 0 0.6rem 1.6rem rgba(0,0,0,.18)); }
 .light .modal { background: rgba(0,0,0,.35); }
 .light .chip.sel, .light .btn.primary { color: var(--on-accent); }
 
@@ -531,3 +531,8 @@ html.avplay .vl-full { background: transparent; }
 .ep-watched { color: var(--green); display: inline-flex; align-items: center; }
 .ep-resume { color: var(--accent); font-weight: 700; }
 .d-actions { padding-left: 1rem; padding-right: 1rem; } .seasons { padding-left: 1rem; }
+
+/* ---- TV performance: no animated scaling / blurred shadows on Samsung & LG ---- */
+html.pf-webos .f, html.pf-tizen .f { transition: none; }
+html.pf-webos, html.pf-tizen { --focus-drop: 0 0 0 0 transparent; }
+html.pf-webos .switch > div, html.pf-tizen .switch > div { transition: none; }

@@ -2,7 +2,7 @@
 // on Samsung TVs the native AVPlay player is used as a last resort (full screen only).
 import Hls from 'hls.js';
 import mpegts from 'mpegts.js';
-import { isTizen } from '../platform.js';
+import { isTizen, isWebOS } from '../platform.js';
 
 export function urlType(url, live) {
   const u = url.toLowerCase().split('?')[0];
@@ -31,6 +31,7 @@ export class Html5Engine extends Base {
     const v = this.v;
     v.addEventListener('waiting', () => this.emit('buffering', true));
     v.addEventListener('playing', () => {
+      clearTimeout(this.startTimer);
       this.emit('buffering', false); this.emit('playing');
       // Sound but no picture = the web decoder can't show this video (e.g. MPEG-2 / HEVC): try the next way to play it
       clearTimeout(this.noVideoTimer);
@@ -61,17 +62,27 @@ export class Html5Engine extends Base {
     const t = urlType(url, this.live);
     const canMse = !!(window.MediaSource || window.WebKitMediaSource);
     const plan = [];
-    if (t === 'hls') { if (canMse && Hls.isSupported()) plan.push('hls'); plan.push('native'); if (this.live && canMse && mpegts.isSupported()) plan.push('ts'); }
+    if (t === 'hls') {
+      // LG: the TV's own HLS player is lighter (hardware, no JavaScript remuxing) and not limited by CORS
+      if (isWebOS) plan.push('native');
+      if (canMse && Hls.isSupported()) plan.push('hls');
+      if (!isWebOS) plan.push('native');
+      if (this.live && canMse && mpegts.isSupported()) plan.push('ts');
+    }
     else if (t === 'ts' || t === 'flv') { if (canMse && mpegts.isSupported()) plan.push('ts'); plan.push('native'); if (canMse && Hls.isSupported()) plan.push('hls'); }
     else plan.push('native');
     this.plan = plan; this.step = -1;
+    this.trail = [];
     this.next();
   }
 
   next(reason) {
     this.destroyLibs();
+    clearTimeout(this.startTimer);
+    if (this.step >= 0 && this.trail) this.trail.push(this.mode + ': ' + (reason || '?'));
     this.step++;
-    if (this.step >= this.plan.length) { this.emit('error', reason || 'Playback failed'); return; }
+    // the error shows every way that was tried (helps to find why a channel doesn't open)
+    if (this.step >= this.plan.length) { this.emit('error', (this.trail && this.trail.length ? this.trail.join(' → ') : reason) || 'Playback failed'); return; }
     this.mode = this.plan[this.step];
     const v = this.v, url = this.url;
     v.removeAttribute('src');
@@ -111,6 +122,9 @@ export class Html5Engine extends Base {
       clearTimeout(this.tsTimer);
       this.tsTimer = setTimeout(() => { if (this.ts === p && !gotData && v.readyState < 2) this.next('No data'); }, 15000);
     } else {
+      // the TV's player sometimes neither plays nor reports an error: move on after 20 s
+      const step = this.step;
+      this.startTimer = setTimeout(() => { if (this.step === step && v.readyState < 3 && v.paused !== false) this.next('Timeout'); }, 20000);
       v.src = url;
       if (this.startMs) {
         const seek = () => { v.removeEventListener('loadedmetadata', seek); try { v.currentTime = this.startMs / 1000; } catch (e) { /* ignore */ } };
@@ -124,6 +138,7 @@ export class Html5Engine extends Base {
 
   stop() {
     clearTimeout(this.tsTimer);
+    clearTimeout(this.startTimer);
     clearTimeout(this.noVideoTimer);
     this.destroyLibs();
     const v = this.v;
