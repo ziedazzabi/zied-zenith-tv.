@@ -3,6 +3,7 @@
 import Hls from 'hls.js';
 import mpegts from 'mpegts.js';
 import { isTizen, isWebOS } from '../platform.js';
+import { DLog, maskUrl } from '../dlog.js';
 
 export function urlType(url, live) {
   const u = url.toLowerCase().split('?')[0];
@@ -48,7 +49,12 @@ export class Html5Engine extends Base {
     v.addEventListener('timeupdate', () => this.emit('time'));
     v.addEventListener('loadedmetadata', () => this.emit('tracks'));
     v.addEventListener('resize', () => this.emit('videosize'));
-    v.addEventListener('error', () => { if (this.mode === 'native') this.fail('Video error ' + (v.error ? v.error.code : '')); });
+    v.addEventListener('error', () => {
+      DLog.add('video error ' + (v.error ? v.error.code + ' ' + (v.error.message || '') : ''));
+      if (this.mode === 'native') this.fail('Video error ' + (v.error ? v.error.code : ''));
+    });
+    ['loadstart', 'loadedmetadata', 'canplay', 'playing', 'waiting', 'stalled', 'emptied'].forEach((ev) =>
+      v.addEventListener(ev, () => DLog.add('video ' + ev + (ev === 'loadedmetadata' || ev === 'playing' ? ' ' + v.videoWidth + 'x' + v.videoHeight : '') + ' rs=' + v.readyState)));
   }
 
   destroyLibs() {
@@ -73,6 +79,7 @@ export class Html5Engine extends Base {
     else plan.push('native');
     this.plan = plan; this.step = -1;
     this.trail = [];
+    DLog.add('load ' + maskUrl(url) + ' type=' + t + ' plan=' + plan.join(',') + ' mse=' + canMse);
     this.next();
   }
 
@@ -84,6 +91,7 @@ export class Html5Engine extends Base {
     // the error shows every way that was tried (helps to find why a channel doesn't open)
     if (this.step >= this.plan.length) { this.emit('error', (this.trail && this.trail.length ? this.trail.join(' → ') : reason) || 'Playback failed'); return; }
     this.mode = this.plan[this.step];
+    DLog.add('try ' + this.mode + (reason ? ' (after: ' + reason + ')' : ''));
     const v = this.v, url = this.url;
     v.removeAttribute('src');
     try { v.load(); } catch (e) { /* ignore */ }
@@ -100,7 +108,11 @@ export class Html5Engine extends Base {
       hls.on(Hls.Events.MANIFEST_PARSED, () => { this.emit('tracks'); v.play().catch(() => {}); });
       hls.on(Hls.Events.AUDIO_TRACKS_UPDATED, () => this.emit('tracks'));
       hls.on(Hls.Events.SUBTITLE_TRACKS_UPDATED, () => this.emit('tracks'));
+      hls.on(Hls.Events.MANIFEST_LOADED, () => DLog.add('hls manifest ok'));
+      hls.on(Hls.Events.FRAG_LOADED, (ev, d) => { if (d && d.frag && d.frag.sn !== 'initSegment' && !this._fragLogged) { this._fragLogged = true; DLog.add('hls first segment ok'); } });
+      this._fragLogged = false;
       hls.on(Hls.Events.ERROR, (ev, d) => {
+        DLog.add('hls ' + (d.fatal ? 'FATAL ' : '') + d.type + ' ' + d.details + (d.response ? ' http=' + d.response.code : ''));
         if (!d.fatal) return;
         if (d.type === Hls.ErrorTypes.MEDIA_ERROR && !recovered) { recovered = true; hls.recoverMediaError(); return; }
         if (d.type === Hls.ErrorTypes.NETWORK_ERROR && d.details === 'manifestLoadError') { this.next('Cannot load stream (' + (d.response && d.response.code || 'network') + ')'); return; }
@@ -114,7 +126,7 @@ export class Html5Engine extends Base {
           autoCleanupSourceBuffer: true, enableStashBuffer: true, stashInitialSize: 384 * 1024 });
       this.ts = p;
       let gotData = false;
-      p.on(mpegts.Events.ERROR, (type, detail) => this.next(type + ' ' + detail));
+      p.on(mpegts.Events.ERROR, (type, detail, info) => { DLog.add('ts error ' + type + ' ' + detail + (info && info.code ? ' ' + info.code : '')); this.next(type + ' ' + detail); });
       p.on(mpegts.Events.MEDIA_INFO, () => { gotData = true; this.emit('tracks'); });
       p.attachMediaElement(v);
       p.load();

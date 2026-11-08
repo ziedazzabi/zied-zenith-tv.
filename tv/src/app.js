@@ -11,6 +11,7 @@ import { Playback } from './player/playback.js';
 import { icon } from './icons.js';
 import { dialog, toast, fz } from './ui.js';
 import { screens } from './screens/index.js';
+import { DLog } from './dlog.js';
 
 const app = {
   stack: [],
@@ -150,8 +151,25 @@ function showReminder(r) {
 }
 
 // ---------------- boot ----------------
+// ---------- diagnostics: yellow key shows what the player did (also opens by itself when a channel won't start) ----------
+let diagEl = null, diagOn = false, diagTimer = 0;
+function drawDiag() { if (diagOn && diagEl) diagEl.textContent = DLog.lines().slice(-24).join('\n') || '…'; }
+function setDiag(on) {
+  if (!diagEl) { diagEl = h('div', { class: 'diag hidden' }); document.body.appendChild(diagEl); DLog.on(drawDiag); }
+  diagOn = on; diagEl.classList.toggle('hidden', !on); drawDiag();
+}
+Playback.on('state', (s) => {
+  clearTimeout(diagTimer);
+  if (s.error) setDiag(true);
+  else if (s.buffering) diagTimer = setTimeout(() => { if (Playback.state.buffering) setDiag(true); }, 12000);
+});
+window.addEventListener('error', (e) => { DLog.add('JS error: ' + (e.message || e) + (e.filename ? ' @' + String(e.filename).split('/').pop() + ':' + e.lineno : '')); });
+window.addEventListener('unhandledrejection', (e) => { DLog.add('JS promise: ' + (e.reason && (e.reason.message || e.reason))); });
+
 function onKeyDown(e) {
   const name = keyName(e);
+  if (name === 'yellow') { e.preventDefault(); setDiag(!diagOn); return; }
+  if (name === 'back' && diagOn) { e.preventDefault(); setDiag(false); return; }
   if (!name) return;
   if (name === 'ok') { if (!(document.activeElement && /INPUT/.test(document.activeElement.tagName))) { e.preventDefault(); Focus.okDown(e); } return; }
   if (name !== 'back' || !(document.activeElement && /INPUT/.test(document.activeElement.tagName))) e.preventDefault();

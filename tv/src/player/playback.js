@@ -3,6 +3,7 @@ import { Html5Engine, AvplayEngine } from './engine.js';
 import { repo } from '../repo.js';
 import { store } from '../store.js';
 import { keepScreenOn } from '../platform.js';
+import { DLog } from '../dlog.js';
 
 class PlaybackService {
   constructor() {
@@ -83,19 +84,26 @@ class PlaybackService {
     this.index = req.index || 0;
     this.retries = 0;
     this.usedAvFallback = false;
+    this.formatSwapped = false;
     if (mode) this.setMode(mode);
     const it = this.item;
     if (req.series && req.episodes && req.episodeIndex >= 0) return this.playEpisode(req.episodeIndex, req.startMs);
     this.title = req.title || (it ? it.name : '');
     this.emit('item');
     if (it && it.kind === 'live' && !req.url && !repo.isRestricted(it)) store.addRecent(it.key);
+    DLog.add('open ' + (it ? it.name : '?') + ' mode=' + this.mode);
     let url = req.url;
     try { if (!url) url = await repo.resolve(it); }
-    catch (e) { this.setState({ error: e.message || 'Error', buffering: false }); return; }
+    catch (e) { DLog.add('resolve failed: ' + (e && e.message)); this.setState({ error: e.message || 'Error', buffering: false }); return; }
     this.start(url, req.startMs || 0);
   }
 
   start(url, startMs) {
+    // Xtream live links use the stream format from the settings (lists cached before a change keep the old one)
+    if (this.live && !this.req.url) {
+      const want = store.settings.get().liveFormat === 'ts' ? 'ts' : 'm3u8';
+      if (/\/live\/[^?]+\.(m3u8|ts)(\?|$)/i.test(url)) url = url.replace(/\.(m3u8|ts)(\?|$)/i, '.' + want + '$2');
+    }
     this.url = url;
     this.setState({ error: '', buffering: true, paused: false });
     keepScreenOn(true);
@@ -110,6 +118,7 @@ class PlaybackService {
     this.index = ((i % n) + n) % n;
     this.retries = 0;
     this.usedAvFallback = false;
+    this.formatSwapped = false;
     this.req = Object.assign({}, this.req, { url: null, program: null, startMs: 0 });
     const it = this.item;
     this.title = it.name;
@@ -154,6 +163,20 @@ class PlaybackService {
   }
 
   onError(msg) {
+    DLog.add('error: ' + msg);
+    // Xtream live: the server may refuse one format (HTTP 405 for .m3u8): try the other one once
+    const sw = this.live && !this.formatSwapped && /\/live\/[^?]+\.(m3u8|ts)(\?|$)/i.exec(this.url || '');
+    if (sw) {
+      this.formatSwapped = true;
+      const to = sw[1].toLowerCase() === 'm3u8' ? 'ts' : 'm3u8';
+      const u = this.url.replace(/\.(m3u8|ts)(\?|$)/i, '.' + to + '$2');
+      DLog.add('switching format to .' + to);
+      // remember it: the next channel lists are built with the format that works
+      if (store.settings.get().liveFormat !== to) store.updateSettings(() => ({ liveFormat: to }));
+      this.usedAvFallback = false;
+      this.start(u, 0);
+      return;
+    }
     // Samsung: try the native player once before giving up
     if (this.engine === this.html5 && AvplayEngine.available() && this.mode === 'full' && !this.usedAvFallback && store.settings.get().engine !== 'html5') {
       this.usedAvFallback = true;

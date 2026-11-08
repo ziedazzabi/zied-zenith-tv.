@@ -68,7 +68,10 @@ class XtreamSource {
     addCats(lc, 'live'); addCats(vc, 'movie'); addCats(sc, 'series');
 
     const items = [];
-    const ext = this.settings.liveFormat === 'ts' ? 'ts' : 'm3u8';
+    // stream format: the one chosen in the settings, unless the account doesn't allow it (servers answer 405 then)
+    const allowed = (Array.isArray(ui.allowed_output_formats) ? ui.allowed_output_formats : []).map((f) => str(f).toLowerCase());
+    let ext = this.settings.liveFormat === 'ts' ? 'ts' : 'm3u8';
+    if (allowed.length && allowed.indexOf(ext) < 0) ext = allowed.indexOf('ts') >= 0 ? 'ts' : allowed.indexOf('m3u8') >= 0 ? 'm3u8' : ext;
     const id = this.pl.id;
     (Array.isArray(live) ? live : []).forEach((o, i) => {
       const sid = str(o.stream_id);
